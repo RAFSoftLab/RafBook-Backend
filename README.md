@@ -4,6 +4,8 @@
 
 This is a Java Spring backend for a messaging application that supports real-time communication between students, group channels, notifications, and media sharing. It provides endpoints for managing users, channels, messages, and notifications, with optional video and audio communication support. The backend is designed to support mobile, web, and desktop applications as clients.
 
+---
+
 ## Features
 
 - **User Communication**: Supports text, image, and video messages.
@@ -11,6 +13,8 @@ This is a Java Spring backend for a messaging application that supports real-tim
 - **Notifications**: Broadcast notifications similar to a mailing list.
 - **User Management**: Admin module for managing user registrations and permissions.
 - **Optional Video/Audio Communication**: Optional support for video/audio calls between users.
+
+---
 
 ## Technologies
 
@@ -31,6 +35,8 @@ This is a Java Spring backend for a messaging application that supports real-tim
 - **PostgreSQL 13+**
 - **Redis** (optional, for real-time messaging)
 - **Docker** (for containerization, optional)
+
+---
 
 # API Endpoints
 
@@ -85,6 +91,8 @@ This is a Java Spring backend for a messaging application that supports real-tim
 - **`messages`**: Stores message data (sender, timestamp, content, media URLs).
 - **`notifications`**: Stores system-wide notifications.
 - **`calls`** (optional): Stores data on audio and video calls, if enabled.
+
+---
 
 # Security
 
