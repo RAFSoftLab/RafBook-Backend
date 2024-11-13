@@ -114,3 +114,64 @@ This is a Java Spring backend for a messaging application that supports real-tim
 ### MAC Address Verification
 - **MAC Address** is required during user registration, adding an extra layer of device-level verification.
 
+---
+
+# Testing
+
+The backend uses **JUnit** for unit testing, **JaCoCo** for code coverage, and **Cucumber** for integration testing. This testing setup ensures both functionality and quality of the application.
+
+## Unit Testing with JUnit
+
+JUnit is used for unit testing individual components and services.
+
+### Instructions
+
+- **Test Location**: Place unit tests in the `src/test/java` directory. Each test class should correspond to a single service or component class and follow the naming convention `ClassNameTest.java`.
+- **Running Tests**:
+  - Run all tests with the command:
+    ```bash
+    ./mvnw test
+    ```
+- **Annotations**: Use `@Test` for individual test methods, `@BeforeEach` for setup tasks, and `@AfterEach` for cleanup tasks if needed.
+
+## Code Coverage with JaCoCo
+
+JaCoCo is used to measure code coverage of the project to ensure sufficient test coverage.
+
+### Instructions
+
+1. **JaCoCo Configuration**: Ensure JaCoCo is configured in the `pom.xml` under the `<build>` section. Add a `<plugin>` section for `jacoco-maven-plugin`.
+2. **Generating Coverage Reports**:
+   - Run the following command to generate a coverage report:
+     ```bash
+     ./mvnw test jacoco:report
+     ```
+   - Reports will be generated in the `target/site/jacoco` directory.
+
+3. **Viewing Reports**:
+   - Open `target/site/jacoco/index.html` in a browser to view the coverage report.
+
+## Integration Testing with Cucumber
+
+Cucumber is used for integration tests, allowing end-to-end testing of features in a behavior-driven manner.
+
+### Instructions
+
+1. **Feature Files**:
+   - Write feature files in the `src/test/resources/features` directory.
+   - Use the `.feature` file format to describe scenarios in Gherkin syntax.
+
+2. **Step Definitions**:
+   - Create step definition classes in `src/test/java` to map Gherkin steps to Java code.
+   - Each step should correspond to an action or assertion in the integration flow.
+
+3. **Running Cucumber Tests**:
+   - Run all Cucumber tests with the command:
+     ```bash
+     ./mvnw test -Dcucumber.features=src/test/resources/features
+     ```
+
+4. **Reports**:
+   - Configure Cucumber to generate HTML or JSON reports by specifying a plugin in the `@CucumberOptions` annotation.
+
+With this setup, the backend application is thoroughly tested, providing assurance in both unit-level and integration-level functionality.
