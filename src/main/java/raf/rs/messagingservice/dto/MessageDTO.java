@@ -25,5 +25,5 @@ public class MessageDTO {
      */
     @ElementCollection
     private Set<String> reactions;
-    private Message parentMessage;
+    private MessageDTO parentMessage;
 }

@@ -27,7 +27,7 @@ public class MessageServiceImplementation implements MessageService {
     @Override
     public List<MessageDTO> findAllFromChannel(Long channelId) {
         TextChannel textChannel = textChannelService.findTextChannelById(channelId);
-        Set<Message> messages = textChannel.getMessages();
+        List<Message> messages = messageRepository.findAllByTextChannel(textChannel);
         List<Message> sortedMessages = new ArrayList<>(messages);
         sortedMessages.sort(Comparator.comparing(Message::getCreatedAt));
         return sortedMessages.stream()

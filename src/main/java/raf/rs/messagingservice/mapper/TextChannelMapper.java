@@ -15,6 +15,7 @@ public class TextChannelMapper {
         }
         TextChannel textChannel = new TextChannel();
         textChannel.setName(dto.getName());
+        textChannel.setDescription(dto.getDescription());
 
         return textChannel;
     }
@@ -26,6 +27,7 @@ public class TextChannelMapper {
         TextChannelDTO textChannelDTO = new TextChannelDTO();
         textChannelDTO.setId(entity.getId());
         textChannelDTO.setName(entity.getName());
+        textChannelDTO.setDescription(entity.getDescription());
 
         return textChannelDTO;
     }

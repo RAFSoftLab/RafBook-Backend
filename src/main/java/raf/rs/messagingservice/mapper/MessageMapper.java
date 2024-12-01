@@ -46,7 +46,7 @@ public class MessageMapper {
         messageDTO.setType(entity.getType());
         messageDTO.setMediaUrl(entity.getMediaUrl());
         messageDTO.setReactions(entity.getReactions());
-        messageDTO.setParentMessage(entity.getParentMessage());
+        messageDTO.setParentMessage(this.toDto(entity.getParentMessage()));
         // TODO: add sender mapping
         return messageDTO;
     }
