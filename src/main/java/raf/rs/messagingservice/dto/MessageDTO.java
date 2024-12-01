@@ -17,6 +17,7 @@ public class MessageDTO {
     private LocalDateTime createdAt;
     private MessageType type;
     private String mediaUrl;
+    private String sender;
     //TODO: add sender
     /*
     @ManyToOne(fetch = FetchType.LAZY)

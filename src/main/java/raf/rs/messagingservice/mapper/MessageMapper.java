@@ -29,6 +29,7 @@ public class MessageMapper {
         }
         TextChannel textChannel = textChannelRepository.findTextChannelById(dto.getTextChannel());
         message.setTextChannel(textChannel);
+        message.setSender(dto.getSender());
 
         // TODO: add sender mapping
         return message;
@@ -47,6 +48,7 @@ public class MessageMapper {
         messageDTO.setMediaUrl(entity.getMediaUrl());
         messageDTO.setReactions(entity.getReactions());
         messageDTO.setParentMessage(this.toDto(entity.getParentMessage()));
+        messageDTO.setSender(entity.getSender());
         // TODO: add sender mapping
         return messageDTO;
     }

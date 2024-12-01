@@ -40,6 +40,7 @@ public class Message {
     @JoinColumn(name = "user_id")
     private MyUser sender;
      */
+    private String sender;
 
     @ElementCollection
     private Set<String> reactions = new HashSet<>();
