@@ -18,6 +18,7 @@
 
     <modules>
         <module>user-service</module>
+        <module>messaging-service</module>
         <!-- Dodaj druge module ako ih ima -->
     </modules>
 
