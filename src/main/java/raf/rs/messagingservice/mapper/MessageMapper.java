@@ -16,6 +16,9 @@ public class MessageMapper {
     private MessageRepository messageRepository;
     private TextChannelRepository textChannelRepository;
     public Message toEntity(NewMessageDTO dto){
+        if(dto == null){
+            return null;
+        }
         Message message = new Message();
         message.setContent(dto.getContent());
         message.setType(dto.getType());
@@ -31,6 +34,9 @@ public class MessageMapper {
         return message;
     }
     public MessageDTO toDto(Message entity){
+        if(entity == null){
+            return null;
+        }
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setId(entity.getId());
         messageDTO.setContent(entity.isDeleted() ? "user deleted message" : entity.getContent());

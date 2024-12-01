@@ -1,6 +1,6 @@
 package raf.rs.userservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import raf.rs.userservice.dto.CreateUserDTO;
@@ -13,24 +13,19 @@ import raf.rs.userservice.model.MyUser;
 import raf.rs.userservice.model.Role;
 import raf.rs.userservice.repository.RoleRepository;
 import raf.rs.userservice.repository.UserRepository;
+import raf.rs.userservice.service.UserService;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl {
+@AllArgsConstructor
+public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
     private UserMapper userMapper;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void createMyUser(CreateUserDTO createUserDTO){

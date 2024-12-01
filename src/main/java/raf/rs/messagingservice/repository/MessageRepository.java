@@ -7,6 +7,4 @@ import raf.rs.messagingservice.model.Message;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
     public Message findMessageById(Long id);
-    public void deleteMessageById(Long id);
-    public Message editMessageById(Long id, Message message);
 }

@@ -1,5 +1,6 @@
 package raf.rs.userservice.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,10 @@ import raf.rs.userservice.service.UserService;
 import java.util.List;
 
 @RestController("/users")
+@AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
     @PostMapping
