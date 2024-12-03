@@ -64,3 +64,6 @@ jobs:
           echo "    image: pstamenic1524m/rafbook:${{ github.sha }}" >> docker-compose.yml
           echo "    ports:" >> docker-compose.yml
           echo "      - '8080:8080'" >> docker-compose.yml
+
+      - name: List directory contents
+        run: ls -la
