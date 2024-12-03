@@ -44,6 +44,9 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco
 
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
       - name: Build Docker image
         run: docker build -t pstamenic1524m/rafbook:${{ github.sha }} .
 
