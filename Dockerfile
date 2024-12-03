@@ -17,4 +17,4 @@ RUN ./mvnw package
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "target/your-application.jar"]
+CMD ["java", "-jar", "target/RAFBook-0.1.jar"]
