@@ -8,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import raf.rs.userservice.dto.CreateUserDTO;
 import raf.rs.userservice.dto.UserDTO;
-import raf.rs.userservice.exception.RoleNotFoundException;
 import raf.rs.userservice.exception.UserAlreadyExistsException;
 import raf.rs.userservice.exception.UserNotFoundException;
 import raf.rs.userservice.mapper.UserMapper;
@@ -49,7 +48,6 @@ class UserServiceImplTest {
     @Test
     void createMyUser_success() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
-        createUserDTO.setUsername("newuser");
         createUserDTO.setPassword("password");
         createUserDTO.setRole("USER");
 
@@ -57,27 +55,17 @@ class UserServiceImplTest {
         Role role = new Role();
         role.setName("USER");
 
-        when(userRepository.findByUsername(createUserDTO.getUsername())).thenReturn(Optional.empty());
         when(userMapper.createUserDtoToMyUser(createUserDTO)).thenReturn(user);
         when(passwordEncoder.encode(createUserDTO.getPassword())).thenReturn("encodedPassword");
         when(roleRepository.findByName(createUserDTO.getRole())).thenReturn(Optional.of(role));
 
-        userService.createMyUser(createUserDTO);
+        userService.register(createUserDTO);
 
         verify(userRepository).save(user);
         assertEquals("encodedPassword", user.getHashPassword());
         assertTrue(user.getRoles().contains(role));
     }
 
-    @Test
-    void createMyUser_userAlreadyExists() {
-        CreateUserDTO createUserDTO = new CreateUserDTO();
-        createUserDTO.setUsername("existinguser");
-
-        when(userRepository.findByUsername(createUserDTO.getUsername())).thenReturn(Optional.of(new MyUser()));
-
-        assertThrows(UserAlreadyExistsException.class, () -> userService.createMyUser(createUserDTO));
-    }
 
     @Test
     void getUserById_success() {

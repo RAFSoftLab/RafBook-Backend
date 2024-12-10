@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,6 +23,6 @@ public class UserDTO {
 
     private String macAddress;
 
-    private String role;
+    private List<String> role;
 
 }

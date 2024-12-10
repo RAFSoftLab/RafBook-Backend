@@ -1,9 +1,16 @@
 package raf.rs.userservice.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import raf.rs.userservice.dto.CreateUserDTO;
+import raf.rs.userservice.dto.LoginRequestDTO;
+import raf.rs.userservice.dto.LoginResponseDTO;
 import raf.rs.userservice.dto.UserDTO;
 import raf.rs.userservice.exception.RoleNotFoundException;
 import raf.rs.userservice.exception.UserAlreadyExistsException;
@@ -13,6 +20,7 @@ import raf.rs.userservice.model.MyUser;
 import raf.rs.userservice.model.Role;
 import raf.rs.userservice.repository.RoleRepository;
 import raf.rs.userservice.repository.UserRepository;
+import raf.rs.userservice.security.JwtUtil;
 import raf.rs.userservice.service.UserService;
 
 import java.util.List;
@@ -23,14 +31,45 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
     private UserMapper userMapper;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void createMyUser(CreateUserDTO createUserDTO){
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-        if(userRepository.findByUsername(createUserDTO.getUsername()).isPresent()){
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword())
+        );
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDTO.getUsername());
+
+        Set<String> roles = getUserRoles(userDetails.getUsername());
+        Long userId = getUserId(userDetails.getUsername());
+
+        String token = jwtUtil.generateToken(userDetails, roles, userId);
+        return userMapper.toLoginResponseDTO(token);
+    }
+
+    public void register(CreateUserDTO createUserDTO){
+
+        if(userRepository.findByEmail(createUserDTO.getEmail()).isPresent()){
             throw new UserAlreadyExistsException("This user already exists! Choose another username.");
         }
 
@@ -77,5 +116,19 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::myUserToUserDto)
                 .collect(Collectors.toList());
     }
+
+    private Set<String> getUserRoles(String username){
+        return userRepository.findByUsername(username)
+                .map(user -> user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    private Long getUserId(String username){
+        return userRepository.findByUsername(username)
+                .get().getId();
+    }
+
 
 }

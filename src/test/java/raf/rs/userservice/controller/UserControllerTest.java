@@ -34,9 +34,9 @@ class UserControllerTest {
     @Test
     void createUser_withValidCreateUserDTO_returnsCreatedResponse() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
-        doNothing().when(userService).createMyUser(createUserDTO);
+        doNothing().when(userService).register(createUserDTO);
 
-        ResponseEntity<ResponseMessageDTO> response = userController.createUser(createUserDTO);
+        ResponseEntity<ResponseMessageDTO> response = userController.register(createUserDTO);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
