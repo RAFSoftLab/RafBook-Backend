@@ -9,12 +9,20 @@ import raf.rs.messagingservice.model.Message;
 import raf.rs.messagingservice.model.TextChannel;
 import raf.rs.messagingservice.repository.MessageRepository;
 import raf.rs.messagingservice.repository.TextChannelRepository;
-
+/**
+ * Mapper class for converting between Message entities and DTOs.
+ */
 @Component
 @AllArgsConstructor
 public class MessageMapper {
     private MessageRepository messageRepository;
     private TextChannelRepository textChannelRepository;
+    /**
+     * Converts a NewMessageDTO to a Message entity.
+     *
+     * @param dto the NewMessageDTO to convert
+     * @return the converted Message entity, or null if the dto is null
+     */
     public Message toEntity(NewMessageDTO dto){
         if(dto == null){
             return null;
@@ -34,6 +42,12 @@ public class MessageMapper {
         // TODO: add sender mapping
         return message;
     }
+    /**
+     * Converts a Message entity to a MessageDTO.
+     *
+     * @param entity the Message entity to convert
+     * @return the converted MessageDTO, or null if the entity is null
+     */
     public MessageDTO toDto(Message entity){
         if(entity == null){
             return null;

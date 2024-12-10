@@ -1,5 +1,6 @@
 package raf.rs.userservice.security;
 
+import org.hibernate.annotations.processing.Suppress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,15 @@ public class SecurityConfig {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http the HttpSecurity to modify
+     * @return the SecurityFilterChain
+     * @throws Exception if an error occurs
+     */
     @Bean
+    @SuppressWarnings("removal")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors()
@@ -46,16 +55,33 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Provides a PasswordEncoder bean.
+     *
+     * @return the PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provides an AuthenticationManager bean.
+     *
+     * @param authenticationConfiguration the AuthenticationConfiguration
+     * @return the AuthenticationManager
+     * @throws Exception if an error occurs
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Configures CORS settings.
+     *
+     * @return the CorsConfigurationSource
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

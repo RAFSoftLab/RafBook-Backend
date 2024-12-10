@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
 @Component
 public class UserMapper {
 
+    /**
+     * Converts a CreateUserDTO object to a MyUser object.
+     *
+     * @param createUserDTO the CreateUserDTO object to convert
+     * @return the converted MyUser object
+     */
     public MyUser createUserDtoToMyUser(CreateUserDTO createUserDTO){
         MyUser myUser = new MyUser();
 
@@ -24,7 +30,12 @@ public class UserMapper {
 
         return myUser;
     }
-
+    /**
+     * Converts a MyUser object to a UserDTO object.
+     *
+     * @param myUser the MyUser object to convert
+     * @return the converted UserDTO object
+     */
     public UserDTO myUserToUserDto(MyUser myUser){
         UserDTO userDTO = new UserDTO();
 
@@ -42,6 +53,12 @@ public class UserMapper {
         return userDTO;
     }
 
+    /**
+     * Converts a token string to a LoginResponseDTO object.
+     *
+     * @param token the token string to convert
+     * @return the converted LoginResponseDTO object
+     */
     public LoginResponseDTO toLoginResponseDTO(String token){
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         loginResponseDTO.setToken(token);

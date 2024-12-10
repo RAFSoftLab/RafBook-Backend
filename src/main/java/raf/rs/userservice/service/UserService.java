@@ -6,15 +6,48 @@ import raf.rs.userservice.dto.LoginResponseDTO;
 import raf.rs.userservice.dto.UserDTO;
 
 import java.util.List;
-
+/**
+ * Service for managing users.
+ */
 public interface UserService {
-
-    void register(CreateUserDTO createUserDTO);
-    UserDTO getUserById(Long id);
-    UserDTO updateUser(Long id, UserDTO userDTO);
-    void deleteUser(Long id);
-    List<UserDTO> getAllUsers();
-
+    /**
+     * Authenticates a user and generates a JWT token.
+     *
+     * @param loginRequestDTO the login request containing username and password
+     * @return the login response containing the JWT token
+     */
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
-
+    /**
+     * Registers a new user.
+     *
+     * @param createUserDTO the user creation request containing user details
+     */
+    void register(CreateUserDTO createUserDTO);
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param id the ID of the user
+     * @return the user details
+     */
+    UserDTO getUserById(Long id);
+    /**
+     * Updates an existing user.
+     *
+     * @param id the ID of the user to update
+     * @param userDTO the updated user details
+     * @return the updated user details
+     */
+    UserDTO updateUser(Long id, UserDTO userDTO);
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id the ID of the user to delete
+     */
+    void deleteUser(Long id);
+    /**
+     * Retrieves all users.
+     *
+     * @return a list of all users
+     */
+    List<UserDTO> getAllUsers();
 }
