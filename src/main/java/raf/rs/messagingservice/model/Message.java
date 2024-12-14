@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import raf.rs.userservice.model.MyUser;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -34,13 +35,9 @@ public class Message {
     @JoinColumn(name = "text_channel_id")
     private TextChannel textChannel;
 
-    //TODO: add sender
-    /*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private MyUser sender;
-     */
-    private String sender;
 
     @ElementCollection
     private Set<String> reactions = new HashSet<>();

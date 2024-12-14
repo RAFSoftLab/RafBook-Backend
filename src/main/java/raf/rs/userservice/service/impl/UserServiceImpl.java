@@ -117,6 +117,15 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public MyUser getUserByToken(String token) {
+        String username = jwtUtil.extractUsername(token);
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User with passed username not found"));
+    }
+
+
     private Set<String> getUserRoles(String username){
         return userRepository.findByUsername(username)
                 .map(user -> user.getRoles().stream()

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import raf.rs.messagingservice.model.Message;
 import raf.rs.messagingservice.model.MessageType;
+import raf.rs.userservice.dto.UserDTO;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -17,13 +19,8 @@ public class MessageDTO {
     private LocalDateTime createdAt;
     private MessageType type;
     private String mediaUrl;
-    private String sender;
-    //TODO: add sender
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private MyUser sender;
-     */
+    private UserDTO sender;
+
     @ElementCollection
     private Set<String> reactions;
     private MessageDTO parentMessage;

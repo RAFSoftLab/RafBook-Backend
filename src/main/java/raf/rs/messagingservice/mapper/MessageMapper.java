@@ -9,12 +9,16 @@ import raf.rs.messagingservice.model.Message;
 import raf.rs.messagingservice.model.TextChannel;
 import raf.rs.messagingservice.repository.MessageRepository;
 import raf.rs.messagingservice.repository.TextChannelRepository;
+import raf.rs.userservice.mapper.UserMapper;
+import raf.rs.userservice.model.MyUser;
+
 /**
  * Mapper class for converting between Message entities and DTOs.
  */
 @Component
 @AllArgsConstructor
 public class MessageMapper {
+    private UserMapper userMapper;
     private MessageRepository messageRepository;
     private TextChannelRepository textChannelRepository;
     /**
@@ -23,7 +27,7 @@ public class MessageMapper {
      * @param dto the NewMessageDTO to convert
      * @return the converted Message entity, or null if the dto is null
      */
-    public Message toEntity(NewMessageDTO dto){
+    public Message toEntity(NewMessageDTO dto, MyUser myUser){
         if(dto == null){
             return null;
         }
@@ -37,9 +41,9 @@ public class MessageMapper {
         }
         TextChannel textChannel = textChannelRepository.findTextChannelById(dto.getTextChannel());
         message.setTextChannel(textChannel);
-        message.setSender(dto.getSender());
 
-        // TODO: add sender mapping
+        message.setSender(myUser);
+
         return message;
     }
     /**
@@ -61,9 +65,7 @@ public class MessageMapper {
         messageDTO.setType(entity.getType());
         messageDTO.setMediaUrl(entity.getMediaUrl());
         messageDTO.setReactions(entity.getReactions());
-        messageDTO.setParentMessage(this.toDto(entity.getParentMessage()));
-        messageDTO.setSender(entity.getSender());
-        // TODO: add sender mapping
+        messageDTO.setSender(userMapper.myUserToUserDto(entity.getSender()));
         return messageDTO;
     }
 }

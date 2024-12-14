@@ -11,5 +11,4 @@ public class NewMessageDTO {
     private String mediaUrl;
     private Long parentMessage;
     private Long textChannel;
-    private String sender;
 }

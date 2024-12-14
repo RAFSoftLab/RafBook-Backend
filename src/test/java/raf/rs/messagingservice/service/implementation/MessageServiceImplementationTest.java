@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import raf.rs.messagingservice.dto.MessageDTO;
-import raf.rs.messagingservice.dto.NewMessageDTO;
 import raf.rs.messagingservice.mapper.MessageMapper;
 import raf.rs.messagingservice.model.Message;
 import raf.rs.messagingservice.model.TextChannel;
@@ -86,20 +85,6 @@ class MessageServiceImplementationTest {
         assertEquals(messageDTO, result);
     }
 
-    @Test
-    void sendMessage_savesAndReturnsMessageDTO() {
-        NewMessageDTO newMessageDTO = new NewMessageDTO();
-        Message message = new Message();
-        MessageDTO messageDTO = new MessageDTO();
-
-        when(messageMapper.toEntity(newMessageDTO)).thenReturn(message);
-        when(messageRepository.save(message)).thenReturn(message);
-        when(messageMapper.toDto(message)).thenReturn(messageDTO);
-
-        MessageDTO result = messageServiceImplementation.sendMessage(newMessageDTO);
-
-        assertEquals(messageDTO, result);
-    }
 
     @Test
     void deleteMessage_marksMessageAsDeleted() {

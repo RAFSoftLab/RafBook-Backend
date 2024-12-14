@@ -4,6 +4,7 @@ import raf.rs.userservice.dto.CreateUserDTO;
 import raf.rs.userservice.dto.LoginRequestDTO;
 import raf.rs.userservice.dto.LoginResponseDTO;
 import raf.rs.userservice.dto.UserDTO;
+import raf.rs.userservice.model.MyUser;
 
 import java.util.List;
 /**
@@ -50,4 +51,12 @@ public interface UserService {
      * @return a list of all users
      */
     List<UserDTO> getAllUsers();
+
+    /**
+     * Retrieves user by passed authorization token
+     *
+     * @param token
+     * @return a specific user with given token
+     */
+    MyUser getUserByToken(String token);
 }

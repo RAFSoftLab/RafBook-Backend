@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import raf.rs.messagingservice.service.MessageService;
 
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/messages")
 @AllArgsConstructor
@@ -53,8 +55,8 @@ public class MessageController {
                     content = @Content)
     })
     @PostMapping
-    public ResponseEntity<MessageDTO> sendMessage(@RequestBody NewMessageDTO message) {
-        return ResponseEntity.ok(messageService.sendMessage(message));
+    public ResponseEntity<MessageDTO> sendMessage(@RequestHeader("Authorization") String token, @RequestBody NewMessageDTO message) {
+        return ResponseEntity.ok(messageService.sendMessage(message, token.substring(7)));
     }
 
     @Operation(summary = "Delete a message", description = "Deletes the message with the specified ID.")

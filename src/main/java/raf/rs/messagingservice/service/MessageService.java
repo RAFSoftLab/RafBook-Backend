@@ -29,7 +29,7 @@ public interface MessageService {
      * @param message the NewMessageDTO object containing message details
      * @return the saved MessageDTO object
      */
-    MessageDTO sendMessage(NewMessageDTO message);
+    MessageDTO sendMessage(NewMessageDTO message, String token);
     /**
      * Marks a message as deleted.
      *

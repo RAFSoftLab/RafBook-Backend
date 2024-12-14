@@ -11,6 +11,9 @@ import raf.rs.messagingservice.model.TextChannel;
 import raf.rs.messagingservice.repository.MessageRepository;
 import raf.rs.messagingservice.service.MessageService;
 import raf.rs.messagingservice.service.TextChannelService;
+import raf.rs.userservice.model.MyUser;
+import raf.rs.userservice.security.JwtUtil;
+import raf.rs.userservice.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,6 +27,7 @@ public class MessageServiceImplementation implements MessageService {
     private MessageRepository messageRepository;
     private TextChannelService textChannelService;
     private MessageMapper messageMapper;
+    private UserService userService;
     @Override
     public List<MessageDTO> findAllFromChannel(Long channelId) {
         TextChannel textChannel = textChannelService.findTextChannelById(channelId);
@@ -41,8 +45,9 @@ public class MessageServiceImplementation implements MessageService {
     }
 
     @Override
-    public MessageDTO sendMessage(NewMessageDTO message) {
-        return messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message)));
+    public MessageDTO sendMessage(NewMessageDTO message, String token) {
+        MyUser user = userService.getUserByToken(token);
+        return messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message, user)));
     }
 
     @Override

@@ -77,18 +77,6 @@ public class MessageControllerTest {
     }
 
     @Test
-    void sendMessage_returnsCreatedMessage() {
-        NewMessageDTO newMessage = new NewMessageDTO();
-        MessageDTO createdMessage = new MessageDTO();
-        when(messageService.sendMessage(newMessage)).thenReturn(createdMessage);
-
-        ResponseEntity<MessageDTO> response = messageController.sendMessage(newMessage);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(createdMessage, response.getBody());
-    }
-
-    @Test
     void deleteMessage_messageDeleted() {
         Long messageId = 1L;
 

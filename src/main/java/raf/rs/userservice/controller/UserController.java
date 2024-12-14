@@ -15,6 +15,7 @@ import raf.rs.userservice.service.UserService;
 
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController("/users")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")

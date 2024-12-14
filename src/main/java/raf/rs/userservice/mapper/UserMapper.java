@@ -44,8 +44,6 @@ public class UserMapper {
         userDTO.setLastName(myUser.getLastName());
         userDTO.setEmail(myUser.getEmail());
         userDTO.setUsername(myUser.getUsername());
-        userDTO.setMacAddress(myUser.getMacAddress());
-        userDTO.setPassword(myUser.getHashPassword());
         userDTO.setRole(myUser.getRoles().stream()
                 .map(Role::getName)
                 .collect(Collectors.toList()));
