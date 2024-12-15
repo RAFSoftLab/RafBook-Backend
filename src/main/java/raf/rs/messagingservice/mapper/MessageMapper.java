@@ -1,7 +1,6 @@
 package raf.rs.messagingservice.mapper;
 
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
@@ -12,6 +11,8 @@ import raf.rs.messagingservice.repository.TextChannelRepository;
 import raf.rs.userservice.mapper.UserMapper;
 import raf.rs.userservice.model.MyUser;
 
+import java.util.stream.Collectors;
+
 /**
  * Mapper class for converting between Message entities and DTOs.
  */
@@ -21,6 +22,7 @@ public class MessageMapper {
     private UserMapper userMapper;
     private MessageRepository messageRepository;
     private TextChannelRepository textChannelRepository;
+    private ReactionMapper reactionMapper;
     /**
      * Converts a NewMessageDTO to a Message entity.
      *
@@ -64,8 +66,13 @@ public class MessageMapper {
         messageDTO.setCreatedAt(entity.getCreatedAt());
         messageDTO.setType(entity.getType());
         messageDTO.setMediaUrl(entity.getMediaUrl());
-        messageDTO.setReactions(entity.getReactions());
+
+        messageDTO.setReactions(entity.getReactions().stream()
+                .map(reactionMapper::toReactionDto)
+                .collect(Collectors.toSet()));
+
         messageDTO.setSender(userMapper.myUserToUserDto(entity.getSender()));
+
         return messageDTO;
     }
 }

@@ -20,8 +20,6 @@ public class MessageDTO {
     private MessageType type;
     private String mediaUrl;
     private UserDTO sender;
-
-    @ElementCollection
-    private Set<String> reactions;
+    private Set<ReactionDTO> reactions;
     private MessageDTO parentMessage;
 }

@@ -9,6 +9,7 @@ import raf.rs.userservice.model.MyUser;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,8 +40,8 @@ public class Message {
     @JoinColumn(name = "user_id")
     private MyUser sender;
 
-    @ElementCollection
-    private Set<String> reactions = new HashSet<>();
+    @OneToMany
+    private Set<Reaction> reactions;
 
     @OneToMany(mappedBy = "parentMessage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> replies = new HashSet<>();
