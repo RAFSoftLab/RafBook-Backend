@@ -11,6 +11,7 @@ import raf.rs.messagingservice.repository.TextChannelRepository;
 import raf.rs.userservice.mapper.UserMapper;
 import raf.rs.userservice.model.MyUser;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -67,9 +68,11 @@ public class MessageMapper {
         messageDTO.setType(entity.getType());
         messageDTO.setMediaUrl(entity.getMediaUrl());
 
-        messageDTO.setReactions(entity.getReactions().stream()
+        messageDTO.setReactions(entity.getReactions() != null
+                ? entity.getReactions().stream()
                 .map(reactionMapper::toReactionDto)
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toSet())
+                : Collections.emptySet());
 
         messageDTO.setSender(userMapper.myUserToUserDto(entity.getSender()));
 
