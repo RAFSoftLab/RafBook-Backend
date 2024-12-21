@@ -48,7 +48,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid registration data")
     })
     @PostMapping("auth/register")
-    public ResponseEntity<ResponseMessageDTO> register(CreateUserDTO createUserDTO){
+    public ResponseEntity<ResponseMessageDTO> register(@RequestBody CreateUserDTO createUserDTO){
         userService.register(createUserDTO);
         return new ResponseEntity<>(new ResponseMessageDTO("User successfully created"), HttpStatus.CREATED);
     }
