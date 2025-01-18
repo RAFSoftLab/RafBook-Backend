@@ -16,23 +16,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Install dependencies
-        run: |
-          npm install -g newman
-          npm install
+      - name: Install Newman globally
+        run: npm install -g newman
 
-      - name: Run Newman tests
-        run: newman run src/test/IT/it_service_collection.json
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Run Docker Compose
+      - name: Create Docker Compose file
         run: |
           echo "version: '3.8'
           services:
@@ -41,9 +33,11 @@ jobs:
               ports:
                 - '8080:8080'
               pull_policy: always" > docker-compose.yml
-          docker-compose -f docker-compose.yml up -d
 
-      - name: Run tests with Docker Compose
+      - name: Run Docker Compose
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Run Newman tests with Docker Compose
         run: |
           docker-compose exec app newman run src/test/IT/it_service_collection.json
 
