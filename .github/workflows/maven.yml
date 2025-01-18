@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Run Maven and Newman tests and push Docker image
 
 on:
   push:
