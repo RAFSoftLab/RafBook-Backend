@@ -5,13 +5,7 @@ on: [push]
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_PASSWORD: example
-        ports:
-          - 5432:5432
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -20,10 +14,10 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
+          distribution: 'adoptopenjdk' # You can use adoptopenjdk or another distribution
 
-      - name: Start backend
+      - name: Set up Docker Compose
         run: |
-          # Example for starting backend (e.g., via Docker Compose)
           docker-compose -f docker-compose.yml up -d
 
       - name: Install Newman
@@ -31,3 +25,7 @@ jobs:
 
       - name: Run Integration Tests
         run: newman run src/test/IT/it_service_collection.json
+
+      - name: Clean up Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml down
