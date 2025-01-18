@@ -32,14 +32,14 @@ jobs:
       - name: Create docker-compose.yml
         run: |
           cat <<EOF > docker-compose.yml
-          version: '3'
+          version: '3.8'
           services:
             backend:
-              build: .
+              image: pstamenic1524m/rafbook:latest
               ports:
                 - '8080:8080'
-              environment:
-                - SPRING_PROFILES_ACTIVE=test
+              networks:
+                - backend-network
             newman:
               image: postman/newman:latest
               command: run /etc/newman/it_service_collection.json --env-var backend_url=http://backend:8080
@@ -47,6 +47,11 @@ jobs:
                 - backend
               volumes:
                 - ./src/test/IT:/etc/newman
+              networks:
+                - backend-network
+          networks:
+            backend-network:
+              driver: bridge
           EOF
 
       # Step 5: Run Docker Compose to start the backend and execute tests
