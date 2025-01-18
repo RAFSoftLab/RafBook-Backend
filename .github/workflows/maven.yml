@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -56,3 +55,10 @@ jobs:
       - name: Push Docker image
         run: docker push pstamenic1524m/rafbook:latest
 
+      # Step to run Newman tests
+      - name: Run Newman tests
+        run: |
+          docker run --network=host \
+            -v ./src/test/IT:/etc/newman \
+            pstamenic1524m/rafbook:latest \
+            newman run /etc/newman/it_service_collection.json
