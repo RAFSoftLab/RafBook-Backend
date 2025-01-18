@@ -1,0 +1,1023 @@
+{
+	"info": {
+		"_postman_id": "cf40c14d-2d53-445f-9d9c-cd5e6d847f2c",
+		"name": "RAFBook IT tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25425727"
+	},
+	"item": [
+		{
+			"name": "User Service",
+			"item": [
+				{
+					"name": "Login as Mara",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"if (pm.response.code === 200) {\r",
+									"    // Parse the response JSON\r",
+									"    let responseJson = pm.response.json();\r",
+									"\r",
+									"    // Check if the token exists in the response\r",
+									"    if (responseJson.token) {\r",
+									"        // Set the token as a collection variable\r",
+									"        pm.collectionVariables.set(\"jwt_mara\", responseJson.token);\r",
+									"        console.log(\"JWT token saved to collection variable 'jwt_mara':\", responseJson.token);\r",
+									"    } else {\r",
+									"        console.error(\"Token not found in the response!\");\r",
+									"    }\r",
+									"} else {\r",
+									"    console.error(\"Response code is not 200! Actual code:\", pm.response.code);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username_mara}}\",\r\n  \"password\": \"{{password_mara}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/auth/login",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 201\", function() {\r",
+									"   pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"{{first_name_new_user_1}}\",\r\n  \"lastName\": \"{{last_name_new_user_1}}\",\r\n  \"email\": \"{{email_new_user_1}}\",\r\n  \"password\": \"{{password_new_user_1}}\",\r\n  \"macAddress\": \"{{mac_adress_new_user_1}}\",\r\n  \"role\": \"{{role_new_user_1}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/auth/register",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 201\", function() {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"{{first_name_new_user_2}}\",\r\n  \"lastName\": \"{{last_name_new_user_2}}\",\r\n  \"email\": \"{{email_new_user_2}}\",\r\n  \"password\": \"{{password_new_user_2}}\",\r\n  \"macAddress\": \"{{mac_adress_new_user_2}}\",\r\n  \"role\": \"{{role_new_user_2}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/auth/register",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let responseJson = pm.response.json();\r",
+									"\r",
+									"// Assert that there are 7 users in the response\r",
+									"pm.test(\"There are exactly 7 users in the response\", function () {\r",
+									"    pm.expect(responseJson.length).to.equal(7);\r",
+									"});\r",
+									"\r",
+									"// Define the target email to search for\r",
+									"let targetEmail = pm.collectionVariables.get(\"email_new_user_1\");\r",
+									"\r",
+									"// Find the user with the target email\r",
+									"let user = responseJson.find(u => u.email === targetEmail);\r",
+									"\r",
+									"// Assert that the user exists\r",
+									"pm.test(`User with email ${targetEmail} exists`, function () {\r",
+									"    pm.expect(user).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									"// If the user exists, save their username and id to collection variables\r",
+									"if (user) {\r",
+									"    pm.collectionVariables.set(\"username_new_user_1\", user.username);\r",
+									"    pm.collectionVariables.set(\"id_new_user_1\", user.id);\r",
+									"    console.log(`Username '${user.username}' saved to local variable.`);\r",
+									"} else {\r",
+									"    console.error(`User with email ${targetEmail} not found.`);\r",
+									"}\r",
+									"\r",
+									"targetEmail = pm.collectionVariables.get(\"email_new_user_2\")\r",
+									"\r",
+									"user = responseJson.find(u => u.email === targetEmail);\r",
+									"\r",
+									"// Assert that the user exists\r",
+									"pm.test(`User with email ${targetEmail} exists`, function () {\r",
+									"    pm.expect(user).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									"// If the user exists, save their username and id to collection variables\r",
+									"if (user) {\r",
+									"    pm.collectionVariables.set(\"username_new_user_2\", user.username);\r",
+									"    pm.collectionVariables.set(\"id_new_user_2\", user.id);\r",
+									"    console.log(`Username '${user.username}' saved to local variable.`);\r",
+									"} else {\r",
+									"    console.error(`User with email ${targetEmail} not found.`);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Algebra role to new user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 200\", function() {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}/addRole/{{new_role_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}",
+								"addRole",
+								"{{new_role_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if the new role was added",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let responseJson = pm.response.json();\r",
+									"\r",
+									"// Get the target role from collection variables\r",
+									"let targetRole = pm.collectionVariables.get(\"new_role_new_user_1\");\r",
+									"\r",
+									"// Assert that the target role exists in the role list\r",
+									"pm.test(`Role list contains the role '${targetRole}'`, function () {\r",
+									"    pm.expect(responseJson.role).to.include(targetRole);\r",
+									"});\r",
+									"\r",
+									"// Logging for debugging\r",
+									"console.log(\"Roles in response:\", responseJson.role);\r",
+									"console.log(`Checking if role '${targetRole}' exists in roles.`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update existing user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 200\", function() {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"firstName\": \"{{first_name_new_user_1}}\",\r\n  \"lastName\": \"{{new_last_name_user_1}}\",\r\n  \"username\": \"{{username_new_user_1}}\",\r\n  \"email\": \"{{email_new_user_1}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if the last name was updated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let responseJson = pm.response.json();\r",
+									"\r",
+									"// Get the target last name from collection variables\r",
+									"let targetLastName = pm.collectionVariables.get(\"new_last_name_user_1\");\r",
+									"\r",
+									"// Assert that the last name matches the target\r",
+									"pm.test(`Last name matches '${targetLastName}'`, function () {\r",
+									"    pm.expect(responseJson.lastName).to.equal(targetLastName);\r",
+									"});\r",
+									"\r",
+									"// Logging for debugging\r",
+									"console.log(\"Last name in response:\", responseJson.lastName);\r",
+									"console.log(`Expected last name: '${targetLastName}'`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change last name only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 200\", function() {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lastName\": \"{{last_name_new_user_1}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if the last name was reverted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let responseJson = pm.response.json();\r",
+									"\r",
+									"// Get the target last name from collection variables\r",
+									"let targetLastName = pm.collectionVariables.get(\"last_name_new_user_1\");\r",
+									"\r",
+									"// Assert that the last name matches the target\r",
+									"pm.test(`Last name matches '${targetLastName}'`, function () {\r",
+									"    pm.expect(responseJson.lastName).to.equal(targetLastName);\r",
+									"});\r",
+									"\r",
+									"// Logging for debugging\r",
+									"console.log(\"Last name in response:\", responseJson.lastName);\r",
+									"console.log(`Expected last name: '${targetLastName}'`);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Baze podataka role to new user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 200\", function() {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}/addRole/{{role_to_delete_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}",
+								"addRole",
+								"{{role_to_delete_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if another role was added",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let responseJson = pm.response.json();\r",
+									"\r",
+									"// Get the target role from collection variables\r",
+									"let targetRole = pm.collectionVariables.get(\"role_to_delete_new_user_1\");\r",
+									"\r",
+									"// Assert that the target role exists in the role list\r",
+									"pm.test(`Role list contains the role '${targetRole}'`, function () {\r",
+									"    pm.expect(responseJson.role).to.include(targetRole);\r",
+									"});\r",
+									"\r",
+									"// Logging for debugging\r",
+									"console.log(\"Roles in response:\", responseJson.role);\r",
+									"console.log(`Checking if role '${targetRole}' exists in roles.`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Baze podataka role to new user 1 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"pm.test(\"HTTP status is 200\", function() {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}/removeRole/{{role_to_delete_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}",
+								"removeRole",
+								"{{role_to_delete_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if baze podataka was removed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let responseJson = pm.response.json();\r",
+									"\r",
+									"// Get the target role from collection variables\r",
+									"let targetRole = pm.collectionVariables.get(\"role_to_delete_new_user_1\");\r",
+									"\r",
+									"// Assert that the target role exists in the role list\r",
+									"pm.test(`Role list contains the role '${targetRole}'`, function () {\r",
+									"    pm.expect(responseJson.role).to.not.include(targetRole);\r",
+									"});\r",
+									"\r",
+									"// Logging for debugging\r",
+									"console.log(\"Roles in response:\", responseJson.role);\r",
+									"console.log(`Checking if role '${targetRole}' exists in roles.`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/{{id_new_user_1}}",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{id_new_user_1}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "127.0.0.1",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "8080",
+			"type": "string"
+		},
+		{
+			"key": "username_mara",
+			"value": "mara",
+			"type": "string"
+		},
+		{
+			"key": "password_mara",
+			"value": "mara123",
+			"type": "string"
+		},
+		{
+			"key": "jwt_mara",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "first_name_new_user_1",
+			"value": "Petar",
+			"type": "string"
+		},
+		{
+			"key": "last_name_new_user_1",
+			"value": "Stamenic",
+			"type": "string"
+		},
+		{
+			"key": "email_new_user_1",
+			"value": "pstamenic7721rn@raf.rs",
+			"type": "string"
+		},
+		{
+			"key": "username_new_user_1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password_new_user_1",
+			"value": "pera123",
+			"type": "string"
+		},
+		{
+			"key": "mac_adress_new_user_1",
+			"value": "E4-DE-50-A2-92-9D",
+			"type": "string"
+		},
+		{
+			"key": "role_new_user_1",
+			"value": "STUDENT",
+			"type": "string"
+		},
+		{
+			"key": "id_new_user_1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "new_role_new_user_1",
+			"value": "Algebra",
+			"type": "string"
+		},
+		{
+			"key": "role_to_delete_new_user_1",
+			"value": "Baze podataka",
+			"type": "string"
+		},
+		{
+			"key": "new_last_name_user_1",
+			"value": "Stameni",
+			"type": "string"
+		},
+		{
+			"key": "email_new_user_2",
+			"value": "jmijatovic11421rn@raf.rs",
+			"type": "string"
+		},
+		{
+			"key": "username_new_user_2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password_new_user_2",
+			"value": "pera123",
+			"type": "string"
+		},
+		{
+			"key": "mac_adress_new_user_2",
+			"value": "E4-DE-50-A2-92-9F",
+			"type": "string"
+		},
+		{
+			"key": "role_new_user_2",
+			"value": "STUDENT",
+			"type": "string"
+		},
+		{
+			"key": "id_new_user_2",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
