@@ -49,7 +49,7 @@ jobs:
 
       - name: Run Newman tests with Docker Compose
         run: |
-          docker-compose exec app newman run src/test/IT/it_service_collection.json
+          docker-compose exec -T app newman run src/test/IT/it_service_collection.json
 
       - name: Tear down Docker Compose
         run: docker-compose down
