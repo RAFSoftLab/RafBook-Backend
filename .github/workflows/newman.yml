@@ -41,7 +41,7 @@ jobs:
               environment:
                 - SPRING_PROFILES_ACTIVE=test
             newman:
-              image: postman/newman:5.3.2
+              image: postman/newman:latest
               command: run /etc/newman/it_service_collection.json --env-var backend_url=http://backend:8080
               depends_on:
                 - backend
