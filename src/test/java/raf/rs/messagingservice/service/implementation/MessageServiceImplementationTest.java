@@ -55,7 +55,7 @@ class MessageServiceImplementationTest {
         when(messageMapper.toDto(message1)).thenReturn(messageDTO1);
         when(messageMapper.toDto(message2)).thenReturn(messageDTO2);
 
-        List<MessageDTO> result = messageServiceImplementation.findAllFromChannel(1L);
+        List<MessageDTO> result = messageServiceImplementation.findAllFromChannel(1L,0 , 1000);
 
         assertEquals(Arrays.asList(messageDTO1, messageDTO2), result);
     }
@@ -67,7 +67,7 @@ class MessageServiceImplementationTest {
         when(textChannelService.findTextChannelById(1L)).thenReturn(textChannel);
         when(messageRepository.findAllByTextChannel(textChannel)).thenReturn(Collections.emptyList());
 
-        List<MessageDTO> result = messageServiceImplementation.findAllFromChannel(1L);
+        List<MessageDTO> result = messageServiceImplementation.findAllFromChannel(1L, 0, 1000);
 
         assertEquals(Collections.emptyList(), result);
     }

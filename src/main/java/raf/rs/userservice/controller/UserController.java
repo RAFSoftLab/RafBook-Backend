@@ -107,9 +107,54 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseMessageDTO> updateUserById(@PathVariable Long id, UserDTO userDTO){
+    public ResponseEntity<ResponseMessageDTO> updateUserById(@PathVariable Long id, @RequestBody UserDTO userDTO){
         userService.updateUser(id, userDTO);
         return new ResponseEntity<>(new ResponseMessageDTO("User successfully updated"), HttpStatus.OK);
     }
+    @Operation(
+            summary = "Patch user by ID",
+            description = "Patches the details of a user identified by their ID. Requires admin or the user's own authority.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully updated"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseMessageDTO> patchUserById(@PathVariable Long id, @RequestBody UserDTO userDTO){
+        userService.patchUser(id, userDTO);
+        return new ResponseEntity<>(new ResponseMessageDTO("User successfully updated"), HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Add role to user by ID",
+            description = "Adds a role to a user identified by their ID. Requires admin authority.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Role successfully added to user"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PatchMapping("/{id}/addRole/{role}")
+    public ResponseEntity<ResponseMessageDTO> addRoleToUser(@PathVariable Long id, @PathVariable String role) {
+        userService.addRoleToUser(id, role);
+        return new ResponseEntity<>(new ResponseMessageDTO("Role successfully added to user"), HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Remove role from user by ID",
+            description = "Removes a role from a user identified by their ID. Requires admin authority.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Role successfully removed from user"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PatchMapping("/{id}/removeRole/{role}")
+    public ResponseEntity<ResponseMessageDTO> removeRoleFromUser(@PathVariable Long id, @PathVariable String role) {
+        userService.removeRoleFromUser(id, role);
+        return new ResponseEntity<>(new ResponseMessageDTO("Role successfully removed from user"), HttpStatus.OK);
+    }
+
 
 }

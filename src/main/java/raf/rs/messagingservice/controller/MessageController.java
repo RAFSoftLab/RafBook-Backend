@@ -30,9 +30,9 @@ public class MessageController {
             @ApiResponse(responseCode = "400", description = "No messages found",
                     content = @Content)
     })
-    @GetMapping("/channel/{channelId}")
-    public ResponseEntity<List<MessageDTO>> findAllFromChannel(@PathVariable Long channelId) {
-        return ResponseEntity.ok(messageService.findAllFromChannel(channelId));
+    @GetMapping("/channel/{channelId}/{start}/{end}")
+    public ResponseEntity<List<MessageDTO>> findAllFromChannel(@PathVariable Long channelId, int start, int end) {
+        return ResponseEntity.ok(messageService.findAllFromChannel(channelId, start, end));
     }
 
     @Operation(summary = "Find a message by ID", description = "Finds and returns the message with the specified ID.")

@@ -15,7 +15,7 @@ public interface MessageService {
      * @param channelId the ID of the text channel
      * @return a list of MessageDTO objects
      */
-    List<MessageDTO> findAllFromChannel(Long channelId);
+    List<MessageDTO> findAllFromChannel(Long channelId, int start, int end);
     /**
      * Finds a message by its ID.
      *

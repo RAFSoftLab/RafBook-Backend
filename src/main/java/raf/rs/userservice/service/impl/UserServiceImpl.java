@@ -23,6 +23,7 @@ import raf.rs.userservice.repository.UserRepository;
 import raf.rs.userservice.security.JwtUtil;
 import raf.rs.userservice.service.UserService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,25 +32,14 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
     private UserMapper userMapper;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
     private JwtUtil jwtUtil;
 
 
@@ -126,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private Set<String> getUserRoles(String username){
+    public Set<String> getUserRoles(String username){
         return userRepository.findByUsername(username)
                 .map(user -> user.getRoles().stream()
                         .map(Role::getName)
@@ -139,5 +129,53 @@ public class UserServiceImpl implements UserService {
                 .get().getId();
     }
 
+    @Override
+    public UserDTO patchUser(Long id, UserDTO userDTO){
+        MyUser existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        if (userDTO.getFirstName() != null){
+            existingUser.setFirstName(userDTO.getFirstName());
+        }
+        if (userDTO.getLastName() != null){
+            existingUser.setLastName(userDTO.getLastName());
+        }
+        if (userDTO.getUsername() != null){
+            existingUser.setUsername(userDTO.getUsername());
+        }
+        if (userDTO.getEmail() != null){
+            existingUser.setEmail(userDTO.getEmail());
+        }
+
+        return userMapper.myUserToUserDto(userRepository.save(existingUser));
+    }
+
+    @Override
+    public UserDTO addRoleToUser(Long id, String role){
+        Role existingRole = roleRepository.findByName(role)
+                .orElseThrow(() -> new RoleNotFoundException("Role: " + role + "  not found"));
+        MyUser existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with: " + id + "doesn't exist"));
+
+        if(existingUser.getRoles().contains(existingRole))
+            throw new IllegalArgumentException("User: " + id + " already has: " + role + " role");
+
+        existingUser.getRoles().add(existingRole);
+
+        return userMapper.myUserToUserDto(userRepository.save(existingUser));
+    }
+
+    @Override
+    public UserDTO removeRoleFromUser(Long id, String role){
+        Role existingRole = roleRepository.findByName(role)
+                .orElseThrow(() -> new RoleNotFoundException("Role: " + role + "  not found"));
+        MyUser existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with: " + id + "doesn't exist"));
+
+        if(!existingUser.getRoles().contains(existingRole))
+            throw new IllegalArgumentException("User: " + id + " doesn't have: " + role + " role");
+
+        existingUser.getRoles().remove(existingRole);
+
+        return userMapper.myUserToUserDto(userRepository.save(existingUser));
+    }
 }

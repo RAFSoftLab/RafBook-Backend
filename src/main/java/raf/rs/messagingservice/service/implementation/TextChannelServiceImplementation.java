@@ -40,4 +40,5 @@ public class TextChannelServiceImplementation implements TextChannelService {
     public TextChannel findTextChannelById(Long id) {
         return textChannelRepository.findTextChannelById(id);
     }
+
 }

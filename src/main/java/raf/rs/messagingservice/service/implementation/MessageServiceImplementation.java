@@ -29,12 +29,18 @@ public class MessageServiceImplementation implements MessageService {
     private MessageMapper messageMapper;
     private UserService userService;
     @Override
-    public List<MessageDTO> findAllFromChannel(Long channelId) {
+    public List<MessageDTO> findAllFromChannel(Long channelId, int start, int end) {
         TextChannel textChannel = textChannelService.findTextChannelById(channelId);
-        List<Message> messages = messageRepository.findAllByTextChannel(textChannel);
-        List<Message> sortedMessages = new ArrayList<>(messages);
-        sortedMessages.sort(Comparator.comparing(Message::getCreatedAt));
-        return sortedMessages.stream()
+        List<Message> messages = messageRepository.findAllByTextChannelOrderByCreatedAtDesc(textChannel);
+
+        if(end >  messages.size())
+            end = messages.size();
+        if(end <= start)
+            throw new IllegalArgumentException("End index must be greater than start index");
+
+        List<Message> truncatedList = messages.subList(start, end);
+
+        return truncatedList.stream()
                 .map(messageMapper::toDto)
                 .collect(Collectors.toList());
     }

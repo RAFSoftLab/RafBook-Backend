@@ -34,9 +34,9 @@ public class MessageControllerTest {
     void findAllFromChannel_returnsMessages() {
         Long channelId = 1L;
         List<MessageDTO> messages = List.of(new MessageDTO());
-        when(messageService.findAllFromChannel(channelId)).thenReturn(messages);
+        when(messageService.findAllFromChannel(channelId, 0 , 1000)).thenReturn(messages);
 
-        ResponseEntity<List<MessageDTO>> response = messageController.findAllFromChannel(channelId);
+        ResponseEntity<List<MessageDTO>> response = messageController.findAllFromChannel(channelId, 0 , 1000);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(messages, response.getBody());
@@ -45,9 +45,9 @@ public class MessageControllerTest {
     @Test
     void findAllFromChannel_noMessagesFound() {
         Long channelId = 1L;
-        when(messageService.findAllFromChannel(channelId)).thenReturn(Collections.emptyList());
+        when(messageService.findAllFromChannel(channelId, 0 , 1000)).thenReturn(Collections.emptyList());
 
-        ResponseEntity<List<MessageDTO>> response = messageController.findAllFromChannel(channelId);
+        ResponseEntity<List<MessageDTO>> response = messageController.findAllFromChannel(channelId, 0 , 1000);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(Collections.emptyList(), response.getBody());

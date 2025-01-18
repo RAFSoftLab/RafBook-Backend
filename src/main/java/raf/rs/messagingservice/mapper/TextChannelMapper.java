@@ -1,9 +1,9 @@
 package raf.rs.messagingservice.mapper;
 
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
+import raf.rs.messagingservice.dto.TextChannelPermissionDTO;
 import raf.rs.messagingservice.model.TextChannel;
 /**
  * Mapper class for converting between TextChannel entities and DTOs.
@@ -44,5 +44,15 @@ public class TextChannelMapper {
         textChannelDTO.setDescription(entity.getDescription());
 
         return textChannelDTO;
+    }
+
+    public TextChannelPermissionDTO toPermissionDTO(TextChannel textChannel, boolean permission){
+        TextChannelDTO textChannelDTO = toDto(textChannel);
+
+        TextChannelPermissionDTO textChannelPermissionDTO = new TextChannelPermissionDTO();
+        textChannelPermissionDTO.setTextChannelDTO(textChannelDTO);
+        textChannelPermissionDTO.setHasWritePermission(permission);
+
+        return textChannelPermissionDTO;
     }
 }

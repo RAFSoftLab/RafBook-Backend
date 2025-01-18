@@ -2,6 +2,7 @@ package raf.rs.messagingservice.service;
 
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
+import raf.rs.messagingservice.dto.TextChannelPermissionDTO;
 import raf.rs.messagingservice.model.TextChannel;
 
 import java.util.List;
@@ -36,5 +37,6 @@ public interface TextChannelService {
      * @return the created TextChannelDTO object
      */
     TextChannelDTO createTextChannel(NewTextChannelDTO newtextChannelDTO);
+
 
 }

@@ -1,5 +1,6 @@
 package raf.rs.userservice.service;
 
+import org.springframework.security.core.userdetails.User;
 import raf.rs.userservice.dto.CreateUserDTO;
 import raf.rs.userservice.dto.LoginRequestDTO;
 import raf.rs.userservice.dto.LoginResponseDTO;
@@ -7,6 +8,8 @@ import raf.rs.userservice.dto.UserDTO;
 import raf.rs.userservice.model.MyUser;
 
 import java.util.List;
+import java.util.Set;
+
 /**
  * Service for managing users.
  */
@@ -59,4 +62,9 @@ public interface UserService {
      * @return a specific user with given token
      */
     MyUser getUserByToken(String token);
+
+    Set<String> getUserRoles(String username);
+    UserDTO patchUser(Long id, UserDTO userDTO);
+    UserDTO addRoleToUser(Long id, String role);
+    UserDTO removeRoleFromUser(Long id, String role);
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import raf.rs.messagingservice.model.Category;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -16,5 +17,5 @@ public class StudyProgramDTO {
     private Long id;
     private String name;
     private String description;
-    private Set<CategoryDTO> categories;
+    private Set<CategoryDTO> categories = new HashSet<>();
 }
