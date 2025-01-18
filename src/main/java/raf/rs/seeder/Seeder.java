@@ -299,7 +299,7 @@ public class Seeder implements CommandLineRunner {
             TextChannelRole student = new TextChannelRole();
             student.setTextChannel(propaganda);
             student.setRole(roles.get("STUDENT"));
-            student.setPermissions(3L);
+            student.setPermissions(1L);
             textChannelRoleRepository.save(student);
 
             TextChannelRole professor = new TextChannelRole();
