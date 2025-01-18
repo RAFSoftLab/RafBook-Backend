@@ -46,21 +46,15 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
+      # Step to build Docker image without pushing yet
       - name: Build Docker image
         run: docker build -t pstamenic1524m/rafbook:latest .
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Push Docker image
-        run: docker push pstamenic1524m/rafbook:latest
-
-      # Step to start backend service
+      # Step to start backend service and test with Newman
       - name: Start backend service
         run: |
           docker run -d --name backend --network host -p 8080:8080 pstamenic1524m/rafbook:latest
 
-      # Step to run Newman tests after backend starts
       - name: Run Newman tests
         run: |
           sleep 30 # Wait for the backend to fully start
@@ -68,8 +62,15 @@ jobs:
             -v ./src/test/IT:/etc/newman \
             postman/newman run /etc/newman/it_service_collection.json --env-var backend_url=http://localhost:8080
 
-      # Step to clean up backend container
+      # Step to clean up backend container after tests
       - name: Clean up backend container
         run: |
           docker stop backend
           docker rm backend
+
+      # Only push the Docker image if the tests pass
+      - name: Log in to Docker Hub and Push Docker image
+        if: success() # Only run if previous steps (including Newman tests) succeed
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push pstamenic1524m/rafbook:latest
