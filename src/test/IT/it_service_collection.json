@@ -133,7 +133,7 @@
 								"exec": [
 									"// Check if the response status is 200\r",
 									"pm.test(\"HTTP status is 201\", function() {\r",
-									"   pm.response.to.have.status(200);\r",
+									"   pm.response.to.have.status(201);\r",
 									"});"
 								],
 								"type": "text/javascript",
