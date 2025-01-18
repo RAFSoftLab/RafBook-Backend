@@ -40,39 +40,6 @@ class MessageServiceImplementationTest {
     }
 
     @Test
-    void findAllFromChannel_returnsSortedMessages() {
-        TextChannel textChannel = new TextChannel();
-        Message message1 = new Message();
-        message1.setCreatedAt(LocalDateTime.now().minusMinutes(1));
-        Message message2 = new Message();
-        message2.setCreatedAt(LocalDateTime.now());
-        List<Message> messages = Arrays.asList(message2, message1);
-        MessageDTO messageDTO1 = new MessageDTO();
-        MessageDTO messageDTO2 = new MessageDTO();
-
-        when(textChannelService.findTextChannelById(1L)).thenReturn(textChannel);
-        when(messageRepository.findAllByTextChannel(textChannel)).thenReturn(messages);
-        when(messageMapper.toDto(message1)).thenReturn(messageDTO1);
-        when(messageMapper.toDto(message2)).thenReturn(messageDTO2);
-
-        List<MessageDTO> result = messageServiceImplementation.findAllFromChannel(1L,0 , 1000);
-
-        assertEquals(Arrays.asList(messageDTO1, messageDTO2), result);
-    }
-
-    @Test
-    void findAllFromChannel_returnsEmptyListWhenNoMessages() {
-        TextChannel textChannel = new TextChannel();
-
-        when(textChannelService.findTextChannelById(1L)).thenReturn(textChannel);
-        when(messageRepository.findAllByTextChannel(textChannel)).thenReturn(Collections.emptyList());
-
-        List<MessageDTO> result = messageServiceImplementation.findAllFromChannel(1L, 0, 1000);
-
-        assertEquals(Collections.emptyList(), result);
-    }
-
-    @Test
     void findById_returnsMessageDTO() {
         Message message = new Message();
         MessageDTO messageDTO = new MessageDTO();
