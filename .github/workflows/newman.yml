@@ -26,8 +26,6 @@ jobs:
 
       - name: Install Docker and Docker Compose
         run: |
-          # Remove conflicting containerd package
-          sudo apt-get remove -y containerd containerd.io
           sudo apt-get update
           sudo apt-get install -y docker.io
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -47,9 +45,9 @@ jobs:
       - name: Run Docker Compose
         run: docker-compose -f docker-compose.yml up -d
 
-      - name: Run Newman tests with Docker Compose
+      - name: Run Newman tests on the host machine
         run: |
-          docker-compose exec -T app newman run src/test/IT/it_service_collection.json
+          newman run src/test/IT/it_service_collection.json
 
       - name: Tear down Docker Compose
         run: docker-compose down
