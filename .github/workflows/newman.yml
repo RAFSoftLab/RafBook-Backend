@@ -42,7 +42,7 @@ jobs:
                 - backend-network
             newman:
               image: postman/newman:latest
-              command: run /etc/newman/it_service_collection.json --env-var backend_url=http://backend:8080
+              command: run /etc/newman/it_service_collection.json
               depends_on:
                 - backend
               volumes:
