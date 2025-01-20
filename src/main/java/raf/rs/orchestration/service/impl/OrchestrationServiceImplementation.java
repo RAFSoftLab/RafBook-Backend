@@ -57,7 +57,6 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
             List<MessageDTO> messages = messageService.findAllFromChannel(textChannel.getId(),0,100);
 
             textChannel.setMessageDTOList(messages);
-            category.getTextChannels().add(textChannel);
             studyProgram.getCategories().add(category);
             study.getStudyPrograms().add(studyProgram);
         }
