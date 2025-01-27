@@ -1,4 +1,4 @@
-package raf.rs.userservice.configuration;
+package raf.rs.messagingservice.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -18,6 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("ws");
         registry.addEndpoint("ws").withSockJS();
     }
 
