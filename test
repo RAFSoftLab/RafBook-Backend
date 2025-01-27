@@ -1,0 +1,1283 @@
+[
+  {
+    "id": 1,
+    "name": "Osnovne akademske studije",
+    "description": "Osnovne akademske studije na Racunarskom fakultetu",
+    "studyPrograms": [
+      {
+        "id": 1,
+        "name": "Racunarske nauke",
+        "description": "Racunarske nauke na Racunarskom fakultetu",
+        "categories": [
+          {
+            "id": 1,
+            "name": "General",
+            "description": "General na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 1,
+                "name": "General",
+                "description": "General channel for General",
+                "messageDTOList": [
+                  {
+                    "id": 1,
+                    "content": "Welcome to General channel!",
+                    "createdAt": "2025-01-18T15:53:00.430287",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 3,
+                "name": "Archive",
+                "description": "Archive channel for General",
+                "messageDTOList": [
+                  {
+                    "id": 3,
+                    "content": "Welcome to General channel!",
+                    "createdAt": "2025-01-18T15:53:00.664069",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 2,
+                "name": "Propaganda",
+                "description": "Propaganda channel for General",
+                "messageDTOList": [
+                  {
+                    "id": 2,
+                    "content": "Welcome to General channel!",
+                    "createdAt": "2025-01-18T15:53:00.568065",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 1,
+                "name": "General",
+                "description": "General channel for General",
+                "messageDTOList": [
+                  {
+                    "id": 1,
+                    "content": "Welcome to General channel!",
+                    "createdAt": "2025-01-18T15:53:00.430287",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 3,
+                "name": "Archive",
+                "description": "Archive channel for General",
+                "messageDTOList": [
+                  {
+                    "id": 3,
+                    "content": "Welcome to General channel!",
+                    "createdAt": "2025-01-18T15:53:00.664069",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 2,
+                "name": "Propaganda",
+                "description": "Propaganda channel for General",
+                "messageDTOList": [
+                  {
+                    "id": 2,
+                    "content": "Welcome to General channel!",
+                    "createdAt": "2025-01-18T15:53:00.568065",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              }
+            ]
+          },
+          {
+            "id": 29,
+            "name": "Softverske komponente",
+            "description": "Softverske komponente na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 87,
+                "name": "Archive",
+                "description": "Archive channel for Softverske komponente",
+                "messageDTOList": [
+                  {
+                    "id": 87,
+                    "content": "Welcome to Softverske komponente channel!",
+                    "createdAt": "2025-01-18T15:53:01.533478",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 86,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Softverske komponente",
+                "messageDTOList": [
+                  {
+                    "id": 86,
+                    "content": "Welcome to Softverske komponente channel!",
+                    "createdAt": "2025-01-18T15:53:01.531478",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 86,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Softverske komponente",
+                "messageDTOList": [
+                  {
+                    "id": 86,
+                    "content": "Welcome to Softverske komponente channel!",
+                    "createdAt": "2025-01-18T15:53:01.531478",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 87,
+                "name": "Archive",
+                "description": "Archive channel for Softverske komponente",
+                "messageDTOList": [
+                  {
+                    "id": 87,
+                    "content": "Welcome to Softverske komponente channel!",
+                    "createdAt": "2025-01-18T15:53:01.533478",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 85,
+                "name": "General",
+                "description": "General channel for Softverske komponente",
+                "messageDTOList": [
+                  {
+                    "id": 85,
+                    "content": "Welcome to Softverske komponente channel!",
+                    "createdAt": "2025-01-18T15:53:01.529477",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 85,
+                "name": "General",
+                "description": "General channel for Softverske komponente",
+                "messageDTOList": [
+                  {
+                    "id": 85,
+                    "content": "Welcome to Softverske komponente channel!",
+                    "createdAt": "2025-01-18T15:53:01.529477",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              }
+            ]
+          },
+          {
+            "id": 31,
+            "name": "Interakcija covek-racunar",
+            "description": "Interakcija covek-racunar na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 91,
+                "name": "General",
+                "description": "General channel for Interakcija covek-racunar",
+                "messageDTOList": [
+                  {
+                    "id": 91,
+                    "content": "Welcome to Interakcija covek-racunar channel!",
+                    "createdAt": "2025-01-18T15:53:01.544589",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 93,
+                "name": "Archive",
+                "description": "Archive channel for Interakcija covek-racunar",
+                "messageDTOList": [
+                  {
+                    "id": 93,
+                    "content": "Welcome to Interakcija covek-racunar channel!",
+                    "createdAt": "2025-01-18T15:53:01.549589",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 92,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Interakcija covek-racunar",
+                "messageDTOList": [
+                  {
+                    "id": 92,
+                    "content": "Welcome to Interakcija covek-racunar channel!",
+                    "createdAt": "2025-01-18T15:53:01.54659",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 91,
+                "name": "General",
+                "description": "General channel for Interakcija covek-racunar",
+                "messageDTOList": [
+                  {
+                    "id": 91,
+                    "content": "Welcome to Interakcija covek-racunar channel!",
+                    "createdAt": "2025-01-18T15:53:01.544589",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 92,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Interakcija covek-racunar",
+                "messageDTOList": [
+                  {
+                    "id": 92,
+                    "content": "Welcome to Interakcija covek-racunar channel!",
+                    "createdAt": "2025-01-18T15:53:01.54659",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 93,
+                "name": "Archive",
+                "description": "Archive channel for Interakcija covek-racunar",
+                "messageDTOList": [
+                  {
+                    "id": 93,
+                    "content": "Welcome to Interakcija covek-racunar channel!",
+                    "createdAt": "2025-01-18T15:53:01.549589",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              }
+            ]
+          },
+          {
+            "id": 33,
+            "name": "Uvod u bioinformatiku",
+            "description": "Uvod u bioinformatiku na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 97,
+                "name": "General",
+                "description": "General channel for Uvod u bioinformatiku",
+                "messageDTOList": [
+                  {
+                    "id": 97,
+                    "content": "Welcome to Uvod u bioinformatiku channel!",
+                    "createdAt": "2025-01-18T15:53:01.568622",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 97,
+                "name": "General",
+                "description": "General channel for Uvod u bioinformatiku",
+                "messageDTOList": [
+                  {
+                    "id": 97,
+                    "content": "Welcome to Uvod u bioinformatiku channel!",
+                    "createdAt": "2025-01-18T15:53:01.568622",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 99,
+                "name": "Archive",
+                "description": "Archive channel for Uvod u bioinformatiku",
+                "messageDTOList": [
+                  {
+                    "id": 99,
+                    "content": "Welcome to Uvod u bioinformatiku channel!",
+                    "createdAt": "2025-01-18T15:53:01.578014",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 98,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Uvod u bioinformatiku",
+                "messageDTOList": [
+                  {
+                    "id": 98,
+                    "content": "Welcome to Uvod u bioinformatiku channel!",
+                    "createdAt": "2025-01-18T15:53:01.573623",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 98,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Uvod u bioinformatiku",
+                "messageDTOList": [
+                  {
+                    "id": 98,
+                    "content": "Welcome to Uvod u bioinformatiku channel!",
+                    "createdAt": "2025-01-18T15:53:01.573623",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 99,
+                "name": "Archive",
+                "description": "Archive channel for Uvod u bioinformatiku",
+                "messageDTOList": [
+                  {
+                    "id": 99,
+                    "content": "Welcome to Uvod u bioinformatiku channel!",
+                    "createdAt": "2025-01-18T15:53:01.578014",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              }
+            ]
+          },
+          {
+            "id": 20,
+            "name": "Verovatnoca i statistika",
+            "description": "Verovatnoca i statistika na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 58,
+                "name": "General",
+                "description": "General channel for Verovatnoca i statistika",
+                "messageDTOList": [
+                  {
+                    "id": 58,
+                    "content": "Welcome to Verovatnoca i statistika channel!",
+                    "createdAt": "2025-01-18T15:53:01.412631",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 60,
+                "name": "Archive",
+                "description": "Archive channel for Verovatnoca i statistika",
+                "messageDTOList": [
+                  {
+                    "id": 60,
+                    "content": "Welcome to Verovatnoca i statistika channel!",
+                    "createdAt": "2025-01-18T15:53:01.418628",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 59,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Verovatnoca i statistika",
+                "messageDTOList": [
+                  {
+                    "id": 59,
+                    "content": "Welcome to Verovatnoca i statistika channel!",
+                    "createdAt": "2025-01-18T15:53:01.415627",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 59,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Verovatnoca i statistika",
+                "messageDTOList": [
+                  {
+                    "id": 59,
+                    "content": "Welcome to Verovatnoca i statistika channel!",
+                    "createdAt": "2025-01-18T15:53:01.415627",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 60,
+                "name": "Archive",
+                "description": "Archive channel for Verovatnoca i statistika",
+                "messageDTOList": [
+                  {
+                    "id": 60,
+                    "content": "Welcome to Verovatnoca i statistika channel!",
+                    "createdAt": "2025-01-18T15:53:01.418628",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 58,
+                "name": "General",
+                "description": "General channel for Verovatnoca i statistika",
+                "messageDTOList": [
+                  {
+                    "id": 58,
+                    "content": "Welcome to Verovatnoca i statistika channel!",
+                    "createdAt": "2025-01-18T15:53:01.412631",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              }
+            ]
+          },
+          {
+            "id": 30,
+            "name": "Skript jezici",
+            "description": "Skript jezici na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 89,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Skript jezici",
+                "messageDTOList": [
+                  {
+                    "id": 89,
+                    "content": "Welcome to Skript jezici channel!",
+                    "createdAt": "2025-01-18T15:53:01.53959",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 90,
+                "name": "Archive",
+                "description": "Archive channel for Skript jezici",
+                "messageDTOList": [
+                  {
+                    "id": 90,
+                    "content": "Welcome to Skript jezici channel!",
+                    "createdAt": "2025-01-18T15:53:01.541593",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 90,
+                "name": "Archive",
+                "description": "Archive channel for Skript jezici",
+                "messageDTOList": [
+                  {
+                    "id": 90,
+                    "content": "Welcome to Skript jezici channel!",
+                    "createdAt": "2025-01-18T15:53:01.541593",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 88,
+                "name": "General",
+                "description": "General channel for Skript jezici",
+                "messageDTOList": [
+                  {
+                    "id": 88,
+                    "content": "Welcome to Skript jezici channel!",
+                    "createdAt": "2025-01-18T15:53:01.537596",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 89,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Skript jezici",
+                "messageDTOList": [
+                  {
+                    "id": 89,
+                    "content": "Welcome to Skript jezici channel!",
+                    "createdAt": "2025-01-18T15:53:01.53959",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 88,
+                "name": "General",
+                "description": "General channel for Skript jezici",
+                "messageDTOList": [
+                  {
+                    "id": 88,
+                    "content": "Welcome to Skript jezici channel!",
+                    "createdAt": "2025-01-18T15:53:01.537596",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              }
+            ]
+          },
+          {
+            "id": 47,
+            "name": "Skladista podataka",
+            "description": "Skladista podataka na Racunarskom fakultetu",
+            "textChannels": [
+              {
+                "id": 139,
+                "name": "General",
+                "description": "General channel for Skladista podataka",
+                "messageDTOList": [
+                  {
+                    "id": 139,
+                    "content": "Welcome to Skladista podataka channel!",
+                    "createdAt": "2025-01-18T15:53:01.68314",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 141,
+                "name": "Archive",
+                "description": "Archive channel for Skladista podataka",
+                "messageDTOList": [
+                  {
+                    "id": 141,
+                    "content": "Welcome to Skladista podataka channel!",
+                    "createdAt": "2025-01-18T15:53:01.68614",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 141,
+                "name": "Archive",
+                "description": "Archive channel for Skladista podataka",
+                "messageDTOList": [
+                  {
+                    "id": 141,
+                    "content": "Welcome to Skladista podataka channel!",
+                    "createdAt": "2025-01-18T15:53:01.68614",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 139,
+                "name": "General",
+                "description": "General channel for Skladista podataka",
+                "messageDTOList": [
+                  {
+                    "id": 139,
+                    "content": "Welcome to Skladista podataka channel!",
+                    "createdAt": "2025-01-18T15:53:01.68314",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": true
+              },
+              {
+                "id": 140,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Skladista podataka",
+                "messageDTOList": [
+                  {
+                    "id": 140,
+                    "content": "Welcome to Skladista podataka channel!",
+                    "createdAt": "2025-01-18T15:53:01.68514",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              },
+              {
+                "id": 140,
+                "name": "Propaganda",
+                "description": "Propaganda channel for Skladista podataka",
+                "messageDTOList": [
+                  {
+                    "id": 140,
+                    "content": "Welcome to Skladista podataka channel!",
+                    "createdAt": "2025-01-18T15:53:01.68514",
+                    "type": "TEXT",
+                    "mediaUrl": null,
+                    "sender": {
+                      "id": 1,
+                      "firstName": "Mara",
+                      "lastName": "Arbutina",
+                      "username": "mara",
+                      "email": "mara@raf.rs",
+                      "role": [
+                        "ADMIN"
+                      ]
+                    },
+                    "reactions": [],
+                    "parentMessage": null,
+                    "edited": false,
+                    "deleted": false
+                  }
+                ],
+                "canWrite": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
