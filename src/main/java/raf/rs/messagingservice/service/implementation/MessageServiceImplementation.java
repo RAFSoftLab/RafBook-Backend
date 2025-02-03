@@ -2,6 +2,7 @@ package raf.rs.messagingservice.service.implementation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class MessageServiceImplementation implements MessageService {
+    private SimpMessagingTemplate messagingTemplate;
     private MessageRepository messageRepository;
     private TextChannelService textChannelService;
     private MessageMapper messageMapper;
@@ -53,7 +55,11 @@ public class MessageServiceImplementation implements MessageService {
     @Override
     public MessageDTO sendMessage(NewMessageDTO message, String token) {
         MyUser user = userService.getUserByToken(token);
-        return messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message, user)));
+        MessageDTO messageDTO = messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message, user)));
+
+
+        messagingTemplate.convertAndSend("/topic/channels/" + message.getTextChannel(), messageDTO);
+        return messageDTO;
     }
 
     @Override
