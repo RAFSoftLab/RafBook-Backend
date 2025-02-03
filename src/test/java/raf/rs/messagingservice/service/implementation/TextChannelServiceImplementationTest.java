@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -82,5 +83,41 @@ class TextChannelServiceImplementationTest {
         TextChannel result = textChannelServiceImplementation.findTextChannelById(1L);
 
         assertEquals(textChannel, result);
+    }
+
+    @Test
+    void findAllReturnsEmptyListWhenNoTextChannelsExist() {
+        when(textChannelRepository.findAll()).thenReturn(Arrays.asList());
+
+        List<TextChannelDTO> result = textChannelServiceImplementation.findAll();
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void findByIdReturnsNullWhenTextChannelDoesNotExist() {
+        when(textChannelRepository.findTextChannelById(1L)).thenReturn(null);
+
+        TextChannelDTO result = textChannelServiceImplementation.findById(1L);
+
+        assertEquals(null, result);
+    }
+
+    @Test
+    void createTextChannelThrowsExceptionWhenNewTextChannelDTOIsNull() {
+        when(textChannelMapper.toEntity(null)).thenThrow(new IllegalArgumentException("NewTextChannelDTO cannot be null"));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            textChannelServiceImplementation.createTextChannel(null);
+        });
+    }
+
+    @Test
+    void findTextChannelByIdReturnsNullWhenTextChannelDoesNotExist() {
+        when(textChannelRepository.findTextChannelById(1L)).thenReturn(null);
+
+        TextChannel result = textChannelServiceImplementation.findTextChannelById(1L);
+
+        assertEquals(null, result);
     }
 }

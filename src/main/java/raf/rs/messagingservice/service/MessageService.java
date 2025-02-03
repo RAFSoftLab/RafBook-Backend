@@ -2,7 +2,6 @@ package raf.rs.messagingservice.service;
 
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
-import raf.rs.messagingservice.model.Message;
 
 import java.util.List;
 /**
@@ -43,5 +42,5 @@ public interface MessageService {
      * @param message the Message object containing updated details
      * @return the updated MessageDTO object
      */
-    MessageDTO editMessage(Long id, Message message);
+    MessageDTO editMessage(Long id, MessageDTO message);
 }

@@ -31,7 +31,7 @@ public class MessageController {
                     content = @Content)
     })
     @GetMapping("/channel/{channelId}/{start}/{end}")
-    public ResponseEntity<List<MessageDTO>> findAllFromChannel(@PathVariable Long channelId, int start, int end) {
+    public ResponseEntity<List<MessageDTO>> findAllFromChannel(@PathVariable Long channelId, @PathVariable int start, @PathVariable int end) {
         return ResponseEntity.ok(messageService.findAllFromChannel(channelId, start, end));
     }
 
@@ -69,5 +69,17 @@ public class MessageController {
     public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
         messageService.deleteMessage(id);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Edit a message", description = "Edits the message with the specified ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Message edited successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input or message not found",
+                    content = @Content)
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<MessageDTO> editMessage(@PathVariable Long id, @RequestBody MessageDTO message) {
+        return ResponseEntity.ok(messageService.editMessage(id, message));
     }
 }

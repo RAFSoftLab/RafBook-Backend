@@ -8,6 +8,7 @@ import lombok.Setter;
 import raf.rs.userservice.model.MyUser;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,8 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private MessageType type;
 
-    private String mediaUrl = null;
+    @ElementCollection
+    private List<String> mediaUrls = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "text_channel_id")
