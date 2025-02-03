@@ -70,7 +70,10 @@ public class MessageServiceImplementation implements MessageService {
     }
 
     @Override
-    public MessageDTO editMessage(Long id, Message message) {
-        return null;
+    public MessageDTO editMessage(Long id, MessageDTO message) {
+        Message messageToEdit = messageRepository.findMessageById(id);
+        messageToEdit.setContent(message.getContent());
+        messageToEdit.setEdited(true);
+        return messageMapper.toDto(messageRepository.save(messageToEdit));
     }
 }

@@ -37,7 +37,7 @@ public class MessageMapper {
         Message message = new Message();
         message.setContent(dto.getContent());
         message.setType(dto.getType());
-        message.setMediaUrl(dto.getMediaUrl());
+        message.setMediaUrls(dto.getMediaUrl());
         if(dto.getParentMessage() != null){
             Message parentMessage = messageRepository.findMessageById(dto.getParentMessage());
             message.setParentMessage(parentMessage);
@@ -66,7 +66,7 @@ public class MessageMapper {
         messageDTO.setDeleted(entity.isDeleted());
         messageDTO.setCreatedAt(entity.getCreatedAt());
         messageDTO.setType(entity.getType());
-        messageDTO.setMediaUrl(entity.getMediaUrl());
+        messageDTO.setMediaUrl(entity.getMediaUrls());
 
         messageDTO.setReactions(entity.getReactions() != null
                 ? entity.getReactions().stream()
