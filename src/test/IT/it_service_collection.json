@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "cf40c14d-2d53-445f-9d9c-cd5e6d847f2c",
+		"_postman_id": "f426f3c3-7f85-4d18-bc3b-8c617fc3e04c",
 		"name": "RAFBook IT tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "25425727"
+		"_exporter_id": "41964888"
 	},
 	"item": [
 		{
@@ -884,6 +884,224 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Message Service",
+			"item": [
+				{
+					"name": "Login as Mara",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status is 200\r",
+									"if (pm.response.code === 200) {\r",
+									"    // Parse the response JSON\r",
+									"    let responseJson = pm.response.json();\r",
+									"\r",
+									"    // Check if the token exists in the response\r",
+									"    if (responseJson.token) {\r",
+									"        // Set the token as a collection variable\r",
+									"        pm.collectionVariables.set(\"jwt_mara\", responseJson.token);\r",
+									"        console.log(\"JWT token saved to collection variable 'jwt_mara':\", responseJson.token);\r",
+									"    } else {\r",
+									"        console.error(\"Token not found in the response!\");\r",
+									"    }\r",
+									"} else {\r",
+									"    console.error(\"Response code is not 200! Actual code:\", pm.response.code);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username_mara}}\",\r\n  \"password\": \"{{password_mara}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/users/auth/login",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all channels before",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Channel with passed name doesn't exists\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    let newChannelName = pm.collectionVariables.get(\"new_channel_name\");\r",
+									"\r",
+									"    let kanalPostoji = responseJson.some(channel => channel.name === newChannelName);\r",
+									"\r",
+									"    pm.expect(kanalPostoji).to.be.false;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/text-channel",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"text-channel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{new_channel_name}}\",\r\n  \"description\": \"description\",\r\n  \"roles\": [\r\n    \"{{new_role_new_user_1}}\",\r\n    \"{{role_new_user_1}}\"\r\n  ],\r\n  \"category\": \"{{category_name}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/text-channel",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"text-channel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if new channel is added",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Channel with passed name does exists\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    let newChannelName = pm.collectionVariables.get(\"new_channel_name\");\r",
+									"\r",
+									"    let kanalPostoji = responseJson.some(channel => channel.name === newChannelName);\r",
+									"\r",
+									"    pm.expect(kanalPostoji).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_mara}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{localhost}}:{{port}}/api/text-channel",
+							"protocol": "http",
+							"host": [
+								"{{localhost}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"text-channel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -1017,6 +1235,16 @@
 		{
 			"key": "id_new_user_2",
 			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "new_channel_name",
+			"value": "channel",
+			"type": "string"
+		},
+		{
+			"key": "category_name",
+			"value": "General",
 			"type": "string"
 		}
 	]

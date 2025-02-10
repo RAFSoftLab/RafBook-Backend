@@ -5,6 +5,12 @@ import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelPermissionDTO;
 import raf.rs.messagingservice.model.TextChannel;
+import raf.rs.messagingservice.model.TextChannelRole;
+import raf.rs.userservice.model.Role;
+import raf.rs.userservice.service.RoleService;
+
+import java.util.Set;
+
 /**
  * Mapper class for converting between TextChannel entities and DTOs.
  */
@@ -17,6 +23,7 @@ public class TextChannelMapper {
      * @param dto the NewTextChannelDTO to convert
      * @return the converted TextChannel entity, or null if the input dto is null
      */
+
     public TextChannel toEntity(NewTextChannelDTO dto) {
         if (dto == null) {
             return null;
@@ -42,6 +49,7 @@ public class TextChannelMapper {
         textChannelDTO.setId(entity.getId());
         textChannelDTO.setName(entity.getName());
         textChannelDTO.setDescription(entity.getDescription());
+        textChannelDTO.setCanWrite(true);
 
         return textChannelDTO;
     }

@@ -6,6 +6,8 @@ import raf.rs.messagingservice.dto.TextChannelPermissionDTO;
 import raf.rs.messagingservice.model.TextChannel;
 
 import java.util.List;
+import java.util.Set;
+
 /**
  * Service for managing text channels.
  */
@@ -36,7 +38,8 @@ public interface TextChannelService {
      * @param newtextChannelDTO the data transfer object containing the details of the new text channel
      * @return the created TextChannelDTO object
      */
-    TextChannelDTO createTextChannel(NewTextChannelDTO newtextChannelDTO);
+    TextChannelDTO createTextChannel(String token, NewTextChannelDTO newtextChannelDTO);
 
+    void addRolesToTextChannel(String token, Long id, Set<String> roles);
 
 }

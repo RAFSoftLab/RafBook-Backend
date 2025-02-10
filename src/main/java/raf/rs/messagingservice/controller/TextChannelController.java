@@ -10,12 +10,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import raf.rs.messagingservice.dto.NewTextChannelDTO;
-import raf.rs.messagingservice.dto.StudiesDTO;
-import raf.rs.messagingservice.dto.TextChannelDTO;
-import raf.rs.messagingservice.dto.TextChannelPermissionDTO;
+import raf.rs.messagingservice.dto.*;
 import raf.rs.messagingservice.service.TextChannelService;
 import raf.rs.orchestration.service.OrchestrationService;
+import raf.rs.userservice.dto.ResponseMessageDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -37,8 +35,8 @@ public class TextChannelController {
                     content = @Content)
     })
     @PostMapping
-    public ResponseEntity<TextChannelDTO> createTextChannel(@RequestBody NewTextChannelDTO dto) {
-        return ResponseEntity.ok(textChannelService.createTextChannel(dto));
+    public ResponseEntity<TextChannelDTO> createTextChannel(@RequestHeader("Authorization") String token, @RequestBody NewTextChannelDTO dto) {
+        return ResponseEntity.ok(textChannelService.createTextChannel(token.substring(7), dto));
     }
 
     @Operation(summary = "Find all text channels", description = "Finds and returns all text channels.")
@@ -80,5 +78,24 @@ public class TextChannelController {
         return new ResponseEntity<>(orchestrationService.getEverything(token.substring(7)), HttpStatus.OK);
     }
 
+    @Operation(summary = "Add roles to text channel",
+            description = "Adds roles to a specific text channel for the user, allowing for role-based access control.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Roles added successfully to the text channel",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessageDTO.class)) }),
+            @ApiResponse(responseCode = "400",
+                    description = "Invalid token or invalid channel/role data",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Text channel not found",
+                    content = @Content)
+    })
+    @PutMapping("/add-roles/{id}")
+    public ResponseEntity<ResponseMessageDTO> addRolesToTextChannel(@RequestHeader("Authorization") String token,
+                                                            @PathVariable("id") Long id, Set<String> roles) {
+        textChannelService.addRolesToTextChannel(token.substring( 7), id, roles);
+        return new ResponseEntity<>(new ResponseMessageDTO("You successfully added roles to text channel"), HttpStatus.OK);
+    }
 
 }

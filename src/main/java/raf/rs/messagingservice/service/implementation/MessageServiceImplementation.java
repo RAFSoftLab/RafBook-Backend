@@ -35,9 +35,9 @@ public class MessageServiceImplementation implements MessageService {
         TextChannel textChannel = textChannelService.findTextChannelById(channelId);
         List<Message> messages = messageRepository.findAllByTextChannelOrderByCreatedAtDesc(textChannel);
 
-        if(end >  messages.size())
+        if(end > messages.size())
             end = messages.size();
-        if(end <= start)
+        if(!messages.isEmpty() && end <= start)
             throw new IllegalArgumentException("End index must be greater than start index");
 
         List<Message> truncatedList = messages.subList(start, end);

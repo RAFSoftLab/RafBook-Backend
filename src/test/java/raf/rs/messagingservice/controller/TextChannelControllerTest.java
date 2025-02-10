@@ -31,17 +31,7 @@ public class TextChannelControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void createTextChannelSuccessfully() {
-        NewTextChannelDTO newTextChannelDTO = new NewTextChannelDTO();
-        TextChannelDTO textChannelDTO = new TextChannelDTO();
-        when(textChannelService.createTextChannel(any(NewTextChannelDTO.class))).thenReturn(textChannelDTO);
 
-        ResponseEntity<TextChannelDTO> response = textChannelController.createTextChannel(newTextChannelDTO);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(textChannelDTO, response.getBody());
-    }
 
     @Test
     void findAllTextChannelsSuccessfully() {

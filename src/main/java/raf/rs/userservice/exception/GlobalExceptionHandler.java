@@ -31,4 +31,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ForbiddenActionException.class)
+    public ResponseEntity<String> handleForbiddenAction(ForbiddenActionException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<String> handleCategoryNotFoundException(CategoryNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

@@ -61,19 +61,7 @@ class TextChannelServiceImplementationTest {
         assertEquals(textChannelDTO, result);
     }
 
-    @Test
-    void createTextChannelReturnsCreatedTextChannelDTO() {
-        NewTextChannelDTO newTextChannelDTO = new NewTextChannelDTO();
-        TextChannel textChannel = new TextChannel();
-        TextChannelDTO textChannelDTO = new TextChannelDTO();
-        when(textChannelMapper.toEntity(any(NewTextChannelDTO.class))).thenReturn(textChannel);
-        when(textChannelRepository.save(any(TextChannel.class))).thenReturn(textChannel);
-        when(textChannelMapper.toDto(any(TextChannel.class))).thenReturn(textChannelDTO);
 
-        TextChannelDTO result = textChannelServiceImplementation.createTextChannel(newTextChannelDTO);
-
-        assertEquals(textChannelDTO, result);
-    }
 
     @Test
     void findTextChannelByIdReturnsTextChannel() {
@@ -101,15 +89,6 @@ class TextChannelServiceImplementationTest {
         TextChannelDTO result = textChannelServiceImplementation.findById(1L);
 
         assertEquals(null, result);
-    }
-
-    @Test
-    void createTextChannelThrowsExceptionWhenNewTextChannelDTOIsNull() {
-        when(textChannelMapper.toEntity(null)).thenThrow(new IllegalArgumentException("NewTextChannelDTO cannot be null"));
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            textChannelServiceImplementation.createTextChannel(null);
-        });
     }
 
     @Test

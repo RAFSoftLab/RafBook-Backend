@@ -125,6 +125,7 @@ public class Seeder implements CommandLineRunner {
                         , roles.get("Skladista podataka")
                         , roles.get("Uvod u bioinformatiku")
                         , roles.get("Verovatnoca i statistika")
+                        , roles.get("Algebra")
                 )));
         createUsers("Mitar", "Kajganic", "mitar", "mkajganic@raf.rs"
                 , "mitar123", new ArrayList<>(Arrays.asList(roles.get("STUDENT")
