@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Repository
 public interface TextChannelRoleRepository extends JpaRepository<TextChannelRole, Long> {
-
-
-
+    @Query("SELECT tcr FROM TextChannelRole tcr WHERE tcr.textChannel.id = :textChannelId")
+    List<TextChannelRole> findAllByTextChannel(@Param("textChannelId") Long textChannelId);
 }

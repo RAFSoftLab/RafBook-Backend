@@ -7,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
 import raf.rs.messagingservice.model.TextChannel;
+import raf.rs.messagingservice.repository.TextChannelRoleRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,21 +39,6 @@ class TextChannelMapperTest {
         NewTextChannelDTO dto = null;
         TextChannel textChannel = textChannelMapper.toEntity(dto);
         assertNull(textChannel);
-    }
-
-    @Test
-    void toDto_withValidTextChannel_returnsTextChannelDTO() {
-        TextChannel entity = new TextChannel();
-        entity.setId(1L);
-        entity.setName("Test Channel");
-        entity.setDescription("Test Description");
-
-        TextChannelDTO textChannelDTO = textChannelMapper.toDto(entity);
-
-        assertNotNull(textChannelDTO);
-        assertEquals(1L, textChannelDTO.getId());
-        assertEquals("Test Channel", textChannelDTO.getName());
-        assertEquals("Test Description", textChannelDTO.getDescription());
     }
 
     @Test

@@ -11,5 +11,6 @@ public class TextChannelDTO {
     private String name;
     private String description;
     private List<MessageDTO> messageDTOList = new ArrayList<>();
+    private List<RolePermissionDTO> rolePermissionDTOList = new ArrayList<>();
     private boolean canWrite;
 }

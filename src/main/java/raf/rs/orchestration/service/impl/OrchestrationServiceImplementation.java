@@ -12,20 +12,19 @@ import raf.rs.orchestration.service.repository.OrchestrationRepository;
 import raf.rs.orchestration.service.repository.OrchestrationRepositoryImplementation;
 import raf.rs.userservice.exception.UserNotFoundException;
 import raf.rs.userservice.model.MyUser;
+import raf.rs.userservice.model.Role;
 import raf.rs.userservice.repository.RoleRepository;
 import raf.rs.userservice.repository.UserRepository;
 import raf.rs.userservice.service.UserService;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class OrchestrationServiceImplementation implements OrchestrationService {
 
     private OrchestrationRepository orchestrationRepository;
+    private TextChannelRoleRepository roleRepository;
     private MessageService messageService;
     private UserService userService;
 
@@ -111,11 +110,21 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                 .filter(tc -> tc.getId().equals(dto.getTextChannelId()))
                 .findFirst()
                 .orElseGet(() -> {
+                    List<TextChannelRole> textChannelRoles = roleRepository.findAllByTextChannel(dto.getTextChannelId());
+                    List<RolePermissionDTO> rolePermissionDTOS = new ArrayList<>();
+                    for (TextChannelRole textChannelRole : textChannelRoles) {
+                        Role role = textChannelRole.getRole();
+                        RolePermissionDTO rolePermissionDTO = new RolePermissionDTO();
+                        rolePermissionDTO.setRole(role.getName());
+                        rolePermissionDTO.setPermissions(textChannelRole.getPermissions());
+                        rolePermissionDTOS.add(rolePermissionDTO);
+                    }
                     TextChannelDTO textChannel = new TextChannelDTO();
                     textChannel.setId(dto.getTextChannelId());
                     textChannel.setName(dto.getTextChannelName());
                     textChannel.setDescription(dto.getTextChannelDescription());
                     textChannel.setCanWrite(dto.getHasWritePermission());
+                    textChannel.setRolePermissionDTOList(rolePermissionDTOS);
                     category.getTextChannels().add(textChannel);
                     return textChannel;
                 });

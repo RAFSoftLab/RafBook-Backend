@@ -93,9 +93,11 @@ public class TextChannelController {
     })
     @PutMapping("/add-roles/{id}")
     public ResponseEntity<ResponseMessageDTO> addRolesToTextChannel(@RequestHeader("Authorization") String token,
-                                                            @PathVariable("id") Long id, Set<String> roles) {
-        textChannelService.addRolesToTextChannel(token.substring( 7), id, roles);
+                                                                    @PathVariable("id") Long id,
+                                                                    @RequestBody Set<String> roles) {
+        textChannelService.addRolesToTextChannel(token.substring(7), id, roles);
         return new ResponseEntity<>(new ResponseMessageDTO("You successfully added roles to text channel"), HttpStatus.OK);
     }
+
 
 }

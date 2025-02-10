@@ -2,13 +2,18 @@ package raf.rs.messagingservice.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
+import raf.rs.messagingservice.dto.RolePermissionDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelPermissionDTO;
 import raf.rs.messagingservice.model.TextChannel;
 import raf.rs.messagingservice.model.TextChannelRole;
+import raf.rs.messagingservice.repository.TextChannelRoleRepository;
 import raf.rs.userservice.model.Role;
+import raf.rs.userservice.repository.RoleRepository;
 import raf.rs.userservice.service.RoleService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,6 +21,7 @@ import java.util.Set;
  */
 @Component
 public class TextChannelMapper {
+    TextChannelRoleRepository roleRepository;
 
     /**
      * Converts a NewTextChannelDTO to a TextChannel entity.
@@ -45,11 +51,21 @@ public class TextChannelMapper {
         if (entity == null) {
             return null;
         }
+        List<TextChannelRole> textChannelRoles = roleRepository.findAllByTextChannel(entity.getId());
+        List<RolePermissionDTO> rolePermissionDTOS = new ArrayList<>();
+        for (TextChannelRole textChannelRole : textChannelRoles) {
+            Role role = textChannelRole.getRole();
+            RolePermissionDTO rolePermissionDTO = new RolePermissionDTO();
+            rolePermissionDTO.setRole(role.getName());
+            rolePermissionDTO.setPermissions(textChannelRole.getPermissions());
+            rolePermissionDTOS.add(rolePermissionDTO);
+        }
         TextChannelDTO textChannelDTO = new TextChannelDTO();
         textChannelDTO.setId(entity.getId());
         textChannelDTO.setName(entity.getName());
         textChannelDTO.setDescription(entity.getDescription());
         textChannelDTO.setCanWrite(true);
+        textChannelDTO.setRolePermissionDTOList(rolePermissionDTOS);
 
         return textChannelDTO;
     }
