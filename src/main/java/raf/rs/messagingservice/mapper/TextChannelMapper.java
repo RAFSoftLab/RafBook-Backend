@@ -1,5 +1,6 @@
 package raf.rs.messagingservice.mapper;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.RolePermissionDTO;
@@ -20,6 +21,7 @@ import java.util.Set;
  * Mapper class for converting between TextChannel entities and DTOs.
  */
 @Component
+@AllArgsConstructor
 public class TextChannelMapper {
     TextChannelRoleRepository roleRepository;
 
