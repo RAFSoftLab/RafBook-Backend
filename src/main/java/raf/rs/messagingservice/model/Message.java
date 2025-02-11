@@ -23,6 +23,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 2000)
     private String content;
     private boolean isEdited = false;
     private boolean isDeleted = false;

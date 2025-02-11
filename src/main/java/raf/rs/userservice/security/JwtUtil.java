@@ -17,11 +17,14 @@ public class JwtUtil {
 
     private long JWT_EXPIRATION = 36000000;
 
-    public String generateToken(UserDetails userDetails, Set<String> roles, Long userId){
+    public String generateToken(UserDetails userDetails, Set<String> roles, Long userId, String firstName, String lastName, String email){
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
         claims.put("id", userId);
         claims.put("username", userDetails.getUsername());
+        claims.put("firstName", firstName);
+        claims.put("lastName", lastName);
+        claims.put("email", email);
 
         return createToken(claims, userDetails.getUsername());
     }

@@ -50,10 +50,13 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDTO.getUsername());
 
+        MyUser user = userRepository.findByUsername(loginRequestDTO.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User with " + loginRequestDTO.getUsername() + " not found"));
+
         Set<String> roles = getUserRoles(userDetails.getUsername());
         Long userId = getUserId(userDetails.getUsername());
 
-        String token = jwtUtil.generateToken(userDetails, roles, userId);
+        String token = jwtUtil.generateToken(userDetails, roles, userId, user.getFirstName(), user.getLastName(), user.getEmail());
         return userMapper.toLoginResponseDTO(token);
     }
 
