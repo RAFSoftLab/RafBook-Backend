@@ -1,5 +1,6 @@
 package raf.rs.messagingservice.service.implementation;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
@@ -80,6 +81,8 @@ public class TextChannelServiceImplementation implements TextChannelService {
         setRolesToTextChannel(textChannel, roles);
     }
 
+
+    @Transactional
     @Override
     public void removeRolesFromTextChannel(String token, Long id, Set<String> roles) {
         String username = userService.getUserByToken(token).getUsername();
@@ -113,6 +116,7 @@ public class TextChannelServiceImplementation implements TextChannelService {
 
         categoryRepository.save(category);
     }
+
 
     private void removeRolesFromTextChannel(TextChannel textChannel, Set<String> roleNames) {
         Set<Role> roles = roleService.getAllRolesByName(roleNames);
