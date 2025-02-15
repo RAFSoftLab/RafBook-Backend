@@ -42,4 +42,6 @@ public interface TextChannelService {
 
     void addRolesToTextChannel(String token, Long id, Set<String> roles);
 
+    void removeRolesFromTextChannel(String token, Long id, Set<String> roles);
+
 }

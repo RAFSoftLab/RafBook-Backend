@@ -80,6 +80,19 @@ public class TextChannelServiceImplementation implements TextChannelService {
         setRolesToTextChannel(textChannel, roles);
     }
 
+    @Override
+    public void removeRolesFromTextChannel(String token, Long id, Set<String> roles) {
+        String username = userService.getUserByToken(token).getUsername();
+        Set<String> userRoles = userService.getUserRoles(username);
+
+        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+            throw new ForbiddenActionException("You are not authorized for this action!");
+        }
+
+        TextChannel textChannel = textChannelRepository.findTextChannelById(id);
+        removeRolesFromTextChannel(textChannel, roles);
+    }
+
     private void setRolesToTextChannel(TextChannel textChannel, Set<String> roleNames) {
         Set<Role> roles = roleService.getAllRolesByName(roleNames);
 
@@ -99,6 +112,15 @@ public class TextChannelServiceImplementation implements TextChannelService {
         category.getTextChannels().add(textChannel);
 
         categoryRepository.save(category);
+    }
+
+    private void removeRolesFromTextChannel(TextChannel textChannel, Set<String> roleNames) {
+        Set<Role> roles = roleService.getAllRolesByName(roleNames);
+
+        for (Role role : roles) {
+            textChannelRoleRepository.deleteByTextChannelAndRole(textChannel, role);
+        }
+
     }
 
 }

@@ -100,4 +100,25 @@ public class TextChannelController {
     }
 
 
+    @Operation(summary = "Remove roles from text channel",
+            description = "Removes specified roles from a specific text channel for the user, adjusting role-based access control.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Roles removed successfully from the text channel",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessageDTO.class)) }),
+            @ApiResponse(responseCode = "400",
+                    description = "Invalid token or invalid channel/role data",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Text channel not found",
+                    content = @Content)
+    })
+    @PatchMapping("/remove-roles/{id}")
+    public ResponseEntity<ResponseMessageDTO> removeRolesFromTextChannel(@RequestHeader("Authorization") String token,
+                                                                         @PathVariable("id") Long id,
+                                                                         @RequestBody Set<String> roles) {
+        textChannelService.removeRolesFromTextChannel(token.substring(7), id, roles);
+        return new ResponseEntity<>(new ResponseMessageDTO("You successfully removed roles from the text channel"), HttpStatus.OK);
+    }
+
 }
