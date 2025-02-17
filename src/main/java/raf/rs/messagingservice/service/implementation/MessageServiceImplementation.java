@@ -59,7 +59,7 @@ public class MessageServiceImplementation implements MessageService {
         MessageDTO messageDTO = messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message, user)));
 
 
-        messagingTemplate.convertAndSend("/topic/channels/send" + message.getTextChannel(), messageDTO);
+        messagingTemplate.convertAndSend("/topic/channels/send/" + message.getTextChannel(), messageDTO);
         return messageDTO;
     }
 

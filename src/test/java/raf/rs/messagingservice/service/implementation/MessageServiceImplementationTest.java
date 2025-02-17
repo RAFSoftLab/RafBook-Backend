@@ -107,7 +107,7 @@ class MessageServiceImplementationTest {
         MessageDTO result = messageServiceImplementation.sendMessage(newMessageDTO, "token");
 
         assertEquals(messageDTO, result);
-        verify(messagingTemplate).convertAndSend("/topic/channels/1", messageDTO);
+        verify(messagingTemplate).convertAndSend("/topic/channels/send/1", messageDTO);
     }
 
 }
