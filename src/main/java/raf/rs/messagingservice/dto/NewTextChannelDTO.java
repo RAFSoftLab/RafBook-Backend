@@ -9,5 +9,7 @@ public class NewTextChannelDTO {
     private String name;
     private String description;
     private Set<String> roles;
-    private String category;
+    private String categoryName;
+    private String studiesName;
+    private String studyProgramName;
 }

@@ -36,8 +36,9 @@ public class CategoryController {
                     content = @Content)
     })
     @GetMapping("/names")
-    public ResponseEntity<List<String>> getAllCategoryNames() {
-        return new ResponseEntity<>(categoryService.getAllCategoryNames(), HttpStatus.OK);
+    public ResponseEntity<List<String>> getAllCategoryNamesByStudiesAndStudyProgram(@RequestParam(name = "studies", required = true) String studies,
+                                                                                    @RequestParam(name = "studyPrograms", required = true) String studyPrograms) {
+        return new ResponseEntity<>(categoryService.getAllCategoryNames(studies, studyPrograms), HttpStatus.OK);
     }
 
 

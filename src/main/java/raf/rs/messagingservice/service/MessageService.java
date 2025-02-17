@@ -34,7 +34,7 @@ public interface MessageService {
      *
      * @param id the ID of the message to be deleted
      */
-    void deleteMessage(Long id);
+    void deleteMessage(Long id, String token);
     /**
      * Edits an existing message.
      *
@@ -42,5 +42,5 @@ public interface MessageService {
      * @param message the Message object containing updated details
      * @return the updated MessageDTO object
      */
-    MessageDTO editMessage(Long id, MessageDTO message);
+    MessageDTO editMessage(Long id, MessageDTO message, String token);
 }

@@ -5,15 +5,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
+import raf.rs.messagingservice.exception.StudiesNotFoundException;
 import raf.rs.messagingservice.mapper.TextChannelMapper;
-import raf.rs.messagingservice.model.Category;
-import raf.rs.messagingservice.model.TextChannel;
-import raf.rs.messagingservice.model.TextChannelRole;
+import raf.rs.messagingservice.model.*;
 import raf.rs.messagingservice.repository.CategoryRepository;
+import raf.rs.messagingservice.repository.StudiesRepository;
 import raf.rs.messagingservice.repository.TextChannelRepository;
 import raf.rs.messagingservice.repository.TextChannelRoleRepository;
 import raf.rs.messagingservice.service.TextChannelService;
-import raf.rs.userservice.exception.CategoryNotFoundException;
+import raf.rs.messagingservice.exception.CategoryNotFoundException;
 import raf.rs.userservice.exception.ForbiddenActionException;
 import raf.rs.userservice.model.Role;
 import raf.rs.userservice.service.RoleService;
@@ -32,6 +32,7 @@ public class TextChannelServiceImplementation implements TextChannelService {
     private CategoryRepository categoryRepository;
     private UserService userService;
     private RoleService roleService;
+    private StudiesRepository studiesRepository;
     @Override
     public List<TextChannelDTO> findAll() {
         List<TextChannel> textChannels = textChannelRepository.findAll();
@@ -54,11 +55,41 @@ public class TextChannelServiceImplementation implements TextChannelService {
             throw new ForbiddenActionException("You are not authorized for this action!");
         }
 
+        Studies studies = studiesRepository.findByNameIgnoreCase(newtextChannelDTO.getStudiesName())
+                .orElseThrow(() -> new StudiesNotFoundException("There is not studies with name " + newtextChannelDTO.getStudiesName()));
+
+
+
+        StudyProgram studyProgramFound = null;
+
+        for (StudyProgram studyProgram : studies.getStudyPrograms()) {
+            if (studyProgram.getName().equalsIgnoreCase(newtextChannelDTO.getStudyProgramName())) {
+                studyProgramFound = studyProgram;
+            }
+        }
+
+
+        if (studyProgramFound == null) {
+            throw new StudiesNotFoundException("Study program with name " + newtextChannelDTO.getStudyProgramName() +" not foumd");
+        }
+
+
+        Category categoryFound = null;
+        for (Category category : studyProgramFound.getCategories()) {
+            if (category.getName().equalsIgnoreCase(newtextChannelDTO.getCategoryName())) {
+                categoryFound = category;
+            }
+        }
+
+        if (categoryFound == null) {
+            throw new CategoryNotFoundException("Category with name " + newtextChannelDTO.getCategoryName() + " doesn't exist");
+        }
+
         TextChannel textChannel = textChannelMapper.toEntity(newtextChannelDTO);
         TextChannel savedTextChannel = textChannelRepository.save(textChannel);
 
         setRolesToTextChannel(savedTextChannel, newtextChannelDTO.getRoles());
-        setTextChannelToCategory(savedTextChannel, newtextChannelDTO.getCategory());
+        setTextChannelToCategory(savedTextChannel, categoryFound);
 
         return textChannelMapper.toDto(savedTextChannel);
     }
@@ -108,9 +139,7 @@ public class TextChannelServiceImplementation implements TextChannelService {
         }
     }
 
-    private void setTextChannelToCategory(TextChannel textChannel, String categoryName) {
-        Category category = categoryRepository.findByName(categoryName)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with name " + categoryName + " not found!"));
+    private void setTextChannelToCategory(TextChannel textChannel, Category category) {
 
         category.getTextChannels().add(textChannel);
 

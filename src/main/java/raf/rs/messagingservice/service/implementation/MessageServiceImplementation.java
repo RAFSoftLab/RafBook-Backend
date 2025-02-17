@@ -12,6 +12,7 @@ import raf.rs.messagingservice.model.TextChannel;
 import raf.rs.messagingservice.repository.MessageRepository;
 import raf.rs.messagingservice.service.MessageService;
 import raf.rs.messagingservice.service.TextChannelService;
+import raf.rs.userservice.exception.ForbiddenActionException;
 import raf.rs.userservice.model.MyUser;
 import raf.rs.userservice.security.JwtUtil;
 import raf.rs.userservice.service.UserService;
@@ -58,22 +59,44 @@ public class MessageServiceImplementation implements MessageService {
         MessageDTO messageDTO = messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message, user)));
 
 
-        messagingTemplate.convertAndSend("/topic/channels/" + message.getTextChannel(), messageDTO);
+        messagingTemplate.convertAndSend("/topic/channels/send" + message.getTextChannel(), messageDTO);
         return messageDTO;
     }
 
     @Override
-    public void deleteMessage(Long id) {
+    public void deleteMessage(Long id, String token) {
         Message message = messageRepository.findMessageById(id);
+
+        MyUser user = userService.getUserByToken(token);
+        Set<String> userRoles = userService.getUserRoles(user.getUsername());
+
+        if (!userRoles.contains("ADMIN") && !user.getEmail().equals(message.getSender().getEmail())) {
+            throw new ForbiddenActionException("You cannot delete message that is not yours!");
+        }
+
         message.setDeleted(true);
-        messageRepository.save(message);
+        Message savedMessage = messageRepository.save(message);
+
+        messagingTemplate.convertAndSend("/topic/channels/delete" + message.getTextChannel(), messageMapper.toDto(savedMessage));
     }
 
     @Override
-    public MessageDTO editMessage(Long id, MessageDTO message) {
+    public MessageDTO editMessage(Long id, MessageDTO message, String token) {
         Message messageToEdit = messageRepository.findMessageById(id);
+
+        MyUser user = userService.getUserByToken(token);
+
+        if (!user.getEmail().equals(message.getSender().getEmail())) {
+            throw new ForbiddenActionException("You cannot delete message that is not yours!");
+        }
+
         messageToEdit.setContent(message.getContent());
         messageToEdit.setEdited(true);
-        return messageMapper.toDto(messageRepository.save(messageToEdit));
+
+        MessageDTO messageDTO = messageMapper.toDto(messageRepository.save(messageToEdit));
+
+        messagingTemplate.convertAndSend("/topic/channels/edit" + messageToEdit.getTextChannel(), messageDTO);
+
+        return messageDTO;
     }
 }

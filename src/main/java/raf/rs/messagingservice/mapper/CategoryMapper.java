@@ -1,6 +1,7 @@
 package raf.rs.messagingservice.mapper;
 
 import org.springframework.stereotype.Component;
+import raf.rs.messagingservice.dto.CategoryDTO;
 import raf.rs.messagingservice.dto.NewCategoryDTO;
 import raf.rs.messagingservice.model.Category;
 
@@ -13,6 +14,16 @@ public class CategoryMapper {
         category.setDescription(newCategoryDTO.getDescription());
 
         return category;
+    }
+
+    public CategoryDTO toDto(Category category) {
+
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setId(category.getId());
+        categoryDTO.setName(category.getName());
+        categoryDTO.setDescription(category.getDescription());
+
+        return categoryDTO;
     }
 
 }

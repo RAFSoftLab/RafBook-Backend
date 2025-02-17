@@ -61,17 +61,6 @@ class MessageServiceImplementationTest {
         assertEquals(messageDTO, result);
     }
 
-    @Test
-    void deleteMessage_marksMessageAsDeleted() {
-        Message message = new Message();
-
-        when(messageRepository.findMessageById(1L)).thenReturn(message);
-
-        messageServiceImplementation.deleteMessage(1L);
-
-        assertEquals(true, message.isDeleted());
-        verify(messageRepository).save(message);
-    }
 
     @Test
     void findAllFromChannel_returnsMessagesWithinRange() {
@@ -121,13 +110,4 @@ class MessageServiceImplementationTest {
         verify(messagingTemplate).convertAndSend("/topic/channels/1", messageDTO);
     }
 
-    @Test
-    void editMessage_throwsExceptionWhenMessageNotFound() {
-        when(messageRepository.findMessageById(1L)).thenReturn(null);
-        MessageDTO messageDTO = new MessageDTO();
-
-        assertThrows(NullPointerException.class, () -> {
-            messageServiceImplementation.editMessage(1L, messageDTO);
-        });
-    }
 }

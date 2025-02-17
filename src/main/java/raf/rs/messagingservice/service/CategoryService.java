@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    List<String> getAllCategoryNames();
+    List<String> getAllCategoryNames(String studiesName, String studyProgramName);
     void addCategory(NewCategoryDTO newCategoryDTO, String token);
     void addCategories(BulkImportCategoriesDTO bulkImportCategoriesDTO, String token);
 

@@ -1,4 +1,4 @@
-package raf.rs.userservice.exception;
+package raf.rs.messagingservice.exception;
 
 public class CategoryNotFoundException extends RuntimeException{
 

@@ -6,6 +6,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import raf.rs.messagingservice.exception.AlreadyExistsException;
+import raf.rs.messagingservice.exception.CategoryNotFoundException;
+import raf.rs.messagingservice.exception.StudiesNotFoundException;
+import raf.rs.messagingservice.exception.StudyProgramNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,6 +42,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<String> handleCategoryNotFoundException(CategoryNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<String> handleAlreadyExistsException(AlreadyExistsException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(StudiesNotFoundException.class)
+    public ResponseEntity<String> handleStudiesNotFoundException(StudiesNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(StudyProgramNotFoundException.class)
+    public ResponseEntity<String> handleStudyProgramNotFoundException(StudyProgramNotFoundException exception, WebRequest request) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

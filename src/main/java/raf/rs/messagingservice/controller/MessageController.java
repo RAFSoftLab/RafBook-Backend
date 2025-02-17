@@ -66,8 +66,8 @@ public class MessageController {
                     content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
-        messageService.deleteMessage(id);
+    public ResponseEntity<Void> deleteMessage(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        messageService.deleteMessage(id, token);
         return ResponseEntity.ok().build();
     }
 
@@ -79,7 +79,7 @@ public class MessageController {
                     content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<MessageDTO> editMessage(@PathVariable Long id, @RequestBody MessageDTO message) {
-        return ResponseEntity.ok(messageService.editMessage(id, message));
+    public ResponseEntity<MessageDTO> editMessage(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody MessageDTO message) {
+        return ResponseEntity.ok(messageService.editMessage(id, message, token));
     }
 }

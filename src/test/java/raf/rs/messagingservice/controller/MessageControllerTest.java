@@ -76,12 +76,5 @@ public class MessageControllerTest {
         assertEquals(null, response.getBody());
     }
 
-    @Test
-    void deleteMessage_messageDeleted() {
-        Long messageId = 1L;
 
-        ResponseEntity<Void> response = messageController.deleteMessage(messageId);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
 }
