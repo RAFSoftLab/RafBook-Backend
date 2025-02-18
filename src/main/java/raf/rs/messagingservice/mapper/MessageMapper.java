@@ -66,7 +66,7 @@ public class MessageMapper {
         messageDTO.setDeleted(entity.isDeleted());
         messageDTO.setCreatedAt(entity.getCreatedAt());
         messageDTO.setType(entity.getType());
-        messageDTO.setMediaUrl(entity.getMediaUrls());
+        messageDTO.setMediaUrl(entity.isDeleted() ? Collections.emptyList() : entity.getMediaUrls());
         messageDTO.setParentMessage(entity.getParentMessage() != null ? entity.getParentMessage().getId() : null);
 
         messageDTO.setReactions(entity.getReactions() != null
