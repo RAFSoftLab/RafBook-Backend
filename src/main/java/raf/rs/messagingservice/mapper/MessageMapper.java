@@ -67,6 +67,7 @@ public class MessageMapper {
         messageDTO.setCreatedAt(entity.getCreatedAt());
         messageDTO.setType(entity.getType());
         messageDTO.setMediaUrl(entity.getMediaUrls());
+        messageDTO.setParentMessage(entity.getParentMessage() != null ? entity.getParentMessage().getId() : null);
 
         messageDTO.setReactions(entity.getReactions() != null
                 ? entity.getReactions().stream()

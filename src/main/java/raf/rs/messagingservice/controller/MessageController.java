@@ -67,7 +67,7 @@ public class MessageController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMessage(@RequestHeader("Authorization") String token, @PathVariable Long id) {
-        messageService.deleteMessage(id, token);
+        messageService.deleteMessage(id, token.substring(7));
         return ResponseEntity.ok().build();
     }
 
@@ -80,6 +80,6 @@ public class MessageController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<MessageDTO> editMessage(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody MessageDTO message) {
-        return ResponseEntity.ok(messageService.editMessage(id, message, token));
+        return ResponseEntity.ok(messageService.editMessage(id, message, token.substring(7)));
     }
 }

@@ -77,7 +77,7 @@ public class MessageServiceImplementation implements MessageService {
         message.setDeleted(true);
         Message savedMessage = messageRepository.save(message);
 
-        messagingTemplate.convertAndSend("/topic/channels/delete" + message.getTextChannel(), messageMapper.toDto(savedMessage));
+        messagingTemplate.convertAndSend("/topic/channels/delete/" + message.getTextChannel().getId(), messageMapper.toDto(savedMessage));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class MessageServiceImplementation implements MessageService {
 
         MessageDTO messageDTO = messageMapper.toDto(messageRepository.save(messageToEdit));
 
-        messagingTemplate.convertAndSend("/topic/channels/edit" + messageToEdit.getTextChannel(), messageDTO);
+        messagingTemplate.convertAndSend("/topic/channels/edit/" + messageToEdit.getTextChannel().getId(), messageDTO);
 
         return messageDTO;
     }

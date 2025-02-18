@@ -22,5 +22,5 @@ public class MessageDTO {
     private List<String> mediaUrl;
     private UserDTO sender;
     private Set<ReactionDTO> reactions;
-    private MessageDTO parentMessage;
+    private Long parentMessage;
 }
