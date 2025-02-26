@@ -1,7 +1,9 @@
 package raf.rs.messagingservice.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
+import raf.rs.messagingservice.dto.UploadFileDTO;
 
 import java.util.List;
 /**
@@ -43,4 +45,6 @@ public interface MessageService {
      * @return the updated MessageDTO object
      */
     MessageDTO editMessage(Long id, MessageDTO message, String token);
+
+    MessageDTO uploadFileMessage(String token, UploadFileDTO dto, MultipartFile file);
 }

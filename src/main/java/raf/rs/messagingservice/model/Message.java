@@ -32,8 +32,7 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private MessageType type;
 
-    @ElementCollection
-    private List<String> mediaUrls = new ArrayList<>();
+    private String mediaUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "text_channel_id")

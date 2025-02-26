@@ -10,7 +10,7 @@ import java.util.List;
 public class NewMessageDTO {
     private String content;
     private MessageType type;
-    private List<String> mediaUrl;
+    private String mediaUrl;
     private Long parentMessage;
     private Long textChannel;
 }

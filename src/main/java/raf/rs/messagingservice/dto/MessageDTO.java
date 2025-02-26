@@ -19,7 +19,7 @@ public class MessageDTO {
     private boolean isDeleted;
     private LocalDateTime createdAt;
     private MessageType type;
-    private List<String> mediaUrl;
+    private String mediaUrl;
     private UserDTO sender;
     private Set<ReactionDTO> reactions;
     private Long parentMessage;

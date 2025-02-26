@@ -7,11 +7,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
+import raf.rs.messagingservice.dto.UploadFileDTO;
 import raf.rs.messagingservice.service.MessageService;
+import raf.rs.userservice.dto.ResponseMessageDTO;
 
 import java.util.List;
 
@@ -81,5 +85,11 @@ public class MessageController {
     @PutMapping("/{id}")
     public ResponseEntity<MessageDTO> editMessage(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody MessageDTO message) {
         return ResponseEntity.ok(messageService.editMessage(id, message, token.substring(7)));
+    }
+
+    @PostMapping("/upload-file")
+    public ResponseEntity<MessageDTO> uploadFile(@RequestHeader("Authorization") String token,
+                                                 @RequestParam("file")MultipartFile file, @RequestBody UploadFileDTO dto) {
+        return new ResponseEntity<>(messageService.uploadFileMessage(token, dto, file), HttpStatus.OK);
     }
 }

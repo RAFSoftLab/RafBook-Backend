@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
+import raf.rs.messagingservice.dto.UploadFileDTO;
 import raf.rs.messagingservice.mapper.MessageMapper;
 import raf.rs.messagingservice.model.Message;
 import raf.rs.messagingservice.model.TextChannel;
 import raf.rs.messagingservice.repository.MessageRepository;
+import raf.rs.messagingservice.service.FileService;
 import raf.rs.messagingservice.service.MessageService;
 import raf.rs.messagingservice.service.TextChannelService;
 import raf.rs.userservice.exception.ForbiddenActionException;
@@ -31,6 +34,7 @@ public class MessageServiceImplementation implements MessageService {
     private TextChannelService textChannelService;
     private MessageMapper messageMapper;
     private UserService userService;
+    private FileService fileService;
     @Override
     public List<MessageDTO> findAllFromChannel(Long channelId, int start, int end) {
         TextChannel textChannel = textChannelService.findTextChannelById(channelId);
@@ -98,5 +102,20 @@ public class MessageServiceImplementation implements MessageService {
         messagingTemplate.convertAndSend("/topic/channels/edit/" + messageToEdit.getTextChannel().getId(), messageDTO);
 
         return messageDTO;
+    }
+
+    @Override
+    public MessageDTO uploadFileMessage(String token, UploadFileDTO dto, MultipartFile file) {
+
+        String mediaUrl = fileService.uploadFile(file, dto.getTextChannel());
+
+        NewMessageDTO newMessageDTO = new NewMessageDTO();
+        newMessageDTO.setTextChannel(dto.getTextChannel());
+        newMessageDTO.setParentMessage(dto.getParentMessage());
+        newMessageDTO.setMediaUrl(mediaUrl);
+        newMessageDTO.setType(dto.getType());
+        newMessageDTO.setContent("");
+
+        return sendMessage(newMessageDTO, token);
     }
 }
