@@ -12,7 +12,7 @@ import raf.rs.voiceservice.model.VoiceChannelRole;
 import java.util.List;
 
 public interface VoiceChannelRoleRepository extends JpaRepository<VoiceChannelRole, Long> {
-    @Query("SELECT tcr FROM TextChannelRole tcr WHERE tcr.textChannel.id = :textChannelId")
+    @Query("SELECT vcr FROM VoiceChannelRole vcr WHERE vcr.voiceChannel.id = :voiceChannelId")
     List<VoiceChannelRole> findAllByVoiceChannel(@Param("voiceChannelId") Long voiceChannelId);
 
     void deleteByVoiceChannelAndRole(VoiceChannel voiceChannel, Role role);
