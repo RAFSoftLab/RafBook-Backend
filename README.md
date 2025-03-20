@@ -45,39 +45,63 @@ desktop applications as clients.
 
 ### 1. **Authentication**
 
-- **POST** `/api/auth/register`: Register a new user.
-- **POST** `/api/auth/login`: Authenticate and retrieve a JWT token.
+- **POST** `/users/auth/register`: Register a new user.
+- **POST** `/users/auth/login`: Authenticate and retrieve a JWT token.
 
 ### 2. **User Management**
 
-- **GET** `/api/users`: List all users (admin-only).
-- **GET** `/api/users/{id}`: Get user details.
-- **PUT** `/api/users/{id}`: Update user details (admin-only).
-- **DELETE** `/api/users/{id}`: Delete a user (admin-only).
+- **GET** `/users`: List all users (admin-only).
+- **GET** `/users/{id}`: Get user details.
+- **PUT** `/users/{id}`: Update user details (admin-only).
+- **DELETE** `/users/{id}`: Delete a user (admin-only).
+- **PATCH** `/users/{id}`: Patch user details (admin-only).
+- **PATCH** `/users/{id}/addRole/{role}`: Add role to user (admin-only).
+- **PATCH** `/users/{id}/removeRole/{role}`: Remove role from user (admin-only).
 
 ### 3. **Messaging**
 
-- **POST** `/api/messages`: Send a message in a channel.
-- **GET** `/api/messages/{channelId}`: Retrieve all messages for a specific channel.
-- **GET** `/api/messages/{channelId}/latest`: Retrieve latest messages (for real-time updates).
+- **POST** `/messages`: Send a message in a channel.
+- **GET** `/messages/channel/{channelId}/{start}/{end}`: Retrieve all messages for a specific channel.
+- **GET** `/messages/{id}`: Retrieve a message by ID.
+- **PUT** `/messages/{id}`: Edit a message.
+- **DELETE** `/messages/{id}`: Delete a message.
+- **POST** `/messages/upload-file`: Upload a file in a message.
 
-### 4. **Channels**
+### 4. **Categories**
 
-- **POST** `/api/channels`: Create a new channel (admin or professor).
-- **GET** `/api/channels`: List all channels for the authenticated user.
-- **PUT** `/api/channels/{channelId}`: Update a channel’s settings (admin-only).
-- **DELETE** `/api/channels/{channelId}`: Delete a channel (admin-only).
+- **GET** `/categories/names`: Get all category names.
+- **POST** `/categories`: Add a new category.
+- **POST** `/categories/bulk-import`: Bulk import categories.
 
-### 5. **Notifications**
+### 5. **Studies**
 
-- **POST** `/api/notifications`: Send a broadcast notification.
-- **GET** `/api/notifications`: Retrieve all notifications for the user.
+- **POST** `/studies`: Create a new study.
+- **GET** `/studies`: List all studies.
 
-### 6. **Optional Video/Audio Communication**
+### 6. **Study Programs**
 
-- **POST** `/api/calls/start`: Initiate a video/audio call (if supported).
-- **POST** `/api/calls/end`: End a call.
-- **GET** `/api/calls/history`: Retrieve call history for a user.
+- **POST** `/study-programs`: Create a new study program.
+- **GET** `/study-programs/by-studies`: List all study programs by studies.
+
+### 7. **Text Channels**
+
+- **POST** `/text-channel`: Create a new text channel.
+- **GET** `/text-channel`: List all text channels.
+- **GET** `/text-channel/{id}`: Get a text channel by ID.
+- **GET** `/text-channel/for-user`: List all text channels for the authenticated user.
+- **PUT** `/text-channel/add-roles/{id}`: Add roles to a text channel.
+- **PATCH** `/text-channel/remove-roles/{id}`: Remove roles from a text channel.
+
+### 8. **Voice Channels**
+
+- **POST** `/voice-channel`: Create a new voice channel.
+- **GET** `/voice-channel`: List all voice channels.
+- **GET** `/voice-channel/{id}`: Get a voice channel by ID.
+- **DELETE** `/voice-channel/{id}`: Delete a voice channel.
+
+### 9. **Roles**
+
+- **GET** `/roles`: List all roles.
 
 ---
 
