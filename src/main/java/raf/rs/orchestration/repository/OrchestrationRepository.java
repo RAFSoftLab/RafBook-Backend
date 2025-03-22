@@ -1,6 +1,6 @@
-package raf.rs.orchestration.service.repository;
+package raf.rs.orchestration.repository;
 
-import raf.rs.orchestration.service.model.TextChannelWithPermission;
+import raf.rs.orchestration.model.TextChannelWithPermission;
 
 import java.util.List;
 

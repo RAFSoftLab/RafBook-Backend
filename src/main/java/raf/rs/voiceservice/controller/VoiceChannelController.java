@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import raf.rs.userservice.model.MyUser;
 import raf.rs.voiceservice.dto.NewVoiceChannelDTO;
 import raf.rs.voiceservice.dto.VoiceChannelDTO;
 import raf.rs.voiceservice.service.VoiceChannelService;
@@ -47,7 +48,7 @@ public class VoiceChannelController {
     })
     @GetMapping
     public ResponseEntity<List<VoiceChannelDTO>> findAll(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(voiceChannelService.listAll(token));
+        return ResponseEntity.ok(voiceChannelService.listAll(token.substring(7)));
     }
 
     @Operation(summary = "Find a voice channel by ID", description = "Finds and returns the voice channel with the specified ID.")
@@ -60,6 +61,44 @@ public class VoiceChannelController {
     @GetMapping("/{id}")
     public ResponseEntity<VoiceChannelDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(voiceChannelService.getVoiceChannel(id));
+    }
+
+    @Operation(summary = "Add user to voice channel", description = "Adds a user to the specified voice channel.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User added to voice channel successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessageDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input or user not found",
+                    content = @Content)
+    })
+    @PostMapping("/add-user/{channelId}")
+    public ResponseEntity<ResponseMessageDTO> addUserToVoiceChannel(@PathVariable Long channelId, @RequestHeader("Authorization") String token) {
+        voiceChannelService.addUserToVoiceChannel(channelId, token.substring(7));
+        return new ResponseEntity<>(new ResponseMessageDTO("User added to voice channel successfully"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Remove user from voice channel", description = "Removes a user from the specified voice channel.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User removed from voice channel successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessageDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input or user not found",
+                    content = @Content)
+    })
+    @DeleteMapping("/remove-user/{channelId}")
+    public ResponseEntity<ResponseMessageDTO> removeUserFromVoiceChannel(@PathVariable Long channelId, @RequestHeader("Authorization") String token) {
+        voiceChannelService.removeUserFromVoiceChannel(channelId, token.substring(7));
+        return new ResponseEntity<>(new ResponseMessageDTO("User removed from voice channel successfully"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get users in voice channel", description = "Gets all users in the specified voice channel.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyUser[].class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input or voice channel not found",
+                    content = @Content)
+    })
+    @GetMapping("/users/{channelId}")
+    public ResponseEntity<Set<MyUser>> getUsersInVoiceChannel(@PathVariable Long channelId) {
+        return ResponseEntity.ok(voiceChannelService.getUsersInVoiceChannel(channelId));
     }
 /*
     @Operation(summary = "Add roles to voice channel",

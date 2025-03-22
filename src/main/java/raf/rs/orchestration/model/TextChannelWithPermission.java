@@ -1,4 +1,4 @@
-package raf.rs.orchestration.service.model;
+package raf.rs.orchestration.model;
 
 import lombok.Data;
 
@@ -7,6 +7,9 @@ public class TextChannelWithPermission {
     private Long textChannelId;
     private String textChannelName;
     private String textChannelDescription;
+    private Long voiceChannelId;
+    private String voiceChannelName;
+    private String voiceChannelDescription;
     private Long studiesId;
     private String studiesName;
     private String studiesDescription;
@@ -16,5 +19,6 @@ public class TextChannelWithPermission {
     private Long categoryId;
     private String categoryName;
     private String categoryDescription;
-    private Boolean hasWritePermission;
+    private Boolean textHasWritePermission;
+    private Boolean voiceHasSpeakPermission;
 }

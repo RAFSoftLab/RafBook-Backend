@@ -2,16 +2,22 @@ package raf.rs.voiceservice.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
+import raf.rs.messagingservice.dto.RolePermissionDTO;
 import raf.rs.messagingservice.exception.CategoryNotFoundException;
 import raf.rs.messagingservice.exception.StudiesNotFoundException;
 import raf.rs.messagingservice.model.*;
 import raf.rs.messagingservice.repository.CategoryRepository;
 import raf.rs.messagingservice.repository.StudiesRepository;
+import raf.rs.userservice.dto.UserDTO;
 import raf.rs.userservice.exception.ForbiddenActionException;
+import raf.rs.userservice.exception.UserNotFoundException;
+import raf.rs.userservice.model.MyUser;
 import raf.rs.userservice.model.Role;
 import raf.rs.userservice.service.RoleService;
 import raf.rs.userservice.service.UserService;
+import raf.rs.voiceservice.cache.VoiceChannelCache;
 import raf.rs.voiceservice.dto.NewVoiceChannelDTO;
 import raf.rs.voiceservice.dto.VoiceChannelDTO;
 import raf.rs.voiceservice.model.VoiceChannel;
@@ -19,6 +25,7 @@ import raf.rs.voiceservice.model.VoiceChannelRole;
 import raf.rs.voiceservice.repository.VoiceChannelRepository;
 import raf.rs.voiceservice.repository.VoiceChannelRoleRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +39,9 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     private VoiceChannelRoleRepository voiceChannelRoleRepository;
     private RoleService roleService;
     private CategoryRepository categoryRepository;
-    //private CacheManager cacheManager;
+    private VoiceChannelCache voiceChannelCache;
+    private WebSocketService webSocketService;
+    private WebRTCService webRTCService;
 
     @Override
     public VoiceChannelDTO createVoiceChannel(NewVoiceChannelDTO newVoiceChannelDTO, String token) {
@@ -85,7 +94,10 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
         voiceChannelDTO.setId(savedVoiceChannel.getId());
         voiceChannelDTO.setName(savedVoiceChannel.getName());
         voiceChannelDTO.setDescription(savedVoiceChannel.getDescription());
-        voiceChannelDTO.setRoles(newVoiceChannelDTO.getRoles());
+
+        newVoiceChannelDTO.getRoles().forEach(role -> {
+            voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role, 3L));
+        });
 
         return voiceChannelDTO;
     }
@@ -117,7 +129,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
         voiceChannelDTO.setName(voiceChannel.getName());
         voiceChannelDTO.setDescription(voiceChannel.getDescription());
         List<VoiceChannelRole> roles = voiceChannelRoleRepository.findAllByVoiceChannel(voiceChannel.getId());
-        roles.forEach(role -> voiceChannelDTO.getRoles().add(role.getRole().getName()));
+        roles.forEach(role -> voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role.getRole().getName(), role.getPermissions())));
         //TODO: Implement cache
         //voiceChannelDTO.setUsers(cacheManager.getCache("voiceChannelUsers").get(voiceChannel.getId(), List.class));
         return voiceChannelDTO;
@@ -150,6 +162,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
 
     @Override
     public List<VoiceChannelDTO> listAll(String token) {
+        System.out.println(token);
         String username = userService.getUserByToken(token).getUsername();
         Set<String> userRoles = userService.getUserRoles(username);
 
@@ -158,18 +171,80 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
         }
 
         List<VoiceChannel> voiceChannels = voiceChannelRepository.findAll();
-        List<VoiceChannelDTO> voiceChannelDTOS = List.of();
+        ArrayList<VoiceChannelDTO> voiceChannelDTOS = new ArrayList<>();
         for(VoiceChannel voiceChannel : voiceChannels) {
             VoiceChannelDTO voiceChannelDTO = new VoiceChannelDTO();
             voiceChannelDTO.setId(voiceChannel.getId());
             voiceChannelDTO.setName(voiceChannel.getName());
             voiceChannelDTO.setDescription(voiceChannel.getDescription());
             List<VoiceChannelRole> roles = voiceChannelRoleRepository.findAllByVoiceChannel(voiceChannel.getId());
-            roles.forEach(role -> voiceChannelDTO.getRoles().add(role.getRole().getName()));
-            //TODO: Implement cache
-            //voiceChannelDTO.setUsers(cacheManager.getCache("voiceChannelUsers").get(voiceChannel.getId(), List.class));
+            roles.forEach(role -> voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role.getRole().getName(), role.getPermissions())));
+            Set<MyUser> users = voiceChannelCache.getUsersInChannel(voiceChannel.getId());
+            voiceChannelDTO.setUsers(convertSetToList(users));
             voiceChannelDTOS.add(voiceChannelDTO);
         }
         return voiceChannelDTOS;
+    }
+
+    private ArrayList<UserDTO> convertSetToList(Set<MyUser> users) {
+        ArrayList<UserDTO> userDTOList = new ArrayList<>();
+        for (MyUser user : users) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setEmail(user.getEmail());
+            // Set other properties as needed
+            userDTOList.add(userDTO);
+        }
+        return userDTOList;
+    }
+
+    @Override
+    public void addUserToVoiceChannel(Long channelId, String token) {
+        // Validate user
+        MyUser myUser = userService.getUserByToken(token);
+        if (myUser == null) {
+            throw new UserNotFoundException("Invalid token or user not found.");
+        }
+
+        // Check if the channel exists
+        VoiceChannel voiceChannel = voiceChannelRepository.findById(channelId)
+                .orElseThrow(() -> new IllegalArgumentException("Voice channel not found."));
+
+        // Add user to the cache
+        voiceChannelCache.addUserToChannel(channelId, myUser);
+
+        // Notify others in the channel via WebSocket
+        webSocketService.notifyChannelUsers(channelId, "USER_JOINED", myUser);
+
+        // Start WebRTC connection setup (e.g., signaling)
+        webRTCService.initiatePeerConnection(channelId, myUser);
+    }
+
+    @Override
+    public void removeUserFromVoiceChannel(Long channelId, String token) {
+        // Validate user
+        MyUser myUser = userService.getUserByToken(token);
+        if (myUser == null) {
+            throw new UserNotFoundException("Invalid token or user not found.");
+        }
+
+        // Check if the channel exists
+        VoiceChannel voiceChannel = voiceChannelRepository.findById(channelId)
+                .orElseThrow(() -> new IllegalArgumentException("Voice channel not found."));
+
+        // Remove user from cache
+        voiceChannelCache.removeUserFromChannel(channelId, myUser);
+
+        // Notify others in the channel via WebSocket
+        webSocketService.notifyChannelUsers(channelId, "USER_LEFT", myUser);
+
+        // Close WebRTC connection (if needed)
+        webRTCService.terminatePeerConnection(channelId, myUser);
+    }
+
+    @Override
+    public Set<MyUser> getUsersInVoiceChannel(Long channelId) {
+        return voiceChannelCache.getUsersInChannel(channelId);
     }
 }

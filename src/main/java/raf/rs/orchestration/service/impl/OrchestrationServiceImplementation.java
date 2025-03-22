@@ -7,15 +7,16 @@ import raf.rs.messagingservice.model.*;
 import raf.rs.messagingservice.repository.*;
 import raf.rs.messagingservice.service.MessageService;
 import raf.rs.orchestration.service.OrchestrationService;
-import raf.rs.orchestration.service.model.TextChannelWithPermission;
-import raf.rs.orchestration.service.repository.OrchestrationRepository;
-import raf.rs.orchestration.service.repository.OrchestrationRepositoryImplementation;
-import raf.rs.userservice.exception.UserNotFoundException;
+import raf.rs.orchestration.model.TextChannelWithPermission;
+import raf.rs.orchestration.repository.OrchestrationRepository;
+import raf.rs.userservice.dto.UserDTO;
 import raf.rs.userservice.model.MyUser;
 import raf.rs.userservice.model.Role;
-import raf.rs.userservice.repository.RoleRepository;
-import raf.rs.userservice.repository.UserRepository;
 import raf.rs.userservice.service.UserService;
+import raf.rs.voiceservice.dto.VoiceChannelDTO;
+import raf.rs.voiceservice.model.VoiceChannelRole;
+import raf.rs.voiceservice.repository.VoiceChannelRoleRepository;
+import raf.rs.voiceservice.service.VoiceChannelService;
 
 import java.util.*;
 
@@ -27,6 +28,8 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
     private TextChannelRoleRepository roleRepository;
     private MessageService messageService;
     private UserService userService;
+    private VoiceChannelRoleRepository voiceChannelRoleRepository;
+    private VoiceChannelService voiceChannelService;
 
     @Override
     public Set<StudiesDTO> getEverything(String token) {
@@ -52,6 +55,9 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
 
             // Find or create the TextChannel object
             TextChannelDTO textChannel = findOrCreateTextChannel(category, dto);
+            VoiceChannelDTO voiceChannel = findOrCreateVoiceChannel(category, dto);
+            Set<MyUser> users = voiceChannelService.getUsersInVoiceChannel(voiceChannel.getId());
+            voiceChannel.setUsers(convertSetToList(users));
 
             List<MessageDTO> messages = messageService.findAllFromChannel(textChannel.getId(),0,100);
 
@@ -61,6 +67,19 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
         }
 
         return studies;
+    }
+
+    private ArrayList<UserDTO> convertSetToList(Set<MyUser> users) {
+        ArrayList<UserDTO> userDTOList = new ArrayList<>();
+        for (MyUser user : users) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setEmail(user.getEmail());
+            // Set other properties as needed
+            userDTOList.add(userDTO);
+        }
+        return userDTOList;
     }
 
     private StudiesDTO findOrCreateStudy(Set<StudiesDTO> studies, TextChannelWithPermission dto) {
@@ -123,10 +142,35 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                     textChannel.setId(dto.getTextChannelId());
                     textChannel.setName(dto.getTextChannelName());
                     textChannel.setDescription(dto.getTextChannelDescription());
-                    textChannel.setCanWrite(dto.getHasWritePermission());
+                    textChannel.setCanWrite(dto.getTextHasWritePermission());
                     textChannel.setRolePermissionDTOList(rolePermissionDTOS);
                     category.getTextChannels().add(textChannel);
                     return textChannel;
+                });
+    }
+
+    private VoiceChannelDTO findOrCreateVoiceChannel(CategoryDTO category, TextChannelWithPermission dto) {
+        return category.getVoiceChannels().stream()
+                .filter(vc -> vc.getId().equals(dto.getVoiceChannelId()))
+                .findFirst()
+                .orElseGet(() -> {
+                    List<VoiceChannelRole> voiceChannelRoles = voiceChannelRoleRepository.findAllByVoiceChannel(dto.getVoiceChannelId());
+                    ArrayList<RolePermissionDTO> rolePermissionDTOS = new ArrayList<>();
+                    for (VoiceChannelRole voiceChannelRole : voiceChannelRoles) {
+                        Role role = voiceChannelRole.getRole();
+                        RolePermissionDTO rolePermissionDTO = new RolePermissionDTO();
+                        rolePermissionDTO.setRole(role.getName());
+                        rolePermissionDTO.setPermissions(voiceChannelRole.getPermissions());
+                        rolePermissionDTOS.add(rolePermissionDTO);
+                    }
+                    VoiceChannelDTO voiceChannel = new VoiceChannelDTO();
+                    voiceChannel.setId(dto.getVoiceChannelId());
+                    voiceChannel.setName(dto.getVoiceChannelName());
+                    voiceChannel.setDescription(dto.getVoiceChannelDescription());
+                    voiceChannel.setCanSpeak(dto.getVoiceHasSpeakPermission());
+                    voiceChannel.setRolePermissions(rolePermissionDTOS);
+                    category.getVoiceChannels().add(voiceChannel);
+                    return voiceChannel;
                 });
     }
 }

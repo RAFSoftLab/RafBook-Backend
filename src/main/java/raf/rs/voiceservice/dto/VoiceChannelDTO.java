@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import raf.rs.messagingservice.dto.RolePermissionDTO;
 import raf.rs.userservice.dto.UserDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +19,8 @@ public class VoiceChannelDTO {
     private Long id;
     private String name;
     private String description;
-    private List<UserDTO> users = List.of();
-    private Set<String> roles = Set.of();
+    private ArrayList<UserDTO> users = new ArrayList<>();
+    private ArrayList<RolePermissionDTO> rolePermissions = new ArrayList<>();
+    private boolean canSpeak;
 
 }
