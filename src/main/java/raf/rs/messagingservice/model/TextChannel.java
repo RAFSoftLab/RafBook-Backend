@@ -19,6 +19,7 @@ public class TextChannel {
     private Long id;
     private String name;
     private String description;
+    private String folderId;
     @OneToMany(mappedBy = "textChannel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Message> messages = Set.of();
 

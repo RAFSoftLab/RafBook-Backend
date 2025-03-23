@@ -2,6 +2,7 @@ package raf.rs.messagingservice.service.implementation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class MessageServiceImplementation implements MessageService {
     private SimpMessagingTemplate messagingTemplate;
     private MessageRepository messageRepository;
@@ -35,6 +35,18 @@ public class MessageServiceImplementation implements MessageService {
     private MessageMapper messageMapper;
     private UserService userService;
     private FileService fileService;
+
+    public MessageServiceImplementation(SimpMessagingTemplate messagingTemplate, MessageRepository messageRepository,
+                                        TextChannelService textChannelService, MessageMapper messageMapper,
+                                        UserService userService, @Qualifier("remoteFileUploadService") FileService fileService) {
+        this.messagingTemplate = messagingTemplate;
+        this.messageRepository = messageRepository;
+        this.textChannelService = textChannelService;
+        this.messageMapper = messageMapper;
+        this.userService = userService;
+        this.fileService = fileService;
+    }
+
     @Override
     public List<MessageDTO> findAllFromChannel(Long channelId, int start, int end) {
         TextChannel textChannel = textChannelService.findTextChannelById(channelId);
@@ -115,6 +127,8 @@ public class MessageServiceImplementation implements MessageService {
         newMessageDTO.setMediaUrl(mediaUrl);
         newMessageDTO.setType(dto.getType());
         newMessageDTO.setContent("");
+
+        System.out.println(mediaUrl);
 
         return sendMessage(newMessageDTO, token);
     }

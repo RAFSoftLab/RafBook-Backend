@@ -8,15 +8,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
 import raf.rs.messagingservice.dto.UploadFileDTO;
+import raf.rs.messagingservice.model.MessageType;
 import raf.rs.messagingservice.service.MessageService;
 import raf.rs.userservice.dto.ResponseMessageDTO;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -25,6 +28,7 @@ import java.util.List;
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
 public class MessageController {
+
     private MessageService messageService;
 
     @Operation(summary = "Find all messages from channel", description = "Finds and returns all messages. from the specified channel.")
@@ -87,9 +91,10 @@ public class MessageController {
         return ResponseEntity.ok(messageService.editMessage(id, message, token.substring(7)));
     }
 
-    @PostMapping("/upload-file")
+    @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MessageDTO> uploadFile(@RequestHeader("Authorization") String token,
-                                                 @RequestParam("file")MultipartFile file, @RequestBody UploadFileDTO dto) {
-        return new ResponseEntity<>(messageService.uploadFileMessage(token, dto, file), HttpStatus.OK);
+                                                 @RequestParam("file")MultipartFile file) {
+        UploadFileDTO dto = new UploadFileDTO(MessageType.FILE, null, 1L);
+        return new ResponseEntity<>(messageService.uploadFileMessage(token.substring(7), dto, file), HttpStatus.OK);
     }
 }

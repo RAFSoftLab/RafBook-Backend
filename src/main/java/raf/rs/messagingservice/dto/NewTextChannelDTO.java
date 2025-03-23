@@ -12,4 +12,5 @@ public class NewTextChannelDTO {
     private String categoryName;
     private String studiesName;
     private String studyProgramName;
+    private String folderId;
 }

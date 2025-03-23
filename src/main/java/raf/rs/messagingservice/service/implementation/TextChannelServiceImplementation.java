@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
 import raf.rs.messagingservice.exception.StudiesNotFoundException;
+import raf.rs.messagingservice.exception.TextChannelNotFoundException;
 import raf.rs.messagingservice.mapper.TextChannelMapper;
 import raf.rs.messagingservice.model.*;
 import raf.rs.messagingservice.repository.CategoryRepository;
@@ -154,6 +155,13 @@ public class TextChannelServiceImplementation implements TextChannelService {
             textChannelRoleRepository.deleteByTextChannelAndRole(textChannel, role);
         }
 
+    }
+
+    public String getFolderIdFromTextChannel(Long id) {
+        TextChannel textChannel = textChannelRepository.findById(id)
+                .orElseThrow(() -> new TextChannelNotFoundException("There is no text channel with id " + id));
+
+        return textChannel.getFolderId();
     }
 
 }

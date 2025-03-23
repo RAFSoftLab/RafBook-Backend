@@ -39,6 +39,7 @@ public class TextChannelMapper {
         TextChannel textChannel = new TextChannel();
         textChannel.setName(dto.getName());
         textChannel.setDescription(dto.getDescription());
+        textChannel.setFolderId(dto.getFolderId());
 
         return textChannel;
     }

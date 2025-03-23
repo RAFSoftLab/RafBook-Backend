@@ -216,6 +216,7 @@ public class Seeder implements CommandLineRunner {
         general.setName("General");
         general.setDescription("General channel for " + categoryStr);
         general.setMessages(new HashSet<>());
+        if (categoryStr.equalsIgnoreCase("General")) general.setFolderId("1k9shXA_oFYQNJ8eVEslf4FfNDnO2FMd1");
         general = textChannelRepository.save(general);
         textChannelSet.add(general);
 

@@ -52,7 +52,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<ResponseMessageDTO> addCategory(@RequestHeader("Authorization") String token, @RequestBody NewCategoryDTO dto) {
         categoryService.addCategory(dto, token.substring(7));
-        return new ResponseEntity<>(new ResponseMessageDTO("Categorey successfully added"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseMessageDTO("Category successfully added"), HttpStatus.OK);
     }
 
     @Operation(summary = "Bulk import categories", description = "Imports multiple categories at once. Requires authentication.")

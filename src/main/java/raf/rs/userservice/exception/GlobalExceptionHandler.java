@@ -6,10 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import raf.rs.messagingservice.exception.AlreadyExistsException;
-import raf.rs.messagingservice.exception.CategoryNotFoundException;
-import raf.rs.messagingservice.exception.StudiesNotFoundException;
-import raf.rs.messagingservice.exception.StudyProgramNotFoundException;
+import raf.rs.messagingservice.exception.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -57,6 +54,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StudyProgramNotFoundException.class)
     public ResponseEntity<String> handleStudyProgramNotFoundException(StudyProgramNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FolderNotFoundException.class)
+    public ResponseEntity<String> handleFolderNotFoundException(FolderNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TextChannelNotFoundException.class)
+    public ResponseEntity<String> handleFolderNotFoundException(TextChannelNotFoundException exception, WebRequest request) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

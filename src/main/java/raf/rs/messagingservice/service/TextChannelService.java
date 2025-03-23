@@ -44,4 +44,6 @@ public interface TextChannelService {
 
     void removeRolesFromTextChannel(String token, Long id, Set<String> roles);
 
+    String getFolderIdFromTextChannel(Long id);
+
 }
