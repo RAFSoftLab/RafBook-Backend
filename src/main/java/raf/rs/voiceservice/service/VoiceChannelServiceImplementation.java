@@ -154,7 +154,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
         voiceChannelRoleRepository.deleteByVoiceChannelAndRole(voiceChannel,
                 (Role) roleService.getAllRolesByName(Set.of("ADMIN")).toArray()[0]);
         voiceChannelRoleRepository.deleteByVoiceChannelAndRole(voiceChannel,
-                (Role) roleService.getAllRolesByName(Set.of("PROFESOR")).toArray()[0]);
+                (Role) roleService.getAllRolesByName(Set.of("PROFESSOR")).toArray()[0]);
         voiceChannelRoleRepository.deleteByVoiceChannelAndRole(voiceChannel,
                 (Role) roleService.getAllRolesByName(Set.of("STUDENT")).toArray()[0]);
         voiceChannelRepository.delete(voiceChannel);
