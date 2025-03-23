@@ -409,7 +409,7 @@ public class Seeder implements CommandLineRunner {
                 voiceChannelRole.setVoiceChannel(voiceChannel);
                 voiceChannelRole.setRole(role);
                 voiceChannelRole.setPermissions(3L);
-                voiceChannelRepository.save(voiceChannel);
+                voiceChannelRoleRepository.save(voiceChannelRole);
             }
         } else {
 
