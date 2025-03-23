@@ -67,7 +67,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
 
 
         if (studyProgramFound == null) {
-            throw new StudiesNotFoundException("Study program with name " + newVoiceChannelDTO.getStudyProgramName() +" not foumd");
+            throw new StudiesNotFoundException("Study program with name " + newVoiceChannelDTO.getStudyProgramName() +" not found");
         }
 
 
