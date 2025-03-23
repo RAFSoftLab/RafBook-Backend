@@ -3,6 +3,7 @@ package raf.rs.messagingservice.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import raf.rs.voiceservice.model.VoiceChannel;
 
 import java.util.Set;
 
@@ -20,5 +21,8 @@ public class Category {
 
     @OneToMany
     private Set<TextChannel> textChannels;
+
+    @OneToMany
+    private Set<VoiceChannel> voiceChannels;
 
 }

@@ -10,6 +10,11 @@ import raf.rs.userservice.model.MyUser;
 import raf.rs.userservice.model.Role;
 import raf.rs.userservice.repository.RoleRepository;
 import raf.rs.userservice.repository.UserRepository;
+import raf.rs.voiceservice.model.VoiceChannel;
+import raf.rs.voiceservice.model.VoiceChannelRole;
+import raf.rs.voiceservice.repository.VoiceChannelRepository;
+import raf.rs.voiceservice.repository.VoiceChannelRoleRepository;
+import raf.rs.voiceservice.service.VoiceChannelService;
 
 import java.util.*;
 
@@ -24,11 +29,14 @@ public class Seeder implements CommandLineRunner {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private VoiceChannelRoleRepository voiceChannelRoleRepository;
+    private VoiceChannelRepository voiceChannelRepository;
 
     public Seeder(CategoryRepository categoryRepository, MessageRepository messageRepository
             , StudiesRepository studiesRepository, StudyProgramRepository studyProgramRepository
             , TextChannelRepository textChannelRepository, TextChannelRoleRepository textChannelRoleRepository
-            , UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+            , UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder
+            , VoiceChannelRoleRepository voiceChannelRoleRepository, VoiceChannelRepository voiceChannelRepository) {
         this.categoryRepository = categoryRepository;
         this.messageRepository = messageRepository;
         this.studiesRepository = studiesRepository;
@@ -38,6 +46,8 @@ public class Seeder implements CommandLineRunner {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.voiceChannelRoleRepository = voiceChannelRoleRepository;
+        this.voiceChannelRepository = voiceChannelRepository;
     }
     private HashMap<String ,Role> roles = new HashMap<>();
     private MyUser mara;
@@ -193,6 +203,7 @@ public class Seeder implements CommandLineRunner {
             category.setName(categoryStr);
             category.setDescription(categoryStr + " na Racunarskom fakultetu");
             category.setTextChannels(createTextChannels(categoryStr));
+            category.setVoiceChannels(Set.of(createVoiceChannel(categoryStr)));
             categorySet.add(categoryRepository.save(category));
         }
         return categorySet;
@@ -384,5 +395,55 @@ public class Seeder implements CommandLineRunner {
         }
 
         return textChannelSet;
+    }
+
+    private VoiceChannel createVoiceChannel(String category) {
+        VoiceChannel voiceChannel = new VoiceChannel();
+        voiceChannel.setName("GeneralVoice");
+        voiceChannel.setDescription("What do you think this is for?");
+        voiceChannelRepository.save(voiceChannel);
+
+        if(category.equals("General")) {
+            for(Role role: roles.values()) {
+                VoiceChannelRole voiceChannelRole = new VoiceChannelRole();
+                voiceChannelRole.setVoiceChannel(voiceChannel);
+                voiceChannelRole.setRole(role);
+                voiceChannelRole.setPermissions(3L);
+                voiceChannelRoleRepository.save(voiceChannelRole);
+            }
+        } else {
+
+            VoiceChannelRole rol = new VoiceChannelRole();
+            rol.setVoiceChannel(voiceChannel);
+            rol.setRole(roles.get(category));
+            rol.setPermissions(3L);
+            voiceChannelRoleRepository.save(rol);
+
+            VoiceChannelRole admin = new VoiceChannelRole();
+            admin.setVoiceChannel(voiceChannel);
+            admin.setRole(roles.get("ADMIN"));
+            admin.setPermissions(3L);
+            voiceChannelRoleRepository.save(admin);
+
+            VoiceChannelRole student = new VoiceChannelRole();
+            student.setVoiceChannel(voiceChannel);
+            student.setRole(roles.get("STUDENT"));
+            student.setPermissions(3L);
+            voiceChannelRoleRepository.save(student);
+
+            VoiceChannelRole professor = new VoiceChannelRole();
+            professor.setVoiceChannel(voiceChannel);
+            professor.setRole(roles.get("PROFESSOR"));
+            professor.setPermissions(3L);
+            voiceChannelRoleRepository.save(professor);
+
+            VoiceChannelRole teachingAssistant = new VoiceChannelRole();
+            teachingAssistant.setVoiceChannel(voiceChannel);
+            teachingAssistant.setRole(roles.get("TEACHING_ASSISTANT"));
+            teachingAssistant.setPermissions(3L);
+            voiceChannelRoleRepository.save(teachingAssistant);
+        }
+
+        return voiceChannel;
     }
 }
