@@ -1,43 +1,111 @@
 # RafBook-Backend
 
-## Overview
+## Overview  
 
-This is a Java Spring backend for a messaging application that supports real-time communication between students, group
-channels, notifications, and media sharing. It provides endpoints for managing users, channels, messages, and
-notifications, with optional video and audio communication support. The backend is designed to support mobile, web, and
-desktop applications as clients.
+RafBook-Backend is a **Java Spring** backend designed for **messaging and audio/video communication** in **educational environments**. It provides a **scalable and secure** platform for students, professors, and administrators to communicate effectively.  
 
----
+The system includes:  
+- **Backend** deployed on a **Kubernetes cluster** with **OpenSearch** for logs and **Grafana** for metrics.  
+- A **React frontend** for web users.  
+- **Desktop applications** for both **users** and **administrators**.  
+- **Mobile applications** for **iOS (Swift)** and **Android (Kotlin)**.  
+- A **configurable administration panel** for system settings and management.  
 
-## Features
-
-- **User Communication**: Supports text, image, and video messages.
-- **Group Channels**: Organized channels for specific courses, departments, and academic years.
-- **Notifications**: Broadcast notifications similar to a mailing list.
-- **User Management**: Admin module for managing user registrations and permissions.
-- **Optional Video/Audio Communication**: Optional support for video/audio calls between users.
+This setup ensures **real-time collaboration, security, and flexibility** across multiple platforms.  
 
 ---
 
-## Technologies
+## Features  
 
-- **Java 17**
-- **Spring Boot 3**
-- **Spring Data JPA**
-- **Spring Security**
-- **Swagger**
-- **WebSockets** for real-time messaging
-- **Redis** (for real-time message caching)
-- **PostgreSQL** (for persistent data storage)
-- **Docker** (for containerized deployment)
+### User Service  
+- **User Management** – Create, update, and delete user accounts.  
+- **Role-Based Access Control (RBAC)** – Assign and manage permissions based on user roles (students, professors, administrators).  
+- **Authentication & Authorization** – Secure login with JWT-based authentication.  
+- **User Profiles** – Manage user details, preferences, and settings.  
 
-## Requirements
+### Channel Management  
+- **Study Programs & Categories** – Organize communication channels based on study types, programs, and categories.  
+- **Channel Creation & Moderation** – Administrators can create, configure, and manage channels for discussions and lessons.  
+- **Access Control** – Define user access permissions per channel or category.  
+- **Announcements & Notifications** – Send important updates to specific channels or user groups.  
 
-- **Java 17**
-- **Maven 3+**
-- **PostgreSQL 13+**
-- **Redis** (optional, for real-time messaging)
-- **Docker** (for containerization, optional)
+### Messaging Service  
+- **Real-Time Messaging** – Supports text messages, audio messages, and file sharing.  
+- **Cloud Storage** – All media and files are uploaded and stored securely on the cloud for easy access.  
+- **Message Broadcasting** – Send instant notifications and messages to users or groups in real-time.  
+
+### Voice Service  
+- **P2P Audio Communication** – Enables peer-to-peer (P2P) voice calls between users, ensuring low-latency, high-quality audio communication.  
+- **Voice Channels** – Users can connect to dedicated voice channels for audio meetings and discussions.  
+- **Voice Channel Caching** – A cache mechanism is used to store and display all users currently in the voice channel, providing real-time visibility of participants in the channel.  
+
+### Orchestration Service  
+- **Application Initialization** – Coordinates the sending of data to initialize the application on the first request, ensuring smooth startup and configuration.  
+- **Service Orchestration** – Manages the deployment and communication between various services to ensure that all components work seamlessly.  
+
+More features related to **system administration** and **real-time data management** will be detailed in later sections.
+
+
+---
+
+## Technologies  
+
+### Backend Framework & Language  
+- **Java 17** – The backend is developed using the latest version of Java, ensuring robust, modern features and performance.  
+- **Spring Boot 3** – A powerful framework for building microservices and web applications, providing simplicity and efficiency for backend development.  
+- **Spring Data JPA** – Simplifies database operations using JPA for object-relational mapping and provides a consistent repository pattern.  
+- **Spring Security** – Provides comprehensive security features such as authentication, authorization, and protection against common security threats.  
+- **Swagger** – Automatically generates and documents API endpoints for ease of integration and testing.
+
+### Real-Time Communication  
+- **WebSockets** – Used for real-time messaging, allowing persistent, two-way communication between the client and server, essential for chat features and live notifications.  
+- **Firebase Cloud Messaging (FCM)** – Provides push notifications for real-time messaging on mobile and web applications, enabling instant notifications and updates to users.  
+- **Redis** – In-memory data structure store used for caching real-time messages, channel data, and session states, ensuring fast access to frequently accessed data.  
+
+### Voice Communication  
+- **P2P Audio Calls** – Voice communication between users is powered by a peer-to-peer (P2P) architecture, ensuring minimal latency and high-quality audio.  
+- **WebRTC** – For facilitating real-time audio communication between peers directly within the browser and mobile apps without needing additional plugins.  
+
+### Cloud Storage & Media Handling  
+- **Cloud Storage** – Files and media, including text, images, and audio messages, are uploaded to a cloud storage solution, ensuring scalability and accessibility.  
+- **Firebase Storage** – Provides cloud storage for media files (audio, images, etc.), with tight integration into Firebase's suite of services. This allows for secure and scalable storage of user-uploaded content.  
+
+### Infrastructure & Containerization  
+- **Kubernetes** – The backend is deployed on a Kubernetes cluster, providing automated deployment, scaling, and management of containerized applications. Kubernetes ensures high availability and fault tolerance, and can dynamically scale based on demand.  
+- **Docker** – Containerizes the backend services, allowing for consistent deployment across different environments, such as development, testing, and production.  
+- **Helm** – Manages Kubernetes deployments using Helm charts, providing an easy way to define, install, and upgrade complex Kubernetes applications.
+
+### Monitoring & Observability  
+- **Grafana** – Used for visualizing real-time metrics, providing an intuitive dashboard for tracking application performance, health, and resource usage.  
+- **Prometheus** – Collects and stores metrics from the system, feeding data into Grafana for detailed insights and monitoring.  
+- **OpenSearch** – Powers centralized logging and search capabilities, allowing easy querying and exploration of logs for troubleshooting, performance analysis, and audit purposes.
+
+### Database & Data Storage  
+- **PostgreSQL** – A powerful relational database for storing structured data such as user information, messages, and channel metadata.  
+- **Redis (Cache)** – Redis is used not only for caching real-time data but also for enhancing the responsiveness of the system by storing temporary session states and frequently accessed data.
+
+### Message Queuing & Orchestration  
+- **Kafka** – Used for stream processing and handling large-scale message queuing. Kafka is ideal for distributing messages in real-time across services and ensures durability and high throughput for event-driven architecture.  - (not yet implemented)
+- **Orchestration Service** – Ensures smooth coordination between different services and manages the initialization of data on the first request, allowing seamless interaction across the system.  
+
+### Mobile & Desktop Apps  
+- **React** – The frontend is built using React, a powerful JavaScript library for creating user interfaces, ensuring responsiveness and interactivity.  
+- **Swift** – The mobile app for iOS users is developed using Swift, ensuring smooth performance and integration with Apple devices.  
+- **Kotlin** – The mobile app for Android users is developed using Kotlin, taking advantage of modern features to provide a native experience.  
+- **Electron** – The desktop applications for both users and administrators are built using Electron, which allows for building cross-platform desktop applications using web technologies.
+
+### CI/CD & Version Control  
+- **Git** – Version control is managed with Git, allowing collaboration and easy tracking of code changes.  
+- **GitHub Actions** – Automates the build, testing, and deployment pipelines, ensuring a seamless continuous integration and delivery process.  
+- **Docker Compose** – Used for defining and running multi-container Docker applications during development, ensuring that all services run in an isolated and reproducible environment.
+
+### Security & Compliance  
+- **JWT** – JSON Web Tokens are used for secure authentication, allowing users to authenticate once and receive a token that grants access to protected API endpoints.  
+- **OAuth2** – Provides secure delegated access for external systems to access user data with user consent, often used for integrations with third-party services.  
+- **Bcrypt** – Used for hashing and securing user passwords to protect against unauthorized access.  
+- **SSL/TLS** – Ensures secure communication between the client and server by encrypting data over the network.
+
+This combination of technologies enables a robust, scalable, and secure messaging platform with real-time communication, comprehensive administration tools, and high availability for educational environments.
 
 ---
 
