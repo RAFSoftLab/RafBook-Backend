@@ -14,7 +14,7 @@ import lombok.Setter;
 public class VoiceChannel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private String id;
     private String name;
     private String description;
 }

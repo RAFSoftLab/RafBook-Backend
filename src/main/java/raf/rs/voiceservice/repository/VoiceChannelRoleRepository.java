@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface VoiceChannelRoleRepository extends JpaRepository<VoiceChannelRole, Long> {
     @Query("SELECT vcr FROM VoiceChannelRole vcr WHERE vcr.voiceChannel.id = :voiceChannelId")
-    List<VoiceChannelRole> findAllByVoiceChannel(@Param("voiceChannelId") Long voiceChannelId);
+    List<VoiceChannelRole> findAllByVoiceChannel(@Param("voiceChannelId") String voiceChannelId);
 
     void deleteByVoiceChannelAndRole(VoiceChannel voiceChannel, Role role);
 }

@@ -122,7 +122,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     }
 
     @Override
-    public VoiceChannelDTO getVoiceChannel(Long id) {
+    public VoiceChannelDTO getVoiceChannel(String id) {
         VoiceChannelDTO voiceChannelDTO = new VoiceChannelDTO();
         VoiceChannel voiceChannel = voiceChannelRepository.findVoiceChannelById(id);
         voiceChannelDTO.setId(voiceChannel.getId());
@@ -136,13 +136,13 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     }
 
     @Override
-    public VoiceChannelDTO updateVoiceChannel(Long id, NewVoiceChannelDTO newVoiceChannelDTO , String token) {
+    public VoiceChannelDTO updateVoiceChannel(String  id, NewVoiceChannelDTO newVoiceChannelDTO , String token) {
         //TODO: Implement update and decide what can be upadted
         return null;
     }
 
     @Override
-    public void deleteVoiceChannel(Long id , String token) {
+    public void deleteVoiceChannel(String id , String token) {
         String username = userService.getUserByToken(token).getUsername();
         Set<String> userRoles = userService.getUserRoles(username);
 
@@ -200,7 +200,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     }
 
     @Override
-    public void addUserToVoiceChannel(Long channelId, String token) {
+    public void addUserToVoiceChannel(String channelId, String token) {
         // Validate user
         MyUser myUser = userService.getUserByToken(token);
         if (myUser == null) {
@@ -222,7 +222,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     }
 
     @Override
-    public void removeUserFromVoiceChannel(Long channelId, String token) {
+    public void removeUserFromVoiceChannel(String channelId, String token) {
         // Validate user
         MyUser myUser = userService.getUserByToken(token);
         if (myUser == null) {
@@ -244,7 +244,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     }
 
     @Override
-    public Set<MyUser> getUsersInVoiceChannel(Long channelId) {
+    public Set<MyUser> getUsersInVoiceChannel(String  channelId) {
         return voiceChannelCache.getUsersInChannel(channelId);
     }
 }

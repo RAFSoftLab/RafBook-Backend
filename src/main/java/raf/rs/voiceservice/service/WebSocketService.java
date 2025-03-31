@@ -11,7 +11,7 @@ public class WebSocketService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void notifyChannelUsers(Long channelId, String event, MyUser user) {
+    public void notifyChannelUsers(String channelId, String event, MyUser user) {
         String destination = "/topic/voice-channel/" + channelId;
 
         WebSocketMessage message = new WebSocketMessage(event, user.getId(), user.getUsername());

@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class VoiceChannelDTO {
-    private Long id;
+    private String id;
     private String name;
     private String description;
     private ArrayList<UserDTO> users = new ArrayList<>();

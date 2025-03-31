@@ -59,7 +59,7 @@ public class VoiceChannelController {
                     content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<VoiceChannelDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<VoiceChannelDTO> findById(@PathVariable String id) {
         return ResponseEntity.ok(voiceChannelService.getVoiceChannel(id));
     }
 
@@ -71,7 +71,7 @@ public class VoiceChannelController {
                     content = @Content)
     })
     @PostMapping("/add-user/{channelId}")
-    public ResponseEntity<ResponseMessageDTO> addUserToVoiceChannel(@PathVariable Long channelId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseMessageDTO> addUserToVoiceChannel(@PathVariable String channelId, @RequestHeader("Authorization") String token) {
         voiceChannelService.addUserToVoiceChannel(channelId, token.substring(7));
         return new ResponseEntity<>(new ResponseMessageDTO("User added to voice channel successfully"), HttpStatus.OK);
     }
@@ -84,7 +84,7 @@ public class VoiceChannelController {
                     content = @Content)
     })
     @DeleteMapping("/remove-user/{channelId}")
-    public ResponseEntity<ResponseMessageDTO> removeUserFromVoiceChannel(@PathVariable Long channelId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseMessageDTO> removeUserFromVoiceChannel(@PathVariable String channelId, @RequestHeader("Authorization") String token) {
         voiceChannelService.removeUserFromVoiceChannel(channelId, token.substring(7));
         return new ResponseEntity<>(new ResponseMessageDTO("User removed from voice channel successfully"), HttpStatus.OK);
     }
@@ -97,7 +97,7 @@ public class VoiceChannelController {
                     content = @Content)
     })
     @GetMapping("/users/{channelId}")
-    public ResponseEntity<Set<MyUser>> getUsersInVoiceChannel(@PathVariable Long channelId) {
+    public ResponseEntity<Set<MyUser>> getUsersInVoiceChannel(@PathVariable String channelId) {
         return ResponseEntity.ok(voiceChannelService.getUsersInVoiceChannel(channelId));
     }
 /*
@@ -154,7 +154,7 @@ public class VoiceChannelController {
                     content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVoiceChannel(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> deleteVoiceChannel(@PathVariable String id, @RequestHeader("Authorization") String token) {
         voiceChannelService.deleteVoiceChannel(id, token.substring(7));
         return ResponseEntity.ok().build();
     }
