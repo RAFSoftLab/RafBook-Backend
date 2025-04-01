@@ -7,7 +7,7 @@ public class TextChannelWithPermission {
     private Long textChannelId;
     private String textChannelName;
     private String textChannelDescription;
-    private Long voiceChannelId;
+    private String voiceChannelId;
     private String voiceChannelName;
     private String voiceChannelDescription;
     private Long studiesId;

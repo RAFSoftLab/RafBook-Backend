@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import raf.rs.voiceservice.model.VoiceChannel;
 
 @Repository
-public interface VoiceChannelRepository extends JpaRepository<VoiceChannel, Long> {
-    public VoiceChannel findVoiceChannelById(Long id);
+public interface VoiceChannelRepository extends JpaRepository<VoiceChannel, String> {
+    public VoiceChannel findVoiceChannelById(String id);
 }

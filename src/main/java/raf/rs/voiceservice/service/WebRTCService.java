@@ -11,15 +11,15 @@ public class WebRTCService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void initiatePeerConnection(Long channelId, MyUser user) {
+    public void initiatePeerConnection(String channelId, MyUser user) {
         sendSignalingMessage(channelId, "OFFER", user);
     }
 
-    public void terminatePeerConnection(Long channelId, MyUser user) {
+    public void terminatePeerConnection(String channelId, MyUser user) {
         sendSignalingMessage(channelId, "DISCONNECT", user);
     }
 
-    public void sendSignalingMessage(Long channelId, String type, MyUser user) {
+    public void sendSignalingMessage(String channelId, String type, MyUser user) {
         String destination = "/topic/webrtc/" + channelId;
         WebRTCMessage message = new WebRTCMessage(type, user.getId(), user.getUsername());
 

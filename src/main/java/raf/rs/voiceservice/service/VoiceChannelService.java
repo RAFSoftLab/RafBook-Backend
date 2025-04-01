@@ -9,11 +9,11 @@ import java.util.Set;
 
 public interface VoiceChannelService {
     VoiceChannelDTO createVoiceChannel(NewVoiceChannelDTO newVoiceChannelDTO, String token);
-    VoiceChannelDTO getVoiceChannel(Long id);
-    VoiceChannelDTO updateVoiceChannel(Long id, NewVoiceChannelDTO newVoiceChannelDTO, String token);
-    void deleteVoiceChannel(Long id, String token);
+    VoiceChannelDTO getVoiceChannel(String  id);
+    VoiceChannelDTO updateVoiceChannel(String id, NewVoiceChannelDTO newVoiceChannelDTO, String token);
+    void deleteVoiceChannel(String id, String token);
     List<VoiceChannelDTO> listAll(String token);
-    void addUserToVoiceChannel(Long channelId, String token);
-    void removeUserFromVoiceChannel(Long channelId, String token);
-    Set<MyUser> getUsersInVoiceChannel(Long channelId);
+    void addUserToVoiceChannel(String channelId, String token);
+    void removeUserFromVoiceChannel(String channelId, String token);
+    Set<MyUser> getUsersInVoiceChannel(String channelId);
 }
