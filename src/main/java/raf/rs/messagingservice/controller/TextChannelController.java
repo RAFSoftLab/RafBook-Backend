@@ -121,4 +121,36 @@ public class TextChannelController {
         return new ResponseEntity<>(new ResponseMessageDTO("You successfully removed roles from the text channel"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Edit text channel",
+            description = "Edit name and description of specific text channel which id you have to pass")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Text channel successfully changed",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessageDTO.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "Text channel with passed id doesn't exist",
+                    content = @Content)
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<TextChannelDTO> editTextChannel(@RequestHeader("Authorization") String token, @RequestParam Long id,
+                                                          @RequestParam String name, @RequestParam String description) {
+        return new ResponseEntity<>(textChannelService.editTextChannel(id, name, description, token.substring(7)), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Delete text channel",
+            description = "Deletion of specific text channel which id you have to pass")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Text channel successfully deleted",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessageDTO.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "Text channel with passed id doesn't exist",
+                    content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseMessageDTO> deleteTextChannel(@RequestHeader("Authorization") String token, Long id) {
+        textChannelService.deleteTextChannel(id, token.substring(7));
+        return new ResponseEntity<>(new ResponseMessageDTO("Channel successfully deleted"), HttpStatus.OK);
+    }
+
 }

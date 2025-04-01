@@ -164,4 +164,42 @@ public class TextChannelServiceImplementation implements TextChannelService {
         return textChannel.getFolderId();
     }
 
+    public TextChannelDTO editTextChannel(Long id, String name, String description, String token) {
+
+        String username = userService.getUserByToken(token).getUsername();
+        Set<String> userRoles = userService.getUserRoles(username);
+
+        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+            throw new ForbiddenActionException("You are not authorized for this action!");
+        }
+
+        TextChannel textChannel = textChannelRepository.findTextChannelById(id);
+
+        if (textChannel == null) throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
+
+        textChannel.setName(name);
+        textChannel.setDescription(description);
+
+        TextChannel savedTextChannel = textChannelRepository.save(textChannel);
+
+        return textChannelMapper.toDto(savedTextChannel);
+    }
+
+    @Transactional
+    public void deleteTextChannel(Long id, String token) {
+
+        String username = userService.getUserByToken(token).getUsername();
+        Set<String> userRoles = userService.getUserRoles(username);
+
+        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+            throw new ForbiddenActionException("You are not authorized for this action!");
+        }
+
+        if (!textChannelRepository.existsById(id))
+            throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
+
+        textChannelRoleRepository.deleteByTextChannelId(id);
+        textChannelRepository.deleteById(id);
+    }
+
 }

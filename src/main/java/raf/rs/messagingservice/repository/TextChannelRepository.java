@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import raf.rs.messagingservice.model.TextChannel;
 @Repository
 public interface TextChannelRepository extends JpaRepository<TextChannel, Long>{
-    public TextChannel findTextChannelById(Long id);
+    TextChannel findTextChannelById(Long id);
 }

@@ -46,4 +46,7 @@ public interface TextChannelService {
 
     String getFolderIdFromTextChannel(Long id);
 
+    TextChannelDTO editTextChannel(Long id, String name, String description, String token);
+    void deleteTextChannel(Long id, String token);
+
 }

@@ -1,6 +1,7 @@
 package raf.rs.messagingservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,8 @@ public interface TextChannelRoleRepository extends JpaRepository<TextChannelRole
     List<TextChannelRole> findAllByTextChannel(@Param("textChannelId") Long textChannelId);
 
     void deleteByTextChannelAndRole(TextChannel textChannel, Role role);
+
+    @Modifying
+    @Query("DELETE FROM TextChannelRole tcr WHERE tcr.textChannel.id = :textChannelId")
+    void deleteByTextChannelId(@Param("textChannelId") Long textChannelId);
 }
