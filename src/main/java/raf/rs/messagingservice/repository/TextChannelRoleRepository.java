@@ -22,4 +22,5 @@ public interface TextChannelRoleRepository extends JpaRepository<TextChannelRole
     @Modifying
     @Query("DELETE FROM TextChannelRole tcr WHERE tcr.textChannel.id = :textChannelId")
     void deleteByTextChannelId(@Param("textChannelId") Long textChannelId);
+
 }

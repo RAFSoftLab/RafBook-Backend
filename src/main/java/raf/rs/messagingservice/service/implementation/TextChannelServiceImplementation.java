@@ -198,6 +198,14 @@ public class TextChannelServiceImplementation implements TextChannelService {
         if (!textChannelRepository.existsById(id))
             throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
 
+        List<Category> categories = categoryRepository.findAllByTextChannelId(id);
+
+        for (Category category : categories) {
+            category.getTextChannels().removeIf(tc -> tc.getId().equals(id));
+        }
+
+        categoryRepository.saveAll(categories);
+
         textChannelRoleRepository.deleteByTextChannelId(id);
         textChannelRepository.deleteById(id);
     }

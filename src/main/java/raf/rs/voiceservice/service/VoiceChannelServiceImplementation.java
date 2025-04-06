@@ -1,5 +1,6 @@
 package raf.rs.voiceservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -141,6 +142,7 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
         return null;
     }
 
+    @Transactional
     @Override
     public void deleteVoiceChannel(String id , String token) {
         String username = userService.getUserByToken(token).getUsername();
@@ -150,14 +152,17 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
             throw new ForbiddenActionException("You are not authorized for this action!");
         }
 
-        VoiceChannel voiceChannel = voiceChannelRepository.findVoiceChannelById(id);
-        voiceChannelRoleRepository.deleteByVoiceChannelAndRole(voiceChannel,
-                (Role) roleService.getAllRolesByName(Set.of("ADMIN")).toArray()[0]);
-        voiceChannelRoleRepository.deleteByVoiceChannelAndRole(voiceChannel,
-                (Role) roleService.getAllRolesByName(Set.of("PROFESSOR")).toArray()[0]);
-        voiceChannelRoleRepository.deleteByVoiceChannelAndRole(voiceChannel,
-                (Role) roleService.getAllRolesByName(Set.of("STUDENT")).toArray()[0]);
-        voiceChannelRepository.delete(voiceChannel);
+        List<Category> categories = categoryRepository.findAllByVoiceChannelId(id);
+
+        for (Category category : categories) {
+            category.getVoiceChannels().removeIf(vc -> vc.getId().equalsIgnoreCase(id));
+        }
+
+        categoryRepository.saveAll(categories);
+
+        voiceChannelRoleRepository.deleteByVoiceChannelId(id);
+
+        voiceChannelRepository.deleteById(id);
     }
 
     @Override
@@ -247,4 +252,5 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     public Set<MyUser> getUsersInVoiceChannel(String  channelId) {
         return voiceChannelCache.getUsersInChannel(channelId);
     }
+
 }
