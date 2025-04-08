@@ -77,7 +77,7 @@ jobs:
       # Step to deploy to Kubernetes
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f k8s/deployment.yaml
 
       # Optional verification step
       - name: Verify Kubernetes deployment
