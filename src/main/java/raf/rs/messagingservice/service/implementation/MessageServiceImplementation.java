@@ -126,7 +126,7 @@ public class MessageServiceImplementation implements MessageService {
         newMessageDTO.setParentMessage(dto.getParentMessage());
         newMessageDTO.setMediaUrl(mediaUrl);
         newMessageDTO.setType(dto.getType());
-        newMessageDTO.setContent("");
+        newMessageDTO.setContent(file.getName());
 
         System.out.println(mediaUrl);
 

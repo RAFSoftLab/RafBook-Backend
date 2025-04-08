@@ -91,10 +91,14 @@ public class MessageController {
         return ResponseEntity.ok(messageService.editMessage(id, message, token.substring(7)));
     }
 
-    @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MessageDTO> uploadFile(@RequestHeader("Authorization") String token,
-                                                 @RequestParam("file")MultipartFile file) {
-        UploadFileDTO dto = new UploadFileDTO(MessageType.FILE, null, 1L);
+    public ResponseEntity<MessageDTO> uploadFile(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("type") MessageType type,
+            @RequestParam(name = "parentMessage", required = false) Long parentMessage,
+            @RequestParam("textChannel") Long textChannel) {
+        UploadFileDTO dto = new UploadFileDTO(type, parentMessage, textChannel);
         return new ResponseEntity<>(messageService.uploadFileMessage(token.substring(7), dto, file), HttpStatus.OK);
     }
+
 }
