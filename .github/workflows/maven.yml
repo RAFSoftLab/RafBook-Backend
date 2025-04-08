@@ -79,6 +79,8 @@ jobs:
       - name: Set up kubeconfig
         run: |
           echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
       - name: Install kubectl
         run: |
@@ -90,3 +92,13 @@ jobs:
         run: |
           kubectl apply -f kubernetes/deployment.yaml
           kubectl set image deployment/my-app my-app=pstamenic1524m/rafbook:latest
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+
+      # Optional verification step
+      - name: Verify Kubernetes deployment
+        run: |
+          kubectl rollout status deployment/rafbook-backend
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
