@@ -67,19 +67,3 @@ jobs:
         run: |
           docker stop backend
           docker rm backend
-
-      # Step to configure Kubernetes
-      - name: Set up Kubernetes config
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-      # Step to deploy to Kubernetes
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/deployment.yaml
-
-      # Optional verification step
-      - name: Verify Kubernetes deployment
-        run: |
-          kubectl rollout status deployment/rafbook-backend
