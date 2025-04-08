@@ -46,5 +46,5 @@ public interface MessageService {
      */
     MessageDTO editMessage(Long id, MessageDTO message, String token);
 
-    MessageDTO uploadFileMessage(String token, UploadFileDTO dto, MultipartFile file);
+    MessageDTO uploadFileMessage(String fileName, String token, UploadFileDTO dto, MultipartFile file);
 }

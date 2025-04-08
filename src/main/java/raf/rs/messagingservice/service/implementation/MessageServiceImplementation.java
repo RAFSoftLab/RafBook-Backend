@@ -117,7 +117,7 @@ public class MessageServiceImplementation implements MessageService {
     }
 
     @Override
-    public MessageDTO uploadFileMessage(String token, UploadFileDTO dto, MultipartFile file) {
+    public MessageDTO uploadFileMessage(String fileName, String token, UploadFileDTO dto, MultipartFile file) {
 
         String mediaUrl = fileService.uploadFile(file, dto.getTextChannel());
 
@@ -126,7 +126,7 @@ public class MessageServiceImplementation implements MessageService {
         newMessageDTO.setParentMessage(dto.getParentMessage());
         newMessageDTO.setMediaUrl(mediaUrl);
         newMessageDTO.setType(dto.getType());
-        newMessageDTO.setContent(file.getOriginalFilename());
+        newMessageDTO.setContent(fileName);
 
         System.out.println(mediaUrl);
 

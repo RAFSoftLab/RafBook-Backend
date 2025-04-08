@@ -97,8 +97,9 @@ public class MessageController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("type") MessageType type,
             @RequestParam(name = "parentMessage", required = false) Long parentMessage,
-            @RequestParam("textChannel") Long textChannel) {
+            @RequestParam("textChannel") Long textChannel,
+            @RequestParam("fileName") String fileName) {
         UploadFileDTO dto = new UploadFileDTO(type, parentMessage, textChannel);
-        return new ResponseEntity<>(messageService.uploadFileMessage(token.substring(7), dto, file), HttpStatus.OK);
+        return new ResponseEntity<>(messageService.uploadFileMessage(fileName, token.substring(7), dto, file), HttpStatus.OK);
     }
 }
