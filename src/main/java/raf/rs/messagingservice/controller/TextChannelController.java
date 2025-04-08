@@ -148,7 +148,7 @@ public class TextChannelController {
                     content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseMessageDTO> deleteTextChannel(@RequestHeader("Authorization") String token, Long id) {
+    public ResponseEntity<ResponseMessageDTO> deleteTextChannel(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         textChannelService.deleteTextChannel(id, token.substring(7));
         return new ResponseEntity<>(new ResponseMessageDTO("Channel successfully deleted"), HttpStatus.OK);
     }
