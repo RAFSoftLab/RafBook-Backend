@@ -67,10 +67,3 @@ jobs:
         run: |
           docker stop backend
           docker rm backend
-
-      # Only push the Docker image if the tests pass
-      - name: Log in to Docker Hub and Push Docker image
-        if: success() # Only run if previous steps (including Newman tests) succeed
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push pstamenic1524m/rafbook:latest
