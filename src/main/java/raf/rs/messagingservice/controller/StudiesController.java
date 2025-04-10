@@ -23,7 +23,7 @@ public class StudiesController {
 
     @PostMapping
     public ResponseEntity<ResponseMessageDTO> createStudies(@RequestHeader("Authorization") String token,  @RequestBody NewStudiesDTO dto) {
-        studiesService.createStudies(dto, token);
+        studiesService.createStudies(dto, token.substring(7));
         return new ResponseEntity<>(new ResponseMessageDTO("You successfully created new Studies"), HttpStatus.CREATED);
     }
 
