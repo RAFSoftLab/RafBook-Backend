@@ -33,6 +33,7 @@ public class StudyProgramMapper {
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toSet());
 
+        dto.setName(studyProgram.getName());
         dto.setCategories(categoryDTOSet);
         dto.setDescription(studyProgram.getDescription());
 
