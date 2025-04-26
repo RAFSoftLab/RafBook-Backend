@@ -49,6 +49,7 @@ public class SecurityConfig {
                     authorize.requestMatchers("/users/auth/login", "/users/auth/register").permitAll()
                             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                             .requestMatchers("/ws/**").permitAll()
+                            .requestMatchers("/actuator/prometheus").permitAll()
                             .anyRequest().authenticated())
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

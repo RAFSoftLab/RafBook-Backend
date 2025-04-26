@@ -1,6 +1,10 @@
 package raf.rs.messagingservice.service.implementation;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Timer;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.BulkImportCategoriesDTO;
 import raf.rs.messagingservice.dto.CategoryDTO;
@@ -24,7 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private CategoryMapper categoryMapper;
@@ -33,8 +37,33 @@ public class CategoryServiceImpl implements CategoryService {
     private StudiesRepository studiesRepository;
     private StudyProgramRepository studyProgramRepository;
 
+    private final Counter categoryAddCounter;
+    private final Timer categoryAddTimer;
+    private final Gauge activeCategoriesGauge;
+
+
+    @Autowired
+    public CategoryServiceImpl(CategoryMapper categoryMapper, CategoryRepository categoryRepository,
+                               UserService userService, StudiesRepository studiesRepository,
+                               StudyProgramRepository studyProgramRepository,
+                               io.micrometer.core.instrument.MeterRegistry meterRegistry) {
+        this.categoryMapper = categoryMapper;
+        this.categoryRepository = categoryRepository;
+        this.userService = userService;
+        this.studiesRepository = studiesRepository;
+        this.studyProgramRepository = studyProgramRepository;
+
+        this.categoryAddCounter = meterRegistry.counter("category.add.counter");
+        this.categoryAddTimer = meterRegistry.timer("category.add.timer");
+        this.activeCategoriesGauge = Gauge.builder("category.active.count", categoryRepository::count)
+                .description("Total number of active categories")
+                .register(meterRegistry);
+    }
+
     @Override
     public List<String> getAllCategoryNames(String studiesName, String studyProgramName) {
+
+        categoryAddCounter.increment();
 
         Studies studies = studiesRepository.findByNameIgnoreCase(studiesName)
                 .orElseThrow(() -> new StudiesNotFoundException("There is not studies with name " + studiesName));
@@ -64,50 +93,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void addCategory(NewCategoryDTO newCategoryDTO, String token) {
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> roles = userService.getUserRoles(username);
 
-        if (!roles.contains("ADMIN")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
-        }
+        categoryAddTimer.record(() -> {
 
-        Studies studies = studiesRepository.findByNameIgnoreCase(newCategoryDTO.getStudies())
-                .orElseThrow(() -> new StudiesNotFoundException("There is no studies with name " + newCategoryDTO.getStudies()));
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> roles = userService.getUserRoles(username);
 
-        String categoryName = newCategoryDTO.getName();
-        for(StudyProgram studyProgram : studies.getStudyPrograms()) {
-            if (newCategoryDTO.getStudyProgram().equalsIgnoreCase(studyProgram.getName())) {
-                for (Category category : studyProgram.getCategories()) {
-                    if (category.getName().equalsIgnoreCase(categoryName)) {
-                        throw new AlreadyExistsException("Category with name " + categoryName + " already exists");
-                    }
-                }
-
-                Category category = categoryMapper.toEntity(newCategoryDTO);
-                Category savedCategory = categoryRepository.save(category);
-                studyProgram.getCategories().add(savedCategory);
-                studyProgramRepository.save(studyProgram);
+            if (!roles.contains("ADMIN")) {
+                throw new ForbiddenActionException("You are not authorized for this action!");
             }
-        }
 
-    }
-
-    @Override
-    public void addCategories(BulkImportCategoriesDTO bulkImportCategoriesDTO, String token) {
-
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> roles = userService.getUserRoles(username);
-
-        if (!roles.contains("ADMIN")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
-        }
-
-        for (NewCategoryDTO newCategoryDTO : bulkImportCategoriesDTO.getCategories()) {
             Studies studies = studiesRepository.findByNameIgnoreCase(newCategoryDTO.getStudies())
                     .orElseThrow(() -> new StudiesNotFoundException("There is no studies with name " + newCategoryDTO.getStudies()));
 
             String categoryName = newCategoryDTO.getName();
-            for(StudyProgram studyProgram : studies.getStudyPrograms()) {
+            for (StudyProgram studyProgram : studies.getStudyPrograms()) {
                 if (newCategoryDTO.getStudyProgram().equalsIgnoreCase(studyProgram.getName())) {
                     for (Category category : studyProgram.getCategories()) {
                         if (category.getName().equalsIgnoreCase(categoryName)) {
@@ -122,7 +122,44 @@ public class CategoryServiceImpl implements CategoryService {
                 }
             }
 
-        }
+        });
+
+    }
+
+    @Override
+    public void addCategories(BulkImportCategoriesDTO bulkImportCategoriesDTO, String token) {
+
+        categoryAddTimer.record(() -> {
+
+
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> roles = userService.getUserRoles(username);
+
+            if (!roles.contains("ADMIN")) {
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
+
+            for (NewCategoryDTO newCategoryDTO : bulkImportCategoriesDTO.getCategories()) {
+                Studies studies = studiesRepository.findByNameIgnoreCase(newCategoryDTO.getStudies())
+                        .orElseThrow(() -> new StudiesNotFoundException("There is no studies with name " + newCategoryDTO.getStudies()));
+
+                String categoryName = newCategoryDTO.getName();
+                for (StudyProgram studyProgram : studies.getStudyPrograms()) {
+                    if (newCategoryDTO.getStudyProgram().equalsIgnoreCase(studyProgram.getName())) {
+                        for (Category category : studyProgram.getCategories()) {
+                            if (category.getName().equalsIgnoreCase(categoryName)) {
+                                throw new AlreadyExistsException("Category with name " + categoryName + " already exists");
+                            }
+                        }
+
+                        Category category = categoryMapper.toEntity(newCategoryDTO);
+                        Category savedCategory = categoryRepository.save(category);
+                        studyProgram.getCategories().add(savedCategory);
+                        studyProgramRepository.save(studyProgram);
+                    }
+                }
+            }
+        });
 
     }
 
