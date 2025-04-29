@@ -1,5 +1,6 @@
 package raf.rs.orchestration.service.impl;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.*;
@@ -32,6 +33,7 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
     private VoiceChannelService voiceChannelService;
 
     @Override
+    @Timed(value = "orchestration.getEverything", description = "Time taken to fetch and organize orchestration data")
     public Set<StudiesDTO> getEverything(String token) {
         MyUser user = userService.getUserByToken(token);
 

@@ -1,0 +1,10 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /logs/*.log  # Path to your Spring Boot logs
+
+output.opensearch:
+  hosts: ["http://opensearch:9200"]
+  index: "spring-logs-%{+yyyy.MM.dd}"
+  ssl.verification_mode: none

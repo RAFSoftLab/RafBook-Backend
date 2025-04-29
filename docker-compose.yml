@@ -7,7 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8080:8080'
-    pull_policy: always
+    volumes:
+      - ./logs:/logs  # Mount your log directory for Filebeat to read from
     networks:
       - monitoring
 
@@ -24,6 +25,44 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+    networks:
+      - monitoring
+
+  opensearch:
+    image: opensearchproject/opensearch:2.14.0
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    networks:
+      - monitoring
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.14.0
+    container_name: opensearch-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=http://opensearch:9200
+    networks:
+      - monitoring
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.15.0
+    container_name: filebeat
+    user: root  # Running as root since it needs access to log files
+    volumes:
+      - ./logs:/logs  # Mount your log directory here
+      - /var/log:/var/log  # Access the logs from your Spring Boot container
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml  # Configuration file
     networks:
       - monitoring
 

@@ -1,5 +1,7 @@
 package raf.rs.messagingservice.service.implementation;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,22 +31,32 @@ import java.util.stream.Collectors;
 
 @Service
 public class MessageServiceImplementation implements MessageService {
-    private SimpMessagingTemplate messagingTemplate;
-    private MessageRepository messageRepository;
-    private TextChannelService textChannelService;
-    private MessageMapper messageMapper;
-    private UserService userService;
-    private FileService fileService;
 
-    public MessageServiceImplementation(SimpMessagingTemplate messagingTemplate, MessageRepository messageRepository,
-                                        TextChannelService textChannelService, MessageMapper messageMapper,
-                                        UserService userService, @Qualifier("remoteFileUploadService") FileService fileService) {
+    private final SimpMessagingTemplate messagingTemplate;
+    private final MessageRepository messageRepository;
+    private final TextChannelService textChannelService;
+    private final MessageMapper messageMapper;
+    private final UserService userService;
+    private final FileService fileService;
+    private final Counter messageSendCounter;
+
+    public MessageServiceImplementation(SimpMessagingTemplate messagingTemplate,
+                                        MessageRepository messageRepository,
+                                        TextChannelService textChannelService,
+                                        MessageMapper messageMapper,
+                                        UserService userService,
+                                        @Qualifier("remoteFileUploadService") FileService fileService,
+                                        MeterRegistry meterRegistry) {
         this.messagingTemplate = messagingTemplate;
         this.messageRepository = messageRepository;
         this.textChannelService = textChannelService;
         this.messageMapper = messageMapper;
         this.userService = userService;
         this.fileService = fileService;
+
+        this.messageSendCounter = Counter.builder("messagingservice.messages.sent")
+                .description("Total number of messages sent")
+                .register(meterRegistry);
     }
 
     @Override
@@ -74,6 +86,8 @@ public class MessageServiceImplementation implements MessageService {
         MyUser user = userService.getUserByToken(token);
         MessageDTO messageDTO = messageMapper.toDto(messageRepository.save(messageMapper.toEntity(message, user)));
 
+        // 🔁 Increment message counter
+        messageSendCounter.increment();
 
         messagingTemplate.convertAndSend("/topic/channels/send/" + message.getTextChannel(), messageDTO);
         return messageDTO;
