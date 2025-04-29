@@ -22,14 +22,14 @@
     <Loggers>
         <!-- Root logger: log all levels of logs -->
         <Root level="info">
-            <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
+            <AppenderRef ref="Console"/>
         </Root>
 
         <!-- Specific logger for OpenSearch interactions (optional) -->
         <Logger name="org.opensearch" level="debug" additivity="false">
-            <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
+            <AppenderRef ref="Console"/>
         </Logger>
     </Loggers>
 </Configuration>

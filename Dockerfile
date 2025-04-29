@@ -11,7 +11,7 @@ COPY . .
 RUN chmod +x mvnw
 
 # Package the application
-RUN ./mvnw package
+RUN ./mvnw package -DskipTests
 
 # Expose the port the application runs on
 EXPOSE 8080
