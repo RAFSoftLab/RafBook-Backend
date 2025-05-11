@@ -2,9 +2,16 @@ filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /logs/*.log  # Path to your Spring Boot logs
+      - /logs/*.log  # Path to your logs directory
 
-output.opensearch:
-  hosts: ["http://opensearch:9200"]
-  index: "spring-logs-%{+yyyy.MM.dd}"
-  ssl.verification_mode: none
+output.elasticsearch:
+  hosts: ["https://opensearch:9200"]  # Use HTTPS for secure connection
+  index: "spring-logs-%{+yyyy.MM.dd}"  # Use a dynamic index name based on the date
+  username: "admin"  # OpenSearch admin username
+  password: "Petar.1524M"  # OpenSearch admin password
+  ssl.verification_mode: none  # Disable SSL verification for simplicity (use in dev)
+
+setup.template.name: "spring-logs"  # Set the template name for the index
+setup.template.pattern: "spring-logs-*"  # Pattern that matches the index name
+setup.kibana:
+  host: "http://localhost:5601"  # Kibana URL1

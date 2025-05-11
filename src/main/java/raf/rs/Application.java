@@ -1,8 +1,8 @@
 package raf.rs;
 
 import lombok.Generated;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -12,12 +12,13 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 public class Application {
 
-    private static final Logger logger = LogManager.getLogger(Application.class);
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         logger.error("Application started successfully");
         SpringApplication.run(Application.class, args);
         logger.error("Application started successfully");
+        logger.error("ID:10T error");
         String swaggerUrl = "http://localhost:8080/api/swagger-ui/index.html";
         System.out.println("Visit swagger at: " + swaggerUrl);
         String h2Url = "http://localhost:8080/api/h2-console";

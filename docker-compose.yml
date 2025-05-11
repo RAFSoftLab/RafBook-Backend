@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   app:
@@ -11,6 +11,8 @@ services:
       - ./logs:/logs  # Mount your log directory for Filebeat to read from
     networks:
       - monitoring
+    depends_on:
+      - postgres
 
   prometheus:
     image: prom/prometheus
@@ -33,9 +35,10 @@ services:
     container_name: opensearch
     environment:
       - discovery.type=single-node
-      - plugins.security.disabled=true
+      - plugins.security.disabled=false  # Enable security plugin
       - bootstrap.memory_lock=true
       - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Petar.1524M
     ulimits:
       memlock:
         soft: -1
@@ -51,20 +54,38 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - OPENSEARCH_HOSTS=http://opensearch:9200
+      - OPENSEARCH_HOSTS=https://opensearch:9200  # Use HTTPS for secure connection
+      - OPENSEARCH_USERNAME=admin  # Use admin credentials
+      - OPENSEARCH_PASSWORD=Petar.1524M  # Set the password for authentication
     networks:
       - monitoring
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.15.0
     container_name: filebeat
-    user: root  # Running as root since it needs access to log files
+    user: root
+    command: >
+      bash -c "chmod go-w /usr/share/filebeat/filebeat.yml && filebeat -e"
     volumes:
-      - ./logs:/logs  # Mount your log directory here
-      - /var/log:/var/log  # Access the logs from your Spring Boot container
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml  # Configuration file
+      - ./logs:/logs
+      - /var/log:/var/log
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+    networks:
+      - monitoring
+    depends_on:
+      - opensearch  # Ensure that Filebeat starts after OpenSearch
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: your_db
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
     networks:
       - monitoring
 
 networks:
   monitoring:
+    driver: bridge
