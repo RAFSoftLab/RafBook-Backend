@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import raf.rs.messagingservice.dto.MessageDTO;
 import raf.rs.messagingservice.dto.NewMessageDTO;
+import raf.rs.messagingservice.dto.ReactionRequestDTO;
 import raf.rs.messagingservice.dto.UploadFileDTO;
+import raf.rs.messagingservice.model.Emote;
 import raf.rs.messagingservice.model.MessageType;
 import raf.rs.messagingservice.service.MessageService;
+import raf.rs.messagingservice.service.ReactionService;
 import raf.rs.userservice.dto.ResponseMessageDTO;
 
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.List;
 public class MessageController {
 
     private MessageService messageService;
+    private ReactionService reactionService;
 
     @Operation(summary = "Find all messages from channel", description = "Finds and returns all messages. from the specified channel.")
     @ApiResponses(value = {
@@ -119,5 +123,34 @@ public class MessageController {
         MessageDTO uploadedMessage = messageService.uploadFileMessage(fileName, token.substring(7), dto, file);
         log.info("Exiting uploadFile with result: {}", uploadedMessage);
         return new ResponseEntity<>(uploadedMessage, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Toggle a reaction on a message", description = "Adds or removes a reaction from a message")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reaction toggled successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input or message/emote not found",
+                    content = @Content)
+    })
+    @PostMapping("/reaction")
+    public ResponseEntity<MessageDTO> toggleReaction(@RequestHeader("Authorization") String token, @RequestBody ReactionRequestDTO reactionRequest) {
+
+        return ResponseEntity.ok(
+                reactionService.toggleReaction(
+                        reactionRequest.getMessageId(),
+                        reactionRequest.getEmoteName(),
+                        token.substring(7)
+                )
+        );
+    }
+
+    @Operation(summary = "Get all available emotes", description = "Returns all emotes available for reactions")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Emotes retrieved successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Emote[].class)) })
+    })
+    @GetMapping("/emotes")
+    public ResponseEntity<List<Emote>> getAllEmotes() {
+        return ResponseEntity.ok(reactionService.getAllEmotes());
     }
 }

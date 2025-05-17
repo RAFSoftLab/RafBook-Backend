@@ -25,7 +25,7 @@ public class ReactionMapper {
     public ReactionDTO toReactionDto(Reaction reaction){
         ReactionDTO reactionDTO = new ReactionDTO();
 
-        reactionDTO.setEmotes(reactionDTO.getEmotes());
+        reactionDTO.setEmotes(reaction.getEmotes());
         Set<MyUser> users = reaction.getUsers();
         reactionDTO.setUsers(users.stream()
                 .map(userMapper::myUserToUserDto)

@@ -42,7 +42,7 @@ public class Message {
     @JoinColumn(name = "user_id")
     private MyUser sender;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Reaction> reactions;
 
     @OneToMany(mappedBy = "parentMessage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
