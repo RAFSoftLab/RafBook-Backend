@@ -2,6 +2,7 @@ package raf.rs.userservice.service.impl;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import raf.rs.userservice.model.Role;
 import raf.rs.userservice.repository.RoleRepository;
 import raf.rs.userservice.repository.UserRepository;
 import raf.rs.userservice.security.JwtUtil;
+import raf.rs.userservice.service.EmailService;
 import raf.rs.userservice.service.UserService;
 
 import java.util.List;
@@ -40,8 +42,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final EmailService emailService;
     private final JwtUtil jwtUtil;
-
     private final MeterRegistry meterRegistry;
 
     private final Counter successfulLogins;
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
                            AuthenticationManager authenticationManager,
                            UserDetailsService userDetailsService,
                            JwtUtil jwtUtil,
+                           EmailService emailService,
                            MeterRegistry meterRegistry) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.emailService = emailService;
         this.jwtUtil = jwtUtil;
         this.meterRegistry = meterRegistry;
 
@@ -119,7 +123,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
         user.setRoles(Set.of(userRole));
-        userRepository.save(user);
+        MyUser savedUser = userRepository.save(user);
+
+        try {
+            emailService.sendRegistrationEmail(savedUser.getEmail(), savedUser.getFirstName(),
+                    savedUser.getLastName(), savedUser.getUsername());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
 
         userRegistrations.increment();
         log.info("Exiting register: User successfully created");
