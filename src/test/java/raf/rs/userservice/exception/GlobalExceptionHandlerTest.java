@@ -1,6 +1,7 @@
 package raf.rs.userservice.exception;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +23,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+//    @Disabled
     void handleUserNotFoundException_withValidException_returnsNotFoundResponse() {
         UserNotFoundException exception = new UserNotFoundException("User not found");
         WebRequest request = null;
@@ -45,6 +47,7 @@ class GlobalExceptionHandlerTest {
         assertEquals("Role not found", response.getBody());
     }
 
+//    @Disabled
     @Test
     void handleAccessDeniedException_withValidException_returnsForbiddenResponse() {
         AccessDeniedException exception = new AccessDeniedException("Access denied");
@@ -54,7 +57,7 @@ class GlobalExceptionHandlerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("You don't have perrmission for this action!", response.getBody());
+        assertEquals("You don't have permission for this action!", response.getBody());
     }
 
     @Test
