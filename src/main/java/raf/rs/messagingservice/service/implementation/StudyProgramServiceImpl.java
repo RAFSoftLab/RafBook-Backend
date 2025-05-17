@@ -1,6 +1,7 @@
 package raf.rs.messagingservice.service.implementation;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.NewStudyProgramDTO;
 import raf.rs.messagingservice.dto.StudyProgramDTO;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StudyProgramServiceImpl implements StudyProgramService {
 
     private StudyProgramRepository studyProgramRepository;
@@ -26,33 +28,55 @@ public class StudyProgramServiceImpl implements StudyProgramService {
     private StudiesRepository studiesRepository;
 
     public void createStudyProgram(NewStudyProgramDTO newStudyProgramDTO) {
+        log.info("Entering createStudyProgram with newStudyProgramDTO: {}", newStudyProgramDTO);
 
-        Studies studies = studiesRepository.findByNameIgnoreCase(newStudyProgramDTO.getStudies())
-                .orElseThrow(() -> new StudiesNotFoundException("Studies with name " + newStudyProgramDTO.getStudies()
-                        + " not found"));
+        try {
+            Studies studies = studiesRepository.findByNameIgnoreCase(newStudyProgramDTO.getStudies())
+                    .orElseThrow(() -> {
+                        log.error("Studies with name {} not found", newStudyProgramDTO.getStudies());
+                        return new StudiesNotFoundException("Studies with name " + newStudyProgramDTO.getStudies() + " not found");
+                    });
 
-        for (StudyProgram sp : studies.getStudyPrograms()) {
-            if (sp.getName().equalsIgnoreCase(newStudyProgramDTO.getName())) {
-                throw new AlreadyExistsException("This study programs already exists in given studies");
+            for (StudyProgram sp : studies.getStudyPrograms()) {
+                if (sp.getName().equalsIgnoreCase(newStudyProgramDTO.getName())) {
+                    log.error("Study program {} already exists in studies {}", newStudyProgramDTO.getName(), newStudyProgramDTO.getStudies());
+                    throw new AlreadyExistsException("This study program already exists in given studies");
+                }
             }
+
+            StudyProgram studyProgram = studyProgramMapper.toEntity(newStudyProgramDTO);
+            StudyProgram savedStudyProgram = studyProgramRepository.save(studyProgram);
+
+            studies.getStudyPrograms().add(savedStudyProgram);
+            studiesRepository.save(studies);
+
+            log.info("Exiting createStudyProgram: Study program created successfully");
+        } catch (Exception e) {
+            log.error("Error in createStudyProgram: {}", e.getMessage(), e);
+            throw e;
         }
-
-        StudyProgram studyProgram = studyProgramMapper.toEntity(newStudyProgramDTO);
-        StudyProgram savedStudyProgram = studyProgramRepository.save(studyProgram);
-
-        studies.getStudyPrograms().add(savedStudyProgram);
-        studiesRepository.save(studies);
     }
 
     public List<StudyProgramDTO> getAllStudyProgramsByStudies(String studiesName) {
-        Studies studies = studiesRepository.findByNameIgnoreCase(studiesName)
-                .orElseThrow(() -> new StudiesNotFoundException("There is not studies with name " + studiesName));
+        log.info("Entering getAllStudyProgramsByStudies with studiesName: {}", studiesName);
 
-        Set<StudyProgram> studyPrograms = studies.getStudyPrograms();
+        try {
+            Studies studies = studiesRepository.findByNameIgnoreCase(studiesName)
+                    .orElseThrow(() -> {
+                        log.error("Studies with name {} not found", studiesName);
+                        return new StudiesNotFoundException("There is no studies with name " + studiesName);
+                    });
 
-        return studyPrograms.stream()
-                .map(studyProgramMapper::toDto)
-                .collect(Collectors.toList());
+            Set<StudyProgram> studyPrograms = studies.getStudyPrograms();
+            List<StudyProgramDTO> result = studyPrograms.stream()
+                    .map(studyProgramMapper::toDto)
+                    .collect(Collectors.toList());
+
+            log.info("Exiting getAllStudyProgramsByStudies with result: {}", result);
+            return result;
+        } catch (Exception e) {
+            log.error("Error in getAllStudyProgramsByStudies: {}", e.getMessage(), e);
+            throw e;
+        }
     }
-
 }

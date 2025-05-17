@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import raf.rs.messagingservice.model.MessageType;
 import raf.rs.messagingservice.service.MessageService;
 import raf.rs.userservice.dto.ResponseMessageDTO;
 
-import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -27,6 +27,7 @@ import java.util.List;
 @RequestMapping("/messages")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class MessageController {
 
     private MessageService messageService;
@@ -40,7 +41,10 @@ public class MessageController {
     })
     @GetMapping("/channel/{channelId}/{start}/{end}")
     public ResponseEntity<List<MessageDTO>> findAllFromChannel(@PathVariable Long channelId, @PathVariable int start, @PathVariable int end) {
-        return ResponseEntity.ok(messageService.findAllFromChannel(channelId, start, end));
+        log.info("Entering findAllFromChannel with channelId: {}, start: {}, end: {}", channelId, start, end);
+        List<MessageDTO> messages = messageService.findAllFromChannel(channelId, start, end);
+        log.info("Exiting findAllFromChannel with result: {}", messages);
+        return ResponseEntity.ok(messages);
     }
 
     @Operation(summary = "Find a message by ID", description = "Finds and returns the message with the specified ID.")
@@ -52,7 +56,10 @@ public class MessageController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<MessageDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(messageService.findById(id));
+        log.info("Entering findById with id: {}", id);
+        MessageDTO message = messageService.findById(id);
+        log.info("Exiting findById with result: {}", message);
+        return ResponseEntity.ok(message);
     }
 
     @Operation(summary = "Send a new message", description = "Sends a new message to the specified channel and returns the created message.")
@@ -64,7 +71,10 @@ public class MessageController {
     })
     @PostMapping
     public ResponseEntity<MessageDTO> sendMessage(@RequestHeader("Authorization") String token, @RequestBody NewMessageDTO message) {
-        return ResponseEntity.ok(messageService.sendMessage(message, token.substring(7)));
+        log.info("Entering sendMessage with token: {}, message: {}", token, message);
+        MessageDTO sentMessage = messageService.sendMessage(message, token.substring(7));
+        log.info("Exiting sendMessage with result: {}", sentMessage);
+        return ResponseEntity.ok(sentMessage);
     }
 
     @Operation(summary = "Delete a message", description = "Deletes the message with the specified ID.")
@@ -75,7 +85,9 @@ public class MessageController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMessage(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        log.info("Entering deleteMessage with token: {}, id: {}", token, id);
         messageService.deleteMessage(id, token.substring(7));
+        log.info("Exiting deleteMessage");
         return ResponseEntity.ok().build();
     }
 
@@ -88,7 +100,10 @@ public class MessageController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<MessageDTO> editMessage(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody MessageDTO message) {
-        return ResponseEntity.ok(messageService.editMessage(id, message, token.substring(7)));
+        log.info("Entering editMessage with token: {}, id: {}, message: {}", token, id, message);
+        MessageDTO editedMessage = messageService.editMessage(id, message, token.substring(7));
+        log.info("Exiting editMessage with result: {}", editedMessage);
+        return ResponseEntity.ok(editedMessage);
     }
 
     @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -99,7 +114,10 @@ public class MessageController {
             @RequestParam(name = "parentMessage", required = false) Long parentMessage,
             @RequestParam("textChannel") Long textChannel,
             @RequestParam("fileName") String fileName) {
+        log.info("Entering uploadFile with token: {}, fileName: {}, type: {}, parentMessage: {}, textChannel: {}", token, fileName, type, parentMessage, textChannel);
         UploadFileDTO dto = new UploadFileDTO(type, parentMessage, textChannel);
-        return new ResponseEntity<>(messageService.uploadFileMessage(fileName, token.substring(7), dto, file), HttpStatus.OK);
+        MessageDTO uploadedMessage = messageService.uploadFileMessage(fileName, token.substring(7), dto, file);
+        log.info("Exiting uploadFile with result: {}", uploadedMessage);
+        return new ResponseEntity<>(uploadedMessage, HttpStatus.OK);
     }
 }

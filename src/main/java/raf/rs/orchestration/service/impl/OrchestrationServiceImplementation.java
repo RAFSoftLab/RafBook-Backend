@@ -2,6 +2,7 @@ package raf.rs.orchestration.service.impl;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.*;
 import raf.rs.messagingservice.model.*;
@@ -23,6 +24,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OrchestrationServiceImplementation implements OrchestrationService {
 
     private OrchestrationRepository orchestrationRepository;
@@ -35,57 +37,66 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
     @Override
     @Timed(value = "orchestration.getEverything", description = "Time taken to fetch and organize orchestration data")
     public Set<StudiesDTO> getEverything(String token) {
-        MyUser user = userService.getUserByToken(token);
+        log.info("Entering getEverything with token: {}", token);
+        try {
+            MyUser user = userService.getUserByToken(token);
 
-        List<TextChannelWithPermission> textChannelWithPermissions = orchestrationRepository
-                .findTextChannelsWithParentsAndPermissions(user.getId());
+            List<TextChannelWithPermission> textChannelWithPermissions = orchestrationRepository
+                    .findTextChannelsWithParentsAndPermissions(user.getId());
 
-        return organizeData(new HashSet<>(textChannelWithPermissions));
+            Set<StudiesDTO> result = organizeData(new HashSet<>(textChannelWithPermissions));
+            log.info("Exiting getEverything with result: {}", result);
+            return result;
+        } catch (Exception e) {
+            log.error("Error in getEverything: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     public Set<StudiesDTO> organizeData(Set<TextChannelWithPermission> dtoSet) {
-        Set<StudiesDTO> studies = new HashSet<>();
-        for (TextChannelWithPermission dto : dtoSet) {
-            // Find or create the Study object
-            StudiesDTO study = findOrCreateStudy(studies, dto);
+        log.info("Entering organizeData with dtoSet: {}", dtoSet);
+        try {
+            Set<StudiesDTO> studies = new HashSet<>();
+            for (TextChannelWithPermission dto : dtoSet) {
+                StudiesDTO study = findOrCreateStudy(studies, dto);
+                StudyProgramDTO studyProgram = findOrCreateStudyProgram(study, dto);
+                CategoryDTO category = findOrCreateCategory(studyProgram, dto);
+                TextChannelDTO textChannel = findOrCreateTextChannel(category, dto);
+                VoiceChannelDTO voiceChannel = findOrCreateVoiceChannel(category, dto);
+                Set<MyUser> users = voiceChannelService.getUsersInVoiceChannel(voiceChannel.getId());
+                voiceChannel.setUsers(convertSetToList(users));
 
-            // Find or create the StudyProgram object
-            StudyProgramDTO studyProgram = findOrCreateStudyProgram(study, dto);
+                List<MessageDTO> messages = messageService.findAllFromChannel(textChannel.getId(), 0, 100);
+                textChannel.setMessageDTOList(messages);
 
-            // Find or create the Category object
-            CategoryDTO category = findOrCreateCategory(studyProgram, dto);
-
-            // Find or create the TextChannel object
-            TextChannelDTO textChannel = findOrCreateTextChannel(category, dto);
-            VoiceChannelDTO voiceChannel = findOrCreateVoiceChannel(category, dto);
-            Set<MyUser> users = voiceChannelService.getUsersInVoiceChannel(voiceChannel.getId());
-            voiceChannel.setUsers(convertSetToList(users));
-
-            List<MessageDTO> messages = messageService.findAllFromChannel(textChannel.getId(),0,100);
-
-            textChannel.setMessageDTOList(messages);
-            studyProgram.getCategories().add(category);
-            study.getStudyPrograms().add(studyProgram);
+                studyProgram.getCategories().add(category);
+                study.getStudyPrograms().add(studyProgram);
+            }
+            log.info("Exiting organizeData with result: {}", studies);
+            return studies;
+        } catch (Exception e) {
+            log.error("Error in organizeData: {}", e.getMessage(), e);
+            throw e;
         }
-
-        return studies;
     }
 
     private ArrayList<UserDTO> convertSetToList(Set<MyUser> users) {
+        log.info("Entering convertSetToList with users: {}", users);
         ArrayList<UserDTO> userDTOList = new ArrayList<>();
         for (MyUser user : users) {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setUsername(user.getUsername());
             userDTO.setEmail(user.getEmail());
-            // Set other properties as needed
             userDTOList.add(userDTO);
         }
+        log.info("Exiting convertSetToList with result: {}", userDTOList);
         return userDTOList;
     }
 
     private StudiesDTO findOrCreateStudy(Set<StudiesDTO> studies, TextChannelWithPermission dto) {
-        return studies.stream()
+        log.info("Entering findOrCreateStudy with studies: {}, dto: {}", studies, dto);
+        StudiesDTO result = studies.stream()
                 .filter(s -> s.getId().equals(dto.getStudiesId()))
                 .findFirst()
                 .orElseGet(() -> {
@@ -96,10 +107,13 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                     studies.add(study);
                     return study;
                 });
+        log.info("Exiting findOrCreateStudy with result: {}", result);
+        return result;
     }
 
     private StudyProgramDTO findOrCreateStudyProgram(StudiesDTO study, TextChannelWithPermission dto) {
-        return study.getStudyPrograms().stream()
+        log.info("Entering findOrCreateStudyProgram with study: {}, dto: {}", study, dto);
+        StudyProgramDTO result = study.getStudyPrograms().stream()
                 .filter(sp -> sp.getId().equals(dto.getStudyProgramId()))
                 .findFirst()
                 .orElseGet(() -> {
@@ -110,10 +124,13 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                     study.getStudyPrograms().add(sp);
                     return sp;
                 });
+        log.info("Exiting findOrCreateStudyProgram with result: {}", result);
+        return result;
     }
 
     private CategoryDTO findOrCreateCategory(StudyProgramDTO studyProgram, TextChannelWithPermission dto) {
-        return studyProgram.getCategories().stream()
+        log.info("Entering findOrCreateCategory with studyProgram: {}, dto: {}", studyProgram, dto);
+        CategoryDTO result = studyProgram.getCategories().stream()
                 .filter(c -> c.getId().equals(dto.getCategoryId()))
                 .findFirst()
                 .orElseGet(() -> {
@@ -124,10 +141,13 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                     studyProgram.getCategories().add(category);
                     return category;
                 });
+        log.info("Exiting findOrCreateCategory with result: {}", result);
+        return result;
     }
 
     private TextChannelDTO findOrCreateTextChannel(CategoryDTO category, TextChannelWithPermission dto) {
-        return category.getTextChannels().stream()
+        log.info("Entering findOrCreateTextChannel with category: {}, dto: {}", category, dto);
+        TextChannelDTO result = category.getTextChannels().stream()
                 .filter(tc -> tc.getId().equals(dto.getTextChannelId()))
                 .findFirst()
                 .orElseGet(() -> {
@@ -149,10 +169,13 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                     category.getTextChannels().add(textChannel);
                     return textChannel;
                 });
+        log.info("Exiting findOrCreateTextChannel with result: {}", result);
+        return result;
     }
 
     private VoiceChannelDTO findOrCreateVoiceChannel(CategoryDTO category, TextChannelWithPermission dto) {
-        return category.getVoiceChannels().stream()
+        log.info("Entering findOrCreateVoiceChannel with category: {}, dto: {}", category, dto);
+        VoiceChannelDTO result = category.getVoiceChannels().stream()
                 .filter(vc -> vc.getId().equals(dto.getVoiceChannelId()))
                 .findFirst()
                 .orElseGet(() -> {
@@ -174,5 +197,7 @@ public class OrchestrationServiceImplementation implements OrchestrationService 
                     category.getVoiceChannels().add(voiceChannel);
                     return voiceChannel;
                 });
+        log.info("Exiting findOrCreateVoiceChannel with result: {}", result);
+        return result;
     }
 }

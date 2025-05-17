@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequestMapping("/categories")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class CategoryController {
 
     private CategoryService categoryService;
@@ -38,9 +40,11 @@ public class CategoryController {
     @GetMapping("/names")
     public ResponseEntity<List<String>> getAllCategoryNamesByStudiesAndStudyProgram(@RequestParam(name = "studies", required = true) String studies,
                                                                                     @RequestParam(name = "studyPrograms", required = true) String studyPrograms) {
-        return new ResponseEntity<>(categoryService.getAllCategoryNames(studies, studyPrograms), HttpStatus.OK);
+        log.info("Entering getAllCategoryNamesByStudiesAndStudyProgram with studies: {}, studyPrograms: {}", studies, studyPrograms);
+        List<String> categoryNames = categoryService.getAllCategoryNames(studies, studyPrograms);
+        log.info("Exiting getAllCategoryNamesByStudiesAndStudyProgram with result: {}", categoryNames);
+        return new ResponseEntity<>(categoryNames, HttpStatus.OK);
     }
-
 
     @Operation(summary = "Add a new category", description = "Adds a new category to the system. Requires authentication.")
     @ApiResponses(value = {
@@ -51,8 +55,11 @@ public class CategoryController {
     })
     @PostMapping
     public ResponseEntity<ResponseMessageDTO> addCategory(@RequestHeader("Authorization") String token, @RequestBody NewCategoryDTO dto) {
+        log.info("Entering addCategory with token: {}, dto: {}", token, dto);
         categoryService.addCategory(dto, token.substring(7));
-        return new ResponseEntity<>(new ResponseMessageDTO("Category successfully added"), HttpStatus.OK);
+        ResponseMessageDTO response = new ResponseMessageDTO("Category successfully added");
+        log.info("Exiting addCategory with response: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Bulk import categories", description = "Imports multiple categories at once. Requires authentication.")
@@ -64,8 +71,10 @@ public class CategoryController {
     })
     @PostMapping("/bulk-import")
     public ResponseEntity<ResponseMessageDTO> addCategories(@RequestHeader("Authorization") String token, @RequestBody BulkImportCategoriesDTO dto) {
+        log.info("Entering addCategories with token: {}, dto: {}", token, dto);
         categoryService.addCategories(dto, token.substring(7));
-        return new ResponseEntity<>(new ResponseMessageDTO("Categories successufully imported"), HttpStatus.OK);
+        ResponseMessageDTO response = new ResponseMessageDTO("Categories successfully imported");
+        log.info("Exiting addCategories with response: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 }

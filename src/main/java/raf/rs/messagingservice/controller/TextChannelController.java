@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.Set;
 @RequestMapping("/text-channel")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class TextChannelController {
     private TextChannelService textChannelService;
     private OrchestrationService orchestrationService;
@@ -36,7 +38,10 @@ public class TextChannelController {
     })
     @PostMapping
     public ResponseEntity<TextChannelDTO> createTextChannel(@RequestHeader("Authorization") String token, @RequestBody NewTextChannelDTO dto) {
-        return ResponseEntity.ok(textChannelService.createTextChannel(token.substring(7), dto));
+        log.info("Entering createTextChannel with token: {}, dto: {}", token, dto);
+        TextChannelDTO createdChannel = textChannelService.createTextChannel(token.substring(7), dto);
+        log.info("Exiting createTextChannel with result: {}", createdChannel);
+        return ResponseEntity.ok(createdChannel);
     }
 
     @Operation(summary = "Find all text channels", description = "Finds and returns all text channels.")
@@ -48,7 +53,10 @@ public class TextChannelController {
     })
     @GetMapping
     public ResponseEntity<List<TextChannelDTO>> findAll() {
-        return ResponseEntity.ok(textChannelService.findAll());
+        log.info("Entering findAll");
+        List<TextChannelDTO> channels = textChannelService.findAll();
+        log.info("Exiting findAll with result: {}", channels);
+        return ResponseEntity.ok(channels);
     }
 
     @Operation(summary = "Find a text channel by ID", description = "Finds and returns the text channel with the specified ID.")
@@ -60,7 +68,10 @@ public class TextChannelController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<TextChannelDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(textChannelService.findById(id));
+        log.info("Entering findById with id: {}", id);
+        TextChannelDTO channel = textChannelService.findById(id);
+        log.info("Exiting findById with result: {}", channel);
+        return ResponseEntity.ok(channel);
     }
 
     @Operation(summary = "Find text channels for user",
@@ -75,7 +86,10 @@ public class TextChannelController {
     })
     @GetMapping("/for-user")
     public ResponseEntity<Set<StudiesDTO>> getTextChannelsForUser(@RequestHeader("Authorization") String token){
-        return new ResponseEntity<>(orchestrationService.getEverything(token.substring(7)), HttpStatus.OK);
+        log.info("Entering getTextChannelsForUser with token: {}", token);
+        Set<StudiesDTO> channels = orchestrationService.getEverything(token.substring(7));
+        log.info("Exiting getTextChannelsForUser with result: {}", channels);
+        return new ResponseEntity<>(channels, HttpStatus.OK);
     }
 
     @Operation(summary = "Add roles to text channel",
@@ -95,10 +109,12 @@ public class TextChannelController {
     public ResponseEntity<ResponseMessageDTO> addRolesToTextChannel(@RequestHeader("Authorization") String token,
                                                                     @PathVariable("id") Long id,
                                                                     @RequestBody Set<String> roles) {
+        log.info("Entering addRolesToTextChannel with token: {}, id: {}, roles: {}", token, id, roles);
         textChannelService.addRolesToTextChannel(token.substring(7), id, roles);
-        return new ResponseEntity<>(new ResponseMessageDTO("You successfully added roles to text channel"), HttpStatus.OK);
+        ResponseMessageDTO response = new ResponseMessageDTO("You successfully added roles to text channel");
+        log.info("Exiting addRolesToTextChannel with response: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
     @Operation(summary = "Remove roles from text channel",
             description = "Removes specified roles from a specific text channel for the user, adjusting role-based access control.")
@@ -117,8 +133,11 @@ public class TextChannelController {
     public ResponseEntity<ResponseMessageDTO> removeRolesFromTextChannel(@RequestHeader("Authorization") String token,
                                                                          @PathVariable("id") Long id,
                                                                          @RequestBody Set<String> roles) {
+        log.info("Entering removeRolesFromTextChannel with token: {}, id: {}, roles: {}", token, id, roles);
         textChannelService.removeRolesFromTextChannel(token.substring(7), id, roles);
-        return new ResponseEntity<>(new ResponseMessageDTO("You successfully removed roles from the text channel"), HttpStatus.OK);
+        ResponseMessageDTO response = new ResponseMessageDTO("You successfully removed roles from the text channel");
+        log.info("Exiting removeRolesFromTextChannel with response: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Edit text channel",
@@ -134,7 +153,10 @@ public class TextChannelController {
     @PatchMapping("/{id}")
     public ResponseEntity<TextChannelDTO> editTextChannel(@RequestHeader("Authorization") String token, @RequestParam Long id,
                                                           @RequestParam String name, @RequestParam String description) {
-        return new ResponseEntity<>(textChannelService.editTextChannel(id, name, description, token.substring(7)), HttpStatus.OK);
+        log.info("Entering editTextChannel with token: {}, id: {}, name: {}, description: {}", token, id, name, description);
+        TextChannelDTO updatedChannel = textChannelService.editTextChannel(id, name, description, token.substring(7));
+        log.info("Exiting editTextChannel with result: {}", updatedChannel);
+        return new ResponseEntity<>(updatedChannel, HttpStatus.OK);
     }
 
     @Operation(summary = "Delete text channel",
@@ -149,8 +171,11 @@ public class TextChannelController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessageDTO> deleteTextChannel(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        log.info("Entering deleteTextChannel with token: {}, id: {}", token, id);
         textChannelService.deleteTextChannel(id, token.substring(7));
-        return new ResponseEntity<>(new ResponseMessageDTO("Channel successfully deleted"), HttpStatus.OK);
+        ResponseMessageDTO response = new ResponseMessageDTO("Channel successfully deleted");
+        log.info("Exiting deleteTextChannel with response: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

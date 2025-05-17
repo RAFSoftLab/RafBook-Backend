@@ -2,6 +2,7 @@ package raf.rs.messagingservice.service.implementation;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import raf.rs.messagingservice.dto.NewTextChannelDTO;
 import raf.rs.messagingservice.dto.TextChannelDTO;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class TextChannelServiceImplementation implements TextChannelService {
     private TextChannelRepository textChannelRepository;
     private TextChannelMapper textChannelMapper;
@@ -34,101 +36,127 @@ public class TextChannelServiceImplementation implements TextChannelService {
     private UserService userService;
     private RoleService roleService;
     private StudiesRepository studiesRepository;
+
     @Override
     public List<TextChannelDTO> findAll() {
+        log.info("Entering findAll");
         List<TextChannel> textChannels = textChannelRepository.findAll();
-        return textChannels.stream()
+        List<TextChannelDTO> result = textChannels.stream()
                 .map(textChannelMapper::toDto)
                 .collect(Collectors.toList());
+        log.info("Exiting findAll with result: {}", result);
+        return result;
     }
 
     @Override
     public TextChannelDTO findById(Long id) {
-        return textChannelMapper.toDto(findTextChannelById(id));
+        log.info("Entering findById with id: {}", id);
+        TextChannelDTO result = textChannelMapper.toDto(findTextChannelById(id));
+        log.info("Exiting findById with result: {}", result);
+        return result;
     }
 
     @Override
     public TextChannelDTO createTextChannel(String token, NewTextChannelDTO newtextChannelDTO) {
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
+        log.info("Entering createTextChannel with token: {}, newtextChannelDTO: {}", token, newtextChannelDTO);
+        try {
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
-        }
-
-        Studies studies = studiesRepository.findByNameIgnoreCase(newtextChannelDTO.getStudiesName())
-                .orElseThrow(() -> new StudiesNotFoundException("There is not studies with name " + newtextChannelDTO.getStudiesName()));
-
-
-
-        StudyProgram studyProgramFound = null;
-
-        for (StudyProgram studyProgram : studies.getStudyPrograms()) {
-            if (studyProgram.getName().equalsIgnoreCase(newtextChannelDTO.getStudyProgramName())) {
-                studyProgramFound = studyProgram;
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                log.error("Forbidden action: User {} is not authorized to create text channel", username);
+                throw new ForbiddenActionException("You are not authorized for this action!");
             }
+
+            Studies studies = studiesRepository.findByNameIgnoreCase(newtextChannelDTO.getStudiesName())
+                    .orElseThrow(() -> {
+                        log.error("Studies with name {} not found", newtextChannelDTO.getStudiesName());
+                        return new StudiesNotFoundException("There is not studies with name " + newtextChannelDTO.getStudiesName());
+                    });
+
+            StudyProgram studyProgramFound = studies.getStudyPrograms().stream()
+                    .filter(sp -> sp.getName().equalsIgnoreCase(newtextChannelDTO.getStudyProgramName()))
+                    .findFirst()
+                    .orElseThrow(() -> {
+                        log.error("Study program with name {} not found", newtextChannelDTO.getStudyProgramName());
+                        return new StudiesNotFoundException("Study program with name " + newtextChannelDTO.getStudyProgramName() + " not found");
+                    });
+
+            Category categoryFound = studyProgramFound.getCategories().stream()
+                    .filter(cat -> cat.getName().equalsIgnoreCase(newtextChannelDTO.getCategoryName()))
+                    .findFirst()
+                    .orElseThrow(() -> {
+                        log.error("Category with name {} not found", newtextChannelDTO.getCategoryName());
+                        return new CategoryNotFoundException("Category with name " + newtextChannelDTO.getCategoryName() + " doesn't exist");
+                    });
+
+            TextChannel textChannel = textChannelMapper.toEntity(newtextChannelDTO);
+            TextChannel savedTextChannel = textChannelRepository.save(textChannel);
+
+            setRolesToTextChannel(savedTextChannel, newtextChannelDTO.getRoles());
+            setTextChannelToCategory(savedTextChannel, categoryFound);
+
+            TextChannelDTO result = textChannelMapper.toDto(savedTextChannel);
+            log.info("Exiting createTextChannel with result: {}", result);
+            return result;
+        } catch (Exception e) {
+            log.error("Error in createTextChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-
-        if (studyProgramFound == null) {
-            throw new StudiesNotFoundException("Study program with name " + newtextChannelDTO.getStudyProgramName() +" not foumd");
-        }
-
-
-        Category categoryFound = null;
-        for (Category category : studyProgramFound.getCategories()) {
-            if (category.getName().equalsIgnoreCase(newtextChannelDTO.getCategoryName())) {
-                categoryFound = category;
-            }
-        }
-
-        if (categoryFound == null) {
-            throw new CategoryNotFoundException("Category with name " + newtextChannelDTO.getCategoryName() + " doesn't exist");
-        }
-
-        TextChannel textChannel = textChannelMapper.toEntity(newtextChannelDTO);
-        TextChannel savedTextChannel = textChannelRepository.save(textChannel);
-
-        setRolesToTextChannel(savedTextChannel, newtextChannelDTO.getRoles());
-        setTextChannelToCategory(savedTextChannel, categoryFound);
-
-        return textChannelMapper.toDto(savedTextChannel);
     }
 
     @Override
     public TextChannel findTextChannelById(Long id) {
-        return textChannelRepository.findTextChannelById(id);
+        log.info("Entering findTextChannelById with id: {}", id);
+        TextChannel result = textChannelRepository.findTextChannelById(id);
+        log.info("Exiting findTextChannelById with result: {}", result);
+        return result;
     }
 
     public void addRolesToTextChannel(String token, Long id, Set<String> roles) {
+        log.info("Entering addRolesToTextChannel with token: {}, id: {}, roles: {}", token, id, roles);
+        try {
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                log.error("Forbidden action: User {} is not authorized to add roles to text channel", username);
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
 
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
+            TextChannel textChannel = textChannelRepository.findTextChannelById(id);
+            setRolesToTextChannel(textChannel, roles);
+            log.info("Exiting addRolesToTextChannel");
+        } catch (Exception e) {
+            log.error("Error in addRolesToTextChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-        TextChannel textChannel = textChannelRepository.findTextChannelById(id);
-        setRolesToTextChannel(textChannel, roles);
     }
-
 
     @Transactional
     @Override
     public void removeRolesFromTextChannel(String token, Long id, Set<String> roles) {
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
+        log.info("Entering removeRolesFromTextChannel with token: {}, id: {}, roles: {}", token, id, roles);
+        try {
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                log.error("Forbidden action: User {} is not authorized to remove roles from text channel", username);
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
+
+            TextChannel textChannel = textChannelRepository.findTextChannelById(id);
+            removeRolesFromTextChannel(textChannel, roles);
+            log.info("Exiting removeRolesFromTextChannel");
+        } catch (Exception e) {
+            log.error("Error in removeRolesFromTextChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-        TextChannel textChannel = textChannelRepository.findTextChannelById(id);
-        removeRolesFromTextChannel(textChannel, roles);
     }
 
     private void setRolesToTextChannel(TextChannel textChannel, Set<String> roleNames) {
+        log.info("Entering setRolesToTextChannel with textChannel: {}, roleNames: {}", textChannel, roleNames);
         Set<Role> roles = roleService.getAllRolesByName(roleNames);
 
         for (Role role : roles) {
@@ -138,76 +166,101 @@ public class TextChannelServiceImplementation implements TextChannelService {
             textChannelRole.setPermissions(3L);
             textChannelRoleRepository.save(textChannelRole);
         }
+        log.info("Exiting setRolesToTextChannel");
     }
 
     private void setTextChannelToCategory(TextChannel textChannel, Category category) {
-
+        log.info("Entering setTextChannelToCategory with textChannel: {}, category: {}", textChannel, category);
         category.getTextChannels().add(textChannel);
-
         categoryRepository.save(category);
+        log.info("Exiting setTextChannelToCategory");
     }
 
-
     private void removeRolesFromTextChannel(TextChannel textChannel, Set<String> roleNames) {
+        log.info("Entering removeRolesFromTextChannel with textChannel: {}, roleNames: {}", textChannel, roleNames);
         Set<Role> roles = roleService.getAllRolesByName(roleNames);
 
         for (Role role : roles) {
             textChannelRoleRepository.deleteByTextChannelAndRole(textChannel, role);
         }
-
+        log.info("Exiting removeRolesFromTextChannel");
     }
 
     public String getFolderIdFromTextChannel(Long id) {
+        log.info("Entering getFolderIdFromTextChannel with id: {}", id);
         TextChannel textChannel = textChannelRepository.findById(id)
-                .orElseThrow(() -> new TextChannelNotFoundException("There is no text channel with id " + id));
+                .orElseThrow(() -> {
+                    log.error("Text channel with id {} not found", id);
+                    return new TextChannelNotFoundException("There is no text channel with id " + id);
+                });
 
-        return textChannel.getFolderId();
+        String folderId = textChannel.getFolderId();
+        log.info("Exiting getFolderIdFromTextChannel with result: {}", folderId);
+        return folderId;
     }
 
     public TextChannelDTO editTextChannel(Long id, String name, String description, String token) {
+        log.info("Entering editTextChannel with id: {}, name: {}, description: {}, token: {}", id, name, description, token);
+        try {
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                log.error("Forbidden action: User {} is not authorized to edit text channel", username);
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
 
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
+            TextChannel textChannel = textChannelRepository.findTextChannelById(id);
+
+            if (textChannel == null) {
+                log.error("Text channel with id {} not found", id);
+                throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
+            }
+
+            textChannel.setName(name);
+            textChannel.setDescription(description);
+
+            TextChannel savedTextChannel = textChannelRepository.save(textChannel);
+            TextChannelDTO result = textChannelMapper.toDto(savedTextChannel);
+            log.info("Exiting editTextChannel with result: {}", result);
+            return result;
+        } catch (Exception e) {
+            log.error("Error in editTextChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-        TextChannel textChannel = textChannelRepository.findTextChannelById(id);
-
-        if (textChannel == null) throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
-
-        textChannel.setName(name);
-        textChannel.setDescription(description);
-
-        TextChannel savedTextChannel = textChannelRepository.save(textChannel);
-
-        return textChannelMapper.toDto(savedTextChannel);
     }
 
     @Transactional
     public void deleteTextChannel(Long id, String token) {
+        log.info("Entering deleteTextChannel with id: {}, token: {}", id, token);
+        try {
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                log.error("Forbidden action: User {} is not authorized to delete text channel", username);
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
 
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            throw new ForbiddenActionException("You are not authorized for this action!");
+            if (!textChannelRepository.existsById(id)) {
+                log.error("Text channel with id {} not found", id);
+                throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
+            }
+
+            List<Category> categories = categoryRepository.findAllByTextChannelId(id);
+
+            for (Category category : categories) {
+                category.getTextChannels().removeIf(tc -> tc.getId().equals(id));
+            }
+
+            categoryRepository.saveAll(categories);
+
+            textChannelRoleRepository.deleteByTextChannelId(id);
+            textChannelRepository.deleteById(id);
+            log.info("Exiting deleteTextChannel");
+        } catch (Exception e) {
+            log.error("Error in deleteTextChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-        if (!textChannelRepository.existsById(id))
-            throw new TextChannelNotFoundException("Text channel with id " + id + " not found");
-
-        List<Category> categories = categoryRepository.findAllByTextChannelId(id);
-
-        for (Category category : categories) {
-            category.getTextChannels().removeIf(tc -> tc.getId().equals(id));
-        }
-
-        categoryRepository.saveAll(categories);
-
-        textChannelRoleRepository.deleteByTextChannelId(id);
-        textChannelRepository.deleteById(id);
     }
-
 }

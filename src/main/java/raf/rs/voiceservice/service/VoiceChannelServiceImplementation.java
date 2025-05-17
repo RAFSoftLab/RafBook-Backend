@@ -2,6 +2,7 @@ package raf.rs.voiceservice.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +37,8 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @AllArgsConstructor
-public class VoiceChannelServiceImplementation implements VoiceChannelService{
+@Slf4j
+public class VoiceChannelServiceImplementation implements VoiceChannelService {
 
     private UserService userService;
     private StudiesRepository studiesRepository;
@@ -50,38 +51,34 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
     private WebRTCService webRTCService;
     private final MeterRegistry meterRegistry;
 
-
     @Override
     public VoiceChannelDTO createVoiceChannel(NewVoiceChannelDTO newVoiceChannelDTO, String token) {
+        log.info("Entering createVoiceChannel with newVoiceChannelDTO: {}, token: {}", newVoiceChannelDTO, token);
         long start = System.nanoTime();
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
-
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            meterRegistry.counter("voicechannel.unauthorized.access.total", "action", "create").increment();
-            throw new ForbiddenActionException("You are not authorized for this action!");
-        }
-
         try {
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
+
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                meterRegistry.counter("voicechannel.unauthorized.access.total", "action", "create").increment();
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
+
             meterRegistry.counter("voicechannel.create.total").increment();
 
             Studies studies = studiesRepository.findByNameIgnoreCase(newVoiceChannelDTO.getStudiesName())
                     .orElseThrow(() -> new StudiesNotFoundException("There is not studies with name " + newVoiceChannelDTO.getStudiesName()));
 
-
             StudyProgram studyProgramFound = null;
-
             for (StudyProgram studyProgram : studies.getStudyPrograms()) {
                 if (studyProgram.getName().equalsIgnoreCase(newVoiceChannelDTO.getStudyProgramName())) {
                     studyProgramFound = studyProgram;
                 }
             }
 
-
             if (studyProgramFound == null) {
                 throw new StudiesNotFoundException("Study program with name " + newVoiceChannelDTO.getStudyProgramName() + " not found");
             }
-
 
             Category categoryFound = null;
             for (Category category : studyProgramFound.getCategories()) {
@@ -111,81 +108,101 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
                 voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role, 3L));
             });
 
+            log.info("Exiting createVoiceChannel with result: {}", voiceChannelDTO);
             return voiceChannelDTO;
+        } catch (Exception e) {
+            log.error("Error in createVoiceChannel: {}", e.getMessage(), e);
+            throw e;
         } finally {
             Timer.builder("voicechannel.create.duration")
-                    .description("Time to create voice channel")
                     .register(meterRegistry)
                     .record(System.nanoTime() - start, TimeUnit.NANOSECONDS);
         }
     }
 
     private void setRolesToVoiceChannel(VoiceChannel voiceChannel, Set<String> roleNames) {
-        Set<Role> roles = roleService.getAllRolesByName(roleNames);
+        log.info("Entering setRolesToVoiceChannel with voiceChannel: {}, roleNames: {}", voiceChannel, roleNames);
+        try {
+            Set<Role> roles = roleService.getAllRolesByName(roleNames);
 
-        for (Role role : roles) {
-            VoiceChannelRole textChannelRole = new VoiceChannelRole();
-            textChannelRole.setVoiceChannel(voiceChannel);
-            textChannelRole.setRole(role);
-            textChannelRole.setPermissions(3L);
-            voiceChannelRoleRepository.save(textChannelRole);
+            for (Role role : roles) {
+                VoiceChannelRole voiceChannelRole = new VoiceChannelRole();
+                voiceChannelRole.setVoiceChannel(voiceChannel);
+                voiceChannelRole.setRole(role);
+                voiceChannelRole.setPermissions(3L);
+                voiceChannelRoleRepository.save(voiceChannelRole);
+            }
+            log.info("Exiting setRolesToVoiceChannel");
+        } catch (Exception e) {
+            log.error("Error in setRolesToVoiceChannel: {}", e.getMessage(), e);
+            throw e;
         }
     }
 
-    private void setVoiceChannelToCategory(VoiceChannel textChannel, Category category) {
-
-        category.getVoiceChannels().add(textChannel);
-
-        categoryRepository.save(category);
+    private void setVoiceChannelToCategory(VoiceChannel voiceChannel, Category category) {
+        log.info("Entering setVoiceChannelToCategory with voiceChannel: {}, category: {}", voiceChannel, category);
+        try {
+            category.getVoiceChannels().add(voiceChannel);
+            categoryRepository.save(category);
+            log.info("Exiting setVoiceChannelToCategory");
+        } catch (Exception e) {
+            log.error("Error in setVoiceChannelToCategory: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
     public VoiceChannelDTO getVoiceChannel(String id) {
-        meterRegistry.counter("voicechannel.get.total").increment();
-        VoiceChannelDTO voiceChannelDTO = new VoiceChannelDTO();
-        VoiceChannel voiceChannel = voiceChannelRepository.findVoiceChannelById(id);
-        voiceChannelDTO.setId(voiceChannel.getId());
-        voiceChannelDTO.setName(voiceChannel.getName());
-        voiceChannelDTO.setDescription(voiceChannel.getDescription());
-        List<VoiceChannelRole> roles = voiceChannelRoleRepository.findAllByVoiceChannel(voiceChannel.getId());
-        roles.forEach(role -> voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role.getRole().getName(), role.getPermissions())));
-        //TODO: Implement cache
-        //voiceChannelDTO.setUsers(cacheManager.getCache("voiceChannelUsers").get(voiceChannel.getId(), List.class));
-        return voiceChannelDTO;
+        log.info("Entering getVoiceChannel with id: {}", id);
+        try {
+            meterRegistry.counter("voicechannel.get.total").increment();
+            VoiceChannelDTO voiceChannelDTO = new VoiceChannelDTO();
+            VoiceChannel voiceChannel = voiceChannelRepository.findVoiceChannelById(id);
+            voiceChannelDTO.setId(voiceChannel.getId());
+            voiceChannelDTO.setName(voiceChannel.getName());
+            voiceChannelDTO.setDescription(voiceChannel.getDescription());
+            List<VoiceChannelRole> roles = voiceChannelRoleRepository.findAllByVoiceChannel(voiceChannel.getId());
+            roles.forEach(role -> voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role.getRole().getName(), role.getPermissions())));
+            log.info("Exiting getVoiceChannel with result: {}", voiceChannelDTO);
+            return voiceChannelDTO;
+        } catch (Exception e) {
+            log.error("Error in getVoiceChannel: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
-    public VoiceChannelDTO updateVoiceChannel(String  id, NewVoiceChannelDTO newVoiceChannelDTO , String token) {
-        //TODO: Implement update and decide what can be upadted
+    public VoiceChannelDTO updateVoiceChannel(String id, NewVoiceChannelDTO newVoiceChannelDTO, String token) {
+        log.info("Entering updateVoiceChannel with id: {}, newVoiceChannelDTO: {}, token: {}", id, newVoiceChannelDTO, token);
+        // TODO: Implement update logic
+        log.info("Exiting updateVoiceChannel: Not implemented");
         return null;
     }
 
     @Transactional
     @Override
-    public void deleteVoiceChannel(String id , String token) {
+    public void deleteVoiceChannel(String id, String token) {
+        log.info("Entering deleteVoiceChannel with id: {}, token: {}", id, token);
         long start = System.nanoTime();
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
-
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            meterRegistry.counter("voicechannel.unauthorized.access.total", "action", "delete").increment();
-            throw new ForbiddenActionException("You are not authorized for this action!");
-        }
-
         try {
-            List<Category> categories = categoryRepository.findAllByVoiceChannelId(id);
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-            for (Category category : categories) {
-                category.getVoiceChannels().removeIf(vc -> vc.getId().equalsIgnoreCase(id));
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                meterRegistry.counter("voicechannel.unauthorized.access.total", "action", "delete").increment();
+                throw new ForbiddenActionException("You are not authorized for this action!");
             }
 
-            categoryRepository.saveAll(categories);
+            if (!voiceChannelRepository.existsById(id)) {
+                throw new IllegalArgumentException("Voice channel with id " + id + " not found");
+            }
 
             voiceChannelRoleRepository.deleteByVoiceChannelId(id);
-
             voiceChannelRepository.deleteById(id);
-
-            meterRegistry.counter("voicechannel.delete.total").increment();
+            log.info("Exiting deleteVoiceChannel: Voice channel deleted successfully");
+        } catch (Exception e) {
+            log.error("Error in deleteVoiceChannel: {}", e.getMessage(), e);
+            throw e;
         } finally {
             Timer.builder("voicechannel.delete.duration")
                     .register(meterRegistry)
@@ -195,97 +212,92 @@ public class VoiceChannelServiceImplementation implements VoiceChannelService{
 
     @Override
     public List<VoiceChannelDTO> listAll(String token) {
-        meterRegistry.counter("voicechannel.list.total").increment();
-        System.out.println(token);
-        String username = userService.getUserByToken(token).getUsername();
-        Set<String> userRoles = userService.getUserRoles(username);
+        log.info("Entering listAll with token: {}", token);
+        try {
+            meterRegistry.counter("voicechannel.list.total").increment();
+            String username = userService.getUserByToken(token).getUsername();
+            Set<String> userRoles = userService.getUserRoles(username);
 
-        if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
-            meterRegistry.counter("voicechannel.unauthorized.access.total", "action", "delete").increment();
-            throw new ForbiddenActionException("You are not authorized for this action!");
-        }
+            if (!userRoles.contains("ADMIN") && !userRoles.contains("PROFESSOR")) {
+                throw new ForbiddenActionException("You are not authorized for this action!");
+            }
 
-        List<VoiceChannel> voiceChannels = voiceChannelRepository.findAll();
-        ArrayList<VoiceChannelDTO> voiceChannelDTOS = new ArrayList<>();
-        for(VoiceChannel voiceChannel : voiceChannels) {
-            VoiceChannelDTO voiceChannelDTO = new VoiceChannelDTO();
-            voiceChannelDTO.setId(voiceChannel.getId());
-            voiceChannelDTO.setName(voiceChannel.getName());
-            voiceChannelDTO.setDescription(voiceChannel.getDescription());
-            List<VoiceChannelRole> roles = voiceChannelRoleRepository.findAllByVoiceChannel(voiceChannel.getId());
-            roles.forEach(role -> voiceChannelDTO.getRolePermissions().add(new RolePermissionDTO(role.getRole().getName(), role.getPermissions())));
-            Set<MyUser> users = voiceChannelCache.getUsersInChannel(voiceChannel.getId());
-            voiceChannelDTO.setUsers(convertSetToList(users));
-            voiceChannelDTOS.add(voiceChannelDTO);
+            List<VoiceChannel> voiceChannels = voiceChannelRepository.findAll();
+            ArrayList<VoiceChannelDTO> voiceChannelDTOS = new ArrayList<>();
+            for (VoiceChannel voiceChannel : voiceChannels) {
+                VoiceChannelDTO dto = new VoiceChannelDTO();
+                dto.setId(voiceChannel.getId());
+                dto.setName(voiceChannel.getName());
+                dto.setDescription(voiceChannel.getDescription());
+                voiceChannelDTOS.add(dto);
+            }
+            log.info("Exiting listAll with result: {}", voiceChannelDTOS);
+            return voiceChannelDTOS;
+        } catch (Exception e) {
+            log.error("Error in listAll: {}", e.getMessage(), e);
+            throw e;
         }
-        return voiceChannelDTOS;
-    }
-
-    private ArrayList<UserDTO> convertSetToList(Set<MyUser> users) {
-        ArrayList<UserDTO> userDTOList = new ArrayList<>();
-        for (MyUser user : users) {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId());
-            userDTO.setUsername(user.getUsername());
-            userDTO.setEmail(user.getEmail());
-            // Set other properties as needed
-            userDTOList.add(userDTO);
-        }
-        return userDTOList;
     }
 
     @Override
     public void addUserToVoiceChannel(String channelId, String token) {
-        // Validate user
-        MyUser myUser = userService.getUserByToken(token);
-        if (myUser == null) {
-            throw new UserNotFoundException("Invalid token or user not found.");
+        log.info("Entering addUserToVoiceChannel with channelId: {}, token: {}", channelId, token);
+        try {
+            MyUser myUser = userService.getUserByToken(token);
+            if (myUser == null) {
+                throw new UserNotFoundException("User not found");
+            }
+
+            VoiceChannel voiceChannel = voiceChannelRepository.findById(channelId)
+                    .orElseThrow(() -> new IllegalArgumentException("Voice channel not found"));
+
+            voiceChannelCache.addUserToChannel(channelId, myUser);
+            webSocketService.notifyChannelUsers(channelId, "USER_JOINED", myUser);
+            webRTCService.initiatePeerConnection(channelId, myUser);
+
+            meterRegistry.counter("voicechannel.user.join.total").increment();
+            log.info("Exiting addUserToVoiceChannel: User added successfully");
+        } catch (Exception e) {
+            log.error("Error in addUserToVoiceChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-        // Check if the channel exists
-        VoiceChannel voiceChannel = voiceChannelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("Voice channel not found."));
-
-        // Add user to the cache
-        voiceChannelCache.addUserToChannel(channelId, myUser);
-
-        // Notify others in the channel via WebSocket
-        webSocketService.notifyChannelUsers(channelId, "USER_JOINED", myUser);
-
-        // Start WebRTC connection setup (e.g., signaling)
-        webRTCService.initiatePeerConnection(channelId, myUser);
-
-        meterRegistry.counter("voicechannel.user.join.total").increment();
     }
 
     @Override
     public void removeUserFromVoiceChannel(String channelId, String token) {
-        // Validate user
-        MyUser myUser = userService.getUserByToken(token);
-        if (myUser == null) {
-            throw new UserNotFoundException("Invalid token or user not found.");
+        log.info("Entering removeUserFromVoiceChannel with channelId: {}, token: {}", channelId, token);
+        try {
+            MyUser myUser = userService.getUserByToken(token);
+            if (myUser == null) {
+                throw new UserNotFoundException("User not found");
+            }
+
+            VoiceChannel voiceChannel = voiceChannelRepository.findById(channelId)
+                    .orElseThrow(() -> new IllegalArgumentException("Voice channel not found"));
+
+            voiceChannelCache.removeUserFromChannel(channelId, myUser);
+            webSocketService.notifyChannelUsers(channelId, "USER_LEFT", myUser);
+            webRTCService.terminatePeerConnection(channelId, myUser);
+
+            meterRegistry.counter("voicechannel.user.leave.total").increment();
+            log.info("Exiting removeUserFromVoiceChannel: User removed successfully");
+        } catch (Exception e) {
+            log.error("Error in removeUserFromVoiceChannel: {}", e.getMessage(), e);
+            throw e;
         }
-
-        // Check if the channel exists
-        VoiceChannel voiceChannel = voiceChannelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("Voice channel not found."));
-
-        // Remove user from cache
-        voiceChannelCache.removeUserFromChannel(channelId, myUser);
-
-        // Notify others in the channel via WebSocket
-        webSocketService.notifyChannelUsers(channelId, "USER_LEFT", myUser);
-
-        // Close WebRTC connection (if needed)
-        webRTCService.terminatePeerConnection(channelId, myUser);
-
-        meterRegistry.counter("voicechannel.user.leave.total").increment();
     }
 
     @Override
-    public Set<MyUser> getUsersInVoiceChannel(String  channelId) {
-        meterRegistry.counter("voicechannel.getusers.total").increment();
-        return voiceChannelCache.getUsersInChannel(channelId);
+    public Set<MyUser> getUsersInVoiceChannel(String channelId) {
+        log.info("Entering getUsersInVoiceChannel with channelId: {}", channelId);
+        try {
+            meterRegistry.counter("voicechannel.getusers.total").increment();
+            Set<MyUser> users = voiceChannelCache.getUsersInChannel(channelId);
+            log.info("Exiting getUsersInVoiceChannel with result: {}", users);
+            return users;
+        } catch (Exception e) {
+            log.error("Error in getUsersInVoiceChannel: {}", e.getMessage(), e);
+            throw e;
+        }
     }
-
 }

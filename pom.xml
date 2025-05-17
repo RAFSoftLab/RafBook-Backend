@@ -194,6 +194,15 @@
             <artifactId>logback-elasticsearch-appender</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.3</version> <!-- or latest -->
+        </dependency>
     </dependencies>
 
     <build>

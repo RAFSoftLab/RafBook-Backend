@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "ca9a214b-cb10-4371-ba6e-a59c70749e69",
+		"_postman_id": "5ef04e45-3ff1-4f04-8182-2f279b0c22e9",
 		"name": "RAFBook IT tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "41964888"
+		"_exporter_id": "25425727"
 	},
 	"item": [
 		{
@@ -1029,7 +1029,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"{{new_channel_name}}\",\r\n  \"description\": \"description\",\r\n  \"roles\": [\r\n    \"{{new_role_new_user_1}}\",\r\n    \"{{role_new_user_1}}\"\r\n  ],\r\n  \"categoryName\": \"{{category_name}}\",\r\n  \"studyProgramName\": \"Racunarske nauke\",\r\n  \"studiesName\": \"Osnovne akademske studije\"\r\n}",
+							"raw": "{\r\n  \"name\": \"{{new_channel_name}}\",\r\n  \"description\": \"description\",\r\n  \"roles\": [\r\n    \"{{new_role_new_user_1}}\",\r\n    \"{{role_new_user_1}}\"\r\n  ],\r\n  \"categoryName\": \"{{category_name}}\",\r\n  \"studiesName\": \"Osnovne akademske studije\",\r\n  \"studyProgramName\": \"Racunarske nauke\",\r\n  \"folderId\": \"stagod\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

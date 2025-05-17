@@ -19,13 +19,17 @@
     <!-- OpenSearch Appender -->
     <appender name="OPENSEARCH" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
         <!-- URL to OpenSearch -->
-        <url>http://localhost:9200/_bulk</url>
+        <url>http://opensearch:9200/_bulk</url>
 
         <!-- Index name format -->
         <index>logback-logs-%date{yyyy.MM.dd}</index>
 
         <!-- Type (optional, "_doc" is typically used) -->
         <type>_doc</type>
+
+        <!-- Add authentication -->
+        <username>admin</username>
+        <password>Petar.1524M</password>
 
         <!-- Encoder to format logs as structured JSON -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />

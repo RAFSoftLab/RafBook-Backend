@@ -2,6 +2,7 @@ package raf.rs.userservice.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,13 +17,17 @@ import java.util.List;
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class RoleController {
 
     private RoleService roleService;
 
     @GetMapping
     public ResponseEntity<List<Role>> getAllRoles() {
-        return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
+        log.info("Entering getAllRoles");
+        List<Role> roles = roleService.getAllRoles();
+        log.info("Exiting getAllRoles with result: {}", roles);
+        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
 }
