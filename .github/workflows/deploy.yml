@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: yourdockerhubusername/your-image-name  # Replace with your actual Docker Hub repo name
+      IMAGE_NAME: pstamenic1524m/rafbook
 
     steps:
       - name: Checkout selected branch
