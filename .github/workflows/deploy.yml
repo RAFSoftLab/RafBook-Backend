@@ -29,7 +29,7 @@ jobs:
       - name: Checkout selected branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.ref_name }}
 
       - name: Debug files
         run: ls -R
@@ -43,17 +43,16 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t $IMAGE_NAME:${{ steps.generate_tag.outputs.tag }} -f app/Dockerfile app
+          docker build -t $IMAGE_NAME:${{ steps.generate_tag.outputs.tag }} .
           docker push $IMAGE_NAME:${{ steps.generate_tag.outputs.tag }}
 
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      - name: Upload updated docker-compose.yml
+      - name: Update docker-compose.yml with new image tag
         run: |
           TAG=${{ steps.generate_tag.outputs.tag }}
 
-          # Replace image line in the docker-compose for the app service
           awk -v tag="$TAG" -v name="$IMAGE_NAME" '
             BEGIN { in_app=0 }
             /^  app:/ { in_app=1; print; next }
@@ -65,6 +64,18 @@ jobs:
             { print }
           ' docker-compose.yml > docker-compose.remote.yml
 
-          # Upload to remote
-          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} "mkdir -p ~/deployment"
-          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.remote.yml ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DE
+      - name: Upload and apply on server
+        run: |
+          USER=${{ secrets.DEPLOY_USERNAME }}
+          HOST=${{ secrets.DEPLOY_HOST }}
+          PASS=${{ secrets.DEPLOY_PASSWORD }}
+          SERVICES=$(echo "${{ github.event.inputs.services }}" | tr ',' ' ')
+
+          sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$HOST "mkdir -p ~/deployment"
+          sshpass -p "$PASS" scp -o StrictHostKeyChecking=no docker-compose.remote.yml $USER@$HOST:~/deployment/docker-compose.yml
+
+          sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$HOST <<EOF
+            cd ~/deployment
+            docker compose pull
+            docker compose up -d --no-deps --build \$SERVICES
+          EOF
