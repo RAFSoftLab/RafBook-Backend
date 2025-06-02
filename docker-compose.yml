@@ -2,9 +2,7 @@ version: '3'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: pstamenic1524m/rafbook:latest  # or your default tag, e.g., 'latest'
     ports:
       - '8080:8080'
     volumes:
@@ -20,6 +18,7 @@ services:
       - JDBC_PASSWORD=your_password
       - JPA_DIALECT=org.hibernate.dialect.PostgreSQLDialect
       - DDL_AUTO=update
+
 
   prometheus:
     image: prom/prometheus
