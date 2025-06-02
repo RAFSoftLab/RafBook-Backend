@@ -19,7 +19,7 @@ import raf.rs.userservice.dto.ResponseMessageDTO;
 
 import java.util.List;
 
-@Tag(name = "Category Controller", description = "Endpoints for managing categories")
+@Tag(name = "Category Controller RAF", description = "Endpoints for managing categories")
 @SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/categories")
