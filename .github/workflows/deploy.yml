@@ -75,7 +75,7 @@ jobs:
           sshpass -p "$PASS" scp -o StrictHostKeyChecking=no docker-compose.remote.yml $USER@$HOST:~/deployment/docker-compose.yml
 
           sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$HOST <<EOF
-            cd ~/deployment
-            docker compose pull
-            docker compose up -d --no-deps --build \$SERVICES
+          cd ~/deployment
+          docker compose pull
+          docker compose up -d --no-deps $SERVICES
           EOF
