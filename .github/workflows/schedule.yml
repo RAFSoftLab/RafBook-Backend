@@ -1,0 +1,43 @@
+name: Scheduled Maven Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      maven_test_time:
+        description: 'Datetime with GMT offset for triggering Maven/Newman job (e.g. 2025-08-06 06:00 GMT+2)'
+        required: true
+        type: string
+  schedule:
+    - cron: '*/10 * * * *' # Run every 10 minutes
+
+jobs:
+
+  schedule-controller:
+    runs-on: ubuntu-latest
+    outputs:
+      run_maven_tests: ${{ steps.check.outputs.run_maven_tests }}
+    steps:
+      - id: check
+        run: |
+          now=$(date -u +%s)
+          echo "Current timestamp (UTC): $now"
+
+          input_time_full="${{ inputs.maven_test_time }}"
+          gmt_offset=$(echo "$input_time_full" | grep -oE 'GMT[+-][0-9]+')
+          datetime=$(echo "$input_time_full" | sed "s/ $gmt_offset\$//")
+          tz_offset=$(echo $gmt_offset | sed 's/GMT//' | awk '{ printf "%+03d00", $1 }')
+
+          target_timestamp=$(date -u -d "$datetime $tz_offset" +%s)
+
+          echo "Target timestamp: $target_timestamp"
+
+          if [ "$now" -ge "$target_timestamp" ]; then
+            echo "run_maven_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_maven_tests=false" >> $GITHUB_OUTPUT
+          fi
+
+  trigger-maven-pipeline:
+    needs: schedule-controller
+    if: ${{ needs.schedule-controller.outputs.run_maven_tests == 'true' }}
+    uses: ./.github/workflows/maven.yml
